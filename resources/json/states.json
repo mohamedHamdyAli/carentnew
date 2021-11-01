@@ -1,0 +1,32 @@
+[
+    {
+        "country_id": "4606cf14-b47b-4a38-8bef-3772c1b4b7de",
+        "name_en": "Alexandria",
+        "name_ar": "اسكندرية"
+    },
+    {
+        "country_id": "4606cf14-b47b-4a38-8bef-3772c1b4b7de",
+        "name_en": "Cairo",
+        "name_ar": "القاهرة"
+    },
+    {
+        "country_id": "4606cf14-b47b-4a38-8bef-3772c1b4b7de",
+        "name_en": "Giza",
+        "name_ar": "الجيزة"
+    },
+    {
+        "country_id": "4606cf14-b47b-4a38-8bef-3772c1b4b7de",
+        "name_en": "El Beheira",
+        "name_ar": "البحيرة"
+    },
+    {
+        "country_id": "4606cf14-b47b-4a38-8bef-3772c1b4b7de",
+        "name_en": "Al Qalyubia",
+        "name_ar": "القليوبية"
+    },
+    {
+        "country_id": "4606cf14-b47b-4a38-8bef-3772c1b4b7de",
+        "name_en": "Beni Suef",
+        "name_ar": "بني سويف"
+    }
+]

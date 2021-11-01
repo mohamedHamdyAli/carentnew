@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Http\Traits\OrderedUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderRefund extends Model
 {
-    use HasFactory;
+    use OrderedUuid;
 }

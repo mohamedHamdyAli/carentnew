@@ -20,6 +20,7 @@ class CreateVehicleInsurancesTable extends Migration
             $table->text('back_image');
             $table->timestamp('approved_at');
             $table->timestamp('expire_at');
+            $table->timestamp('approved_at');
             $table->timestamps();
         });
     }

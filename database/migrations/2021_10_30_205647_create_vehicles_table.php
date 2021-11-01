@@ -20,6 +20,8 @@ class CreateVehiclesTable extends Migration
             $table->uuid('category_id');
             $table->uuid('brand_id');
             $table->uuid('model_id')->nullable();
+            $table->string('manufacture_year', 4)->nullable();
+            $table->string('color', 20)->nullable();
             $table->timestamps();
         });
     }

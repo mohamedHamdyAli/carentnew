@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Country;
 use Illuminate\Database\Seeder;
-use File;
 
-class CountrySeeder extends Seeder
+class VehiclePricingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,8 +14,5 @@ class CountrySeeder extends Seeder
     public function run()
     {
         //
-        Country::truncate();
-
-        $json = File::get("database/data/country.json");
     }
 }

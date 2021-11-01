@@ -20,6 +20,7 @@ class CreateVehicleLicensesTable extends Migration
             $table->text('front_image');
             $table->text('back_image');
             $table->timestamp('expire_at');
+            $table->timestamp('approved_at');
             $table->timestamps();
         });
     }

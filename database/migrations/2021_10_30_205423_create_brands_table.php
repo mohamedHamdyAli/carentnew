@@ -15,8 +15,10 @@ class CreateBrandsTable extends Migration
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name_en');
-            $table->string('name_ar');
+            $table->smallInteger('display_order')->nullable();
+            $table->string('name_en', 50);
+            $table->string('name_ar', 50);
+            $table->text('image')->nullable();
         });
     }
 
