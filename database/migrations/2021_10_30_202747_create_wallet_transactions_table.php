@@ -15,6 +15,7 @@ class CreateWalletTransactionsTable extends Migration
     {
         Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('user_id');
             $table->decimal('amount', 8, 2);
             $table->enum('operation', ['in', 'out']);
             $table->uuid('order_id')->nullable();

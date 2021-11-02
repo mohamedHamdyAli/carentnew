@@ -1,0 +1,22 @@
+[
+    {
+        "group": "roof",
+        "name_en": "Roof Window",
+        "name_ar": "فتحة سقف"
+    },
+    {
+        "group": "roof",
+        "name_en": "Panoramic Roof",
+        "name_ar": "سقف بانورامي"
+    },
+    {
+        "group": "climate",
+        "name_en": "Air Conditioner",
+        "name_ar": "تكيف"
+    },
+    {
+        "group": "climate",
+        "name_en": "Heating",
+        "name_ar": "تدفئة"
+    }
+]

@@ -16,7 +16,7 @@ class CreateUserOtpsTable extends Migration
         Schema::create('user_otps', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->smallInteger('opt', 6);
+            $table->smallInteger('opt');
             $table->enum('for', ['email', 'phone']);
             $table->timestamp('expire_at');
         });

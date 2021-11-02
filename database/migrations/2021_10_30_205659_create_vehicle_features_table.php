@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderLinesTable extends Migration
+class CreateVehicleFeaturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateOrderLinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_lines', function (Blueprint $table) {
+        Schema::create('vehicle_features', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('order_id');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->smallInteger('days', 3);
-            $table->timestamps();
+            $table->string('name_en');
+            $table->string('name_ar');
         });
     }
 
@@ -30,6 +27,6 @@ class CreateOrderLinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_lines');
+        Schema::dropIfExists('vehicle_features');
     }
 }

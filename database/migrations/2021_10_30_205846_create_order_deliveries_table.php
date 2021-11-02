@@ -16,8 +16,8 @@ class CreateOrderDeliveriesTable extends Migration
         Schema::create('order_deliveries', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('order_id');
-            $table->timestamp('owner_delivered_at');
-            $table->timestamp('renter_received_at');
+            $table->timestamp('owner_delivered_at')->nullable();
+            $table->timestamp('renter_received_at')->nullable();
             $table->timestamps();
         });
     }

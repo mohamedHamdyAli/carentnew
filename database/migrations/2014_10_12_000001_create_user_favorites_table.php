@@ -16,9 +16,8 @@ class CreateUserFavoritesTable extends Migration
         Schema::create('user_favorites', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-
             // List of comma seperated vehicle_id: 123a,123c
-            $table->longText('vehicles_list')->default([]);
+            $table->longText('vehicle_list')->nullable();
         });
     }
 

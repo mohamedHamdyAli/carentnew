@@ -14,7 +14,9 @@ class CreateOrderStatusHistoriesTable extends Migration
     public function up()
     {
         Schema::create('order_status_histories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('order_id');
+            $table->uuid('order_status_id');
             $table->timestamps();
         });
     }

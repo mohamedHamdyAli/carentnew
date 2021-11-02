@@ -18,9 +18,8 @@ class CreateVehicleInsurancesTable extends Migration
             $table->uuid('vehicle_id');
             $table->text('front_image');
             $table->text('back_image');
-            $table->timestamp('approved_at');
-            $table->timestamp('expire_at');
-            $table->timestamp('approved_at');
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('expire_at')->nullable();
             $table->timestamps();
         });
     }
