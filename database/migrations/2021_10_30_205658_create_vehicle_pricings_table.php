@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserPaymentsTable extends Migration
+class CreateVehiclePricingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateUserPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_payments', function (Blueprint $table) {
-            $table->id();
+        Schema::create('vehicle_pricings', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('vehicle_id');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ class CreateUserPaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_payments');
+        Schema::dropIfExists('vehicle_pricings');
     }
 }

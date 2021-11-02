@@ -16,7 +16,7 @@ class CreateRewardPointTransactionsTable extends Migration
         Schema::create('reward_point_transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->bigInteger('points');
-            $table->enum('action', ['in', 'out']);
+            $table->enum('operation', ['in', 'out']);
             $table->uuid('order_id')->nullable();
             $table->timestamps();
         });

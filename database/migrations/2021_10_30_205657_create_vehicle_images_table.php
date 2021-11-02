@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserFavoritesTable extends Migration
+class CreateVehicleImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateUserFavoritesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_favorites', function (Blueprint $table) {
-            $table->id();
+        Schema::create('vehicle_images', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('vehicle_id');
+            $table->smallInteger('displayOrder');
+            $table->text('image');
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateUserFavoritesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_favorites');
+        Schema::dropIfExists('vehicle_images');
     }
 }

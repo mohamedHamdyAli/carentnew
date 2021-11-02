@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWalletTransactionsTable extends Migration
+class CreateUserOtpsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateWalletTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('wallet_transactions', function (Blueprint $table) {
+        Schema::create('user_otps', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->decimal('amount', 8, 2);
-            $table->enum('operation', ['in', 'out']);
-            $table->uuid('order_id')->nullable();
-            $table->timestamps();
+            $table->uuid('user_id');
+            $table->smallInteger('opt', 6);
+            $table->enum('for', ['email', 'phone']);
+            $table->timestamp('expire_at');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateWalletTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wallet_transactions');
+        Schema::dropIfExists('user_otps');
     }
 }

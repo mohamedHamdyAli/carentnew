@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Http\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VehicleReview extends Model
+class UserFinancialDetail extends Model
 {
-    use HasFactory, Uuid;
+    use HasFactory;
 }

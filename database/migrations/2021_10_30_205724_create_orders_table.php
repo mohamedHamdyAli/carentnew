@@ -14,7 +14,10 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('vehicle_id');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

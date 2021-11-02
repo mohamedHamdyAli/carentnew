@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVehicleReviewsTable extends Migration
+class CreateUserPaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateVehicleReviewsTable extends Migration
      */
     public function up()
     {
-        Schema::create('vehicle_reviews', function (Blueprint $table) {
-            $table->id();
+        Schema::create('user_payments', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
+            $table->decimal('amount', 8, 2);
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateVehicleReviewsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vehicle_reviews');
+        Schema::dropIfExists('user_payments');
     }
 }

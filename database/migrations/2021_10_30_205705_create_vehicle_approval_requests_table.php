@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderStatusesTable extends Migration
+class CreateVehicleApprovalRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateOrderStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_statuses', function (Blueprint $table) {
-            $table->id();
+        Schema::create('vehicle_approval_requests', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('vehicle_id');
+            $table->boolean('passed')->nullable();
+            $table->text('message')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ class CreateOrderStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_statuses');
+        Schema::dropIfExists('vehicle_approval_requests');
     }
 }
