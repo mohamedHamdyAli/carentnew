@@ -18,6 +18,7 @@ class CreateRewardPointTransactionsTable extends Migration
             $table->uuid('user_id');
             $table->bigInteger('points');
             $table->enum('operation', ['in', 'out']);
+            $table->enum('type', ['redeem', 'refund']);
             $table->uuid('order_id')->nullable();
             $table->timestamps();
         });

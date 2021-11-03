@@ -1,0 +1,32 @@
+[
+    {
+        "name_en": "Super Admin",
+        "name_ar": "المدير الرئيسي",
+        "key": "super admin"
+    },
+    {
+        "name_en": "Admin",
+        "name_ar": "مدير",
+        "key": "admin"
+    },
+    {
+        "name_en": "Accountant",
+        "name_ar": "محاسب",
+        "key": "accountant"
+    },
+    {
+        "name_en": "Owner",
+        "name_ar": "مالك",
+        "key": "owner"
+    },
+    {
+        "name_en": "Renter",
+        "name_ar": "مستأجر",
+        "key": "renter"
+    },
+    {
+        "name_en": "User",
+        "name_ar": "مستخدم",
+        "key": "user"
+    }
+]

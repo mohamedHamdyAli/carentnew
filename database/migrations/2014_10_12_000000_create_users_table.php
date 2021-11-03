@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
             $table->uuid('default_address_id')->nullable();
-            $table->decimal('wallet', 8, 2)->default(0);
+            $table->decimal('balance', 8, 2)->default(0);
             $table->bigInteger('reward_points')->default(0);
             // $table->rememberToken();
             $table->timestamps();

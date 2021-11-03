@@ -14,7 +14,12 @@ class CreateOrderRefundsTable extends Migration
     public function up()
     {
         Schema::create('order_refunds', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('order_id');
+            $table->enum('type', ['full', 'partial']);
+            $table->decimal('amount', 8, 2);
+            $table->timestamp('approved_at')->nullable();
+            $table->uuid('approved_by');
             $table->timestamps();
         });
     }

@@ -19,8 +19,11 @@ class CreateOrdersTable extends Migration
             $table->uuid('vehicle_id');
             $table->uuid('owner_id');
             $table->uuid('order_Status_id');
+            $table->enum('type', ['normal', 'extension']);
+            $table->uuid('extended_from_id')->nullable();
             $table->date('start_date');
             $table->date('end_date');
+            $table->smallInteger('day_count');
             $table->decimal('day_cost', 8, 2);
             $table->decimal('total', 8, 2);
             $table->timestamps();

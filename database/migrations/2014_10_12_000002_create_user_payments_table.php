@@ -17,6 +17,12 @@ class CreateUserPaymentsTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->decimal('amount', 8, 2);
+            // array of file urls https://storage/file1.ext,https://storage/file2.ext
+            $table->longText('attachments');
+            $table->text('details');
+            $table->boolean('sent')->default(false);
+            $table->uuid('created_by');
+            $table->uuid('approved_by');
             $table->timestamps();
         });
     }

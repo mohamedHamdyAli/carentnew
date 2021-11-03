@@ -6,7 +6,7 @@ use App\Http\Traits\OrderedUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WalletTransaction extends Model
+class BalanceTransaction extends Model
 {
     use HasFactory, OrderedUuid;
 }
