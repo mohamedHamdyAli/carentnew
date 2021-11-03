@@ -1,362 +1,362 @@
 [
     {
         "name_en": "Alfaromeo",
-        "name_ar": "Alfaromeo",
+        "name_ar": "الفاروميو",
         "image": "imgs/brands/cars/alfaromeo.png"
     },
     {
         "name_en": "Astonmartin",
-        "name_ar": "Astonmartin",
+        "name_ar": "استون مارتين",
         "image": "imgs/brands/cars/astonmartin.png"
     },
     {
         "name_en": "Audi",
-        "name_ar": "Audi",
+        "name_ar": "اودي",
         "image": "imgs/brands/cars/audi.png"
     },
     {
         "name_en": "Bentley",
-        "name_ar": "Bentley",
+        "name_ar": "بينتلي",
         "image": "imgs/brands/cars/bentley.png"
     },
     {
-        "name_en": "Bmw",
-        "name_ar": "Bmw",
+        "name_en": "BMW",
+        "name_ar": "بي ام دبليو",
         "image": "imgs/brands/cars/bmw.png"
     },
     {
         "name_en": "Brilliance",
-        "name_ar": "Brilliance",
+        "name_ar": "بريليانس",
         "image": "imgs/brands/cars/brilliance.png"
     },
     {
-        "name_en": "Byd",
-        "name_ar": "Byd",
+        "name_en": "BYD",
+        "name_ar": "بي واي دي",
         "image": "imgs/brands/cars/byd.png"
     },
     {
         "name_en": "Changan",
-        "name_ar": "Changan",
+        "name_ar": "شنجان",
         "image": "imgs/brands/cars/changan.png"
     },
     {
         "name_en": "Chery",
-        "name_ar": "Chery",
+        "name_ar": "شيري",
         "image": "imgs/brands/cars/chery.png"
     },
     {
         "name_en": "Chevrolet",
-        "name_ar": "Chevrolet",
+        "name_ar": "شيفرولية",
         "image": "imgs/brands/cars/chevrolet.png"
     },
     {
         "name_en": "Chrysler",
-        "name_ar": "Chrysler",
+        "name_ar": "كريسلر",
         "image": "imgs/brands/cars/chrysler.png"
     },
     {
         "name_en": "Citroen",
-        "name_ar": "Citroen",
+        "name_ar": "سيتروين",
         "image": "imgs/brands/cars/citroen.png"
     },
     {
         "name_en": "Comodo",
-        "name_ar": "Comodo",
+        "name_ar": "كومودو",
         "image": "imgs/brands/cars/comodo.png"
     },
     {
         "name_en": "Dacia",
-        "name_ar": "Dacia",
+        "name_ar": "داسيا",
         "image": "imgs/brands/cars/dacia.png"
     },
     {
         "name_en": "Daewoo",
-        "name_ar": "Daewoo",
+        "name_ar": "دايو",
         "image": "imgs/brands/cars/daewoo.png"
     },
     {
         "name_en": "Daihatsu",
-        "name_ar": "Daihatsu",
+        "name_ar": "ديهاتسون",
         "image": "imgs/brands/cars/daihatsu.png"
     },
     {
         "name_en": "Dodge",
-        "name_ar": "Dodge",
+        "name_ar": "دودج",
         "image": "imgs/brands/cars/dodge.png"
     },
     {
-        "name_en": "Ds",
-        "name_ar": "Ds",
+        "name_en": "DS",
+        "name_ar": "دي اس",
         "image": "imgs/brands/cars/ds.png"
     },
     {
-        "name_en": "Faw",
-        "name_ar": "Faw",
+        "name_en": "FAW",
+        "name_ar": "اف ايه دبليو",
         "image": "imgs/brands/cars/faw.png"
     },
     {
         "name_en": "Ferrari",
-        "name_ar": "Ferrari",
+        "name_ar": "فيراري",
         "image": "imgs/brands/cars/ferrari.png"
     },
     {
         "name_en": "Fiat",
-        "name_ar": "Fiat",
+        "name_ar": "فيات",
         "image": "imgs/brands/cars/fiat.png"
     },
     {
         "name_en": "Ford",
-        "name_ar": "Ford",
+        "name_ar": "فورد",
         "image": "imgs/brands/cars/ford.png"
     },
     {
         "name_en": "Geely",
-        "name_ar": "Geely",
+        "name_ar": "جيلي",
         "image": "imgs/brands/cars/geely.png"
     },
     {
         "name_en": "Haima",
-        "name_ar": "Haima",
+        "name_ar": "هايما",
         "image": "imgs/brands/cars/haima.png"
     },
     {
         "name_en": "Haval",
-        "name_ar": "Haval",
+        "name_ar": "هافال",
         "image": "imgs/brands/cars/haval.png"
     },
     {
         "name_en": "Hawtai",
-        "name_ar": "Hawtai",
+        "name_ar": "هاو تاي",
         "image": "imgs/brands/cars/hawtai.png"
     },
     {
         "name_en": "Honda",
-        "name_ar": "Honda",
+        "name_ar": "هوندا",
         "image": "imgs/brands/cars/honda.png"
     },
     {
         "name_en": "Hummer",
-        "name_ar": "Hummer",
+        "name_ar": "هامر",
         "image": "imgs/brands/cars/hummer.png"
     },
     {
         "name_en": "Hyundai",
-        "name_ar": "Hyundai",
+        "name_ar": "هيونداي",
         "image": "imgs/brands/cars/hyundai.png"
     },
     {
         "name_en": "Infiniti",
-        "name_ar": "Infiniti",
+        "name_ar": "انفيناتي",
         "image": "imgs/brands/cars/infiniti.png"
     },
     {
         "name_en": "Isuzu",
-        "name_ar": "Isuzu",
+        "name_ar": "ايسوزو",
         "image": "imgs/brands/cars/isuzu.png"
     },
     {
-        "name_en": "Jac",
-        "name_ar": "Jac",
+        "name_en": "JAC",
+        "name_ar": "جاك",
         "image": "imgs/brands/cars/jac.png"
     },
     {
         "name_en": "Jaguar",
-        "name_ar": "Jaguar",
+        "name_ar": "جاجوار",
         "image": "imgs/brands/cars/jaguar.png"
     },
     {
         "name_en": "Jeep",
-        "name_ar": "Jeep",
+        "name_ar": "جيب",
         "image": "imgs/brands/cars/jeep.png"
     },
     {
         "name_en": "Jetour",
-        "name_ar": "Jetour",
+        "name_ar": "جيتور",
         "image": "imgs/brands/cars/jetour.png"
     },
     {
         "name_en": "Jinbei",
-        "name_ar": "Jinbei",
+        "name_ar": "جينبي",
         "image": "imgs/brands/cars/jinbei.png"
     },
     {
         "name_en": "Kia",
-        "name_ar": "Kia",
+        "name_ar": "كيا",
         "image": "imgs/brands/cars/kia.png"
     },
     {
         "name_en": "Lada",
-        "name_ar": "Lada",
+        "name_ar": "لادا",
         "image": "imgs/brands/cars/lada.png"
     },
     {
         "name_en": "Landrover",
-        "name_ar": "Landrover",
+        "name_ar": "لاندروفر",
         "image": "imgs/brands/cars/landrover.png"
     },
     {
         "name_en": "Lexus",
-        "name_ar": "Lexus",
+        "name_ar": "لكزس",
         "image": "imgs/brands/cars/lexus.png"
     },
     {
         "name_en": "Lincoln",
-        "name_ar": "Lincoln",
+        "name_ar": "لينكون",
         "image": "imgs/brands/cars/lincoln.png"
     },
     {
         "name_en": "Mahindra",
-        "name_ar": "Mahindra",
+        "name_ar": "ماهيندرا",
         "image": "imgs/brands/cars/mahindra.png"
     },
     {
         "name_en": "Maple",
-        "name_ar": "Maple",
+        "name_ar": "مابل",
         "image": "imgs/brands/cars/maple.png"
     },
     {
         "name_en": "Maserati",
-        "name_ar": "Maserati",
+        "name_ar": "مازيراتي",
         "image": "imgs/brands/cars/maserati.png"
     },
     {
         "name_en": "Mazda",
-        "name_ar": "Mazda",
+        "name_ar": "مازدا",
         "image": "imgs/brands/cars/mazda.png"
     },
     {
         "name_en": "Mercedes",
-        "name_ar": "Mercedes",
+        "name_ar": "مرسيدس",
         "image": "imgs/brands/cars/mercedes.png"
     },
     {
         "name_en": "Mercury",
-        "name_ar": "Mercury",
+        "name_ar": "ميركوري",
         "image": "imgs/brands/cars/mercury.png"
     },
     {
-        "name_en": "Mg",
-        "name_ar": "Mg",
+        "name_en": "MG",
+        "name_ar": "ام جي",
         "image": "imgs/brands/cars/mg.png"
     },
     {
         "name_en": "Mini",
-        "name_ar": "Mini",
+        "name_ar": "ميني",
         "image": "imgs/brands/cars/mini.png"
     },
     {
         "name_en": "Mitsubishi",
-        "name_ar": "Mitsubishi",
+        "name_ar": "ميتسوبيشي",
         "image": "imgs/brands/cars/mitsubishi.png"
     },
     {
         "name_en": "Nasr",
-        "name_ar": "Nasr",
+        "name_ar": "نصر",
         "image": "imgs/brands/cars/nasr.png"
     },
     {
         "name_en": "Nissan",
-        "name_ar": "Nissan",
+        "name_ar": "نيسان",
         "image": "imgs/brands/cars/nissan.png"
     },
     {
         "name_en": "Opel",
-        "name_ar": "Opel",
+        "name_ar": "اوبل",
         "image": "imgs/brands/cars/opel.png"
     },
     {
         "name_en": "Peugeot",
-        "name_ar": "Peugeot",
+        "name_ar": "بيجو",
         "image": "imgs/brands/cars/peugeot.png"
     },
     {
         "name_en": "Pontiac",
-        "name_ar": "Pontiac",
+        "name_ar": "بونتياك",
         "image": "imgs/brands/cars/pontiac.png"
     },
     {
         "name_en": "Porsche",
-        "name_ar": "Porsche",
+        "name_ar": "بورش",
         "image": "imgs/brands/cars/porsche.png"
     },
     {
         "name_en": "Proton",
-        "name_ar": "Proton",
+        "name_ar": "بروتون",
         "image": "imgs/brands/cars/proton.png"
     },
     {
         "name_en": "Rangerover",
-        "name_ar": "Rangerover",
+        "name_ar": "رانجروفر",
         "image": "imgs/brands/cars/rangerover.png"
     },
     {
         "name_en": "Renault",
-        "name_ar": "Renault",
+        "name_ar": "رينو",
         "image": "imgs/brands/cars/renault.png"
     },
     {
         "name_en": "Rollsroyce",
-        "name_ar": "Rollsroyce",
+        "name_ar": "رولز رويس",
         "image": "imgs/brands/cars/rollsroyce.png"
     },
     {
         "name_en": "Saipa",
-        "name_ar": "Saipa",
+        "name_ar": "سابيا",
         "image": "imgs/brands/cars/saipa.png"
     },
     {
         "name_en": "Seat",
-        "name_ar": "Seat",
+        "name_ar": "سيات",
         "image": "imgs/brands/cars/seat.png"
     },
     {
         "name_en": "Skoda",
-        "name_ar": "Skoda",
+        "name_ar": "سكودا",
         "image": "imgs/brands/cars/skoda.png"
     },
     {
         "name_en": "Speranza",
-        "name_ar": "Speranza",
+        "name_ar": "سبيرانزا",
         "image": "imgs/brands/cars/speranza.png"
     },
     {
         "name_en": "Ssangyong",
-        "name_ar": "Ssangyong",
+        "name_ar": "سسانج يونج",
         "image": "imgs/brands/cars/ssangyong.png"
     },
     {
         "name_en": "Subaru",
-        "name_ar": "Subaru",
+        "name_ar": "سوبارو",
         "image": "imgs/brands/cars/subaru.png"
     },
     {
         "name_en": "Suzuki",
-        "name_ar": "Suzuki",
+        "name_ar": "سزوكي",
         "image": "imgs/brands/cars/suzuki.png"
     },
     {
         "name_en": "Tesla",
-        "name_ar": "Tesla",
+        "name_ar": "تسلا",
         "image": "imgs/brands/cars/tesla.png"
     },
     {
         "name_en": "Toyota",
-        "name_ar": "Toyota",
+        "name_ar": "تويوتا",
         "image": "imgs/brands/cars/toyota.png"
     },
     {
         "name_en": "Volkswagen",
-        "name_ar": "Volkswagen",
+        "name_ar": "فلوكس واجن",
         "image": "imgs/brands/cars/volkswagen.png"
     },
     {
         "name_en": "Volvo",
-        "name_ar": "Volvo",
+        "name_ar": "فولفو",
         "image": "imgs/brands/cars/volvo.png"
     },
     {
         "name_en": "Zotye",
-        "name_ar": "Zotye",
+        "name_ar": "زوتي",
         "image": "imgs/brands/cars/zotye.png"
     }
 ]
