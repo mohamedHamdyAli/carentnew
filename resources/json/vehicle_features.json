@@ -18,5 +18,20 @@
         "group": "climate",
         "name_en": "Heating",
         "name_ar": "تدفئة"
+    },
+    {
+        "group": "climate",
+        "name_en": "Heating",
+        "name_ar": "تدفئة"
+    },
+    {
+        "group": "media",
+        "name_en": "Navigation",
+        "name_ar": "نظام ملاحة"
+    },
+    {
+        "group": "media",
+        "name_en": "Media Player",
+        "name_ar": "مشغل ميديا"
     }
 ]

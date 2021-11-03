@@ -1,0 +1,9 @@
+{
+    "reward_points_to_money": 1,
+    "money_to_reward_pints": 1,
+    "minimum_use_for_reward_points": 100,
+    "vehicle_min_manufactur_year": 2015,
+    "order_min_bid_percentage": 80,
+    "order_acceptance_timeout_minutes": 5,
+    "order_payment_timeout_minutes": 5
+}

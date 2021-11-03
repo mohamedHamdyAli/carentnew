@@ -1,0 +1,36 @@
+[
+    {
+        "name_en": "Egypt",
+        "name_ar": "مصر",
+        "image": "imgs/flags/egypt.png",
+        "country_code": "EG",
+        "phone_prefix": "+20",
+        "currency_code": "EGP",
+        "states": [
+            {
+                "name_en": "Alexandria",
+                "name_ar": "اسكندرية"
+            },
+            {
+                "name_en": "Cairo",
+                "name_ar": "القاهرة"
+            },
+            {
+                "name_en": "Giza",
+                "name_ar": "الجيزة"
+            },
+            {
+                "name_en": "El Beheira",
+                "name_ar": "البحيرة"
+            },
+            {
+                "name_en": "Al Qalyubia",
+                "name_ar": "القليوبية"
+            },
+            {
+                "name_en": "Beni Suef",
+                "name_ar": "بني سويف"
+            }
+        ]
+    }
+]
