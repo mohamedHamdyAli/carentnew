@@ -25,6 +25,7 @@ class CreateVehiclesTable extends Migration
             $table->string('manufacture_year', 4)->nullable();
             $table->string('color', 20)->nullable();
             $table->string('fuel', 20)->nullable();
+            // features is array of vehicle_features ids 'id1','id2','id3'
             $table->longText('features')->nullable();
             #$table->boolean('air_conditioner')->nullable();
             #$table->enum('roof', ['window', 'panorama'])->nullable();

@@ -18,7 +18,7 @@ class CreateBrandsTable extends Migration
             $table->smallInteger('display_order')->nullable();
             $table->string('name_en', 50);
             $table->string('name_ar', 50);
-            $table->text('image')->nullable();
+            $table->text('logo')->nullable();
         });
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Traits\OrderedUuid;
+use App\Traits\OrderedUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class RewardPointTransaction extends Model

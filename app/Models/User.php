@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Traits\Uuid;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,7 +23,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'default_address_id',
-        'wallet',
+        'balance',
         'reward_points',
     ];
 
@@ -36,8 +35,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'default_address_id',
-        'wallet',
+        'balance',
         'reward_points',
+    ];
+
+    protected $appends = [
+        'default_address',
     ];
 
     /**
@@ -48,5 +51,38 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
+        'balance'       => 'float',
+        'reward_points' => 'integer',
     ];
+
+    /**
+     * Returns user addresses.
+     *
+     * @var array
+     */
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function getDefaultAddressAttribute()
+    {
+        return Address::where('id', $this->default_address_id)->first() ?? null;
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function isEmailVerified()
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    public function isPhoneVerified()
+    {
+        return $this->phone_verified_at !== null;
+    }
 }

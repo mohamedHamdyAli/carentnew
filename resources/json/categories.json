@@ -1,0 +1,54 @@
+[
+    {
+        "name_en": "SUV",
+        "name_ar": "اس يو في"
+    },
+    {
+        "name_en": "Sedan",
+        "name_ar": "سيدان"
+    },
+    {
+        "name_en": "Saloon",
+        "name_ar": "صالون"
+    },
+    {
+        "name_en": "Hatchback",
+        "name_ar": "هاتشباك"
+    },
+    {
+        "name_en": "Coupe",
+        "name_ar": "كوبية"
+    },
+    {
+        "name_en": "Cabriolet",
+        "name_ar": "قابل للتحويل"
+    },
+    {
+        "name_en": "Crossover",
+        "name_ar": "كروس اوفر"
+    },
+    {
+        "name_en": "Pickup",
+        "name_ar": "بيك اكب"
+    },
+    {
+        "name_en": "Van",
+        "name_ar": "فان"
+    },
+    {
+        "name_en": "Mini Van",
+        "name_ar": "ميني فان"
+    },
+    {
+        "name_en": "Caravan",
+        "name_ar": "كارافان"
+    },
+    {
+        "name_en": "Bus",
+        "name_ar": "باص"
+    },
+    {
+        "name_en": "Truck",
+        "name_ar": "شاحنة"
+    }
+]
