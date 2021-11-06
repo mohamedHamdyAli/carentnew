@@ -17,6 +17,7 @@ class CreateCountriesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name_en');
             $table->string('name_ar');
+            $table->text('flag')->nullable();
             $table->string('country_code');
             $table->string('phone_prefix');
             $table->string('currency_code');

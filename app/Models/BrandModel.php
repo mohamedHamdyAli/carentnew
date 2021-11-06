@@ -9,6 +9,8 @@ class BrandModel extends Model
 {
     use Uuid;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'name_en',
         'name_ar',
