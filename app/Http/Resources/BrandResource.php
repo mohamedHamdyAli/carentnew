@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class Brand extends ResourceCollection
+class BrandResource extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -14,6 +14,10 @@ class Brand extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'statusCode' => 200,
+            'message' => __('messages.r_success'),
+            'data' => $this->collection
+        ];
     }
 }

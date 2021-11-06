@@ -21,22 +21,15 @@ class Brand extends Model
     protected $hidden = [
         'name_en',
         'name_ar',
-        'logo',
         'display_order'
     ];
 
     protected $appends = [
         'name',
-        'logo_url',
     ];
 
     public function getNameAttribute()
     {
         return $this->{'name_' . app()->getLocale()};
-    }
-
-    public function getLogoUrlAttribute()
-    {
-        return asset('storage/' . $this->logo);
     }
 }
