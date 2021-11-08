@@ -38,5 +38,7 @@ Route::group(
         // Location Routes
         Route::apiResource('countries', 'CountryController');
         Route::apiResource('states', 'StateController');
+        // Category Routes
+        Route::apiResource('categories', 'CategoryController');
     }
 );

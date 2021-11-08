@@ -48,7 +48,10 @@ class CountryController extends Controller
      */
     public function show(Country $country)
     {
-        return $country;
+        return [
+            'message' => __('messages.r_success'),
+            'data' => $country
+        ];
     }
 
     /**

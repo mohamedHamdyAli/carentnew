@@ -15,7 +15,6 @@ class StateResource extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'statusCode' => 200,
             'message' => __('messages.r_success'),
             'data' => $this->collection
         ];
