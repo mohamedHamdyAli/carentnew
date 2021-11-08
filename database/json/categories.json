@@ -1,15 +1,14 @@
-[
-    {
-        "name_en": "SUV",
-        "name_ar": "اس يو في"
-    },
-    {
+[{
         "name_en": "Sedan",
         "name_ar": "سيدان"
     },
     {
         "name_en": "Saloon",
         "name_ar": "صالون"
+    },
+    {
+        "name_en": "SUV",
+        "name_ar": "اس يو في"
     },
     {
         "name_en": "Hatchback",

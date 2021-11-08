@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        Seeder::call('Database\Seeders\RoleSeeder');
+        Seeder::call('Database\Seeders\PrivilegeSeeder');
         Seeder::call('Database\Seeders\LocationSeeder');
         Seeder::call('Database\Seeders\BrandSeeder');
+        Seeder::call('Database\Seeders\CategorySeeder');
     }
 }

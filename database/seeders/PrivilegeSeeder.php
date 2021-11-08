@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Privilege;
+use File;
 use Illuminate\Database\Seeder;
 
 class PrivilegeSeeder extends Seeder
@@ -14,5 +16,15 @@ class PrivilegeSeeder extends Seeder
     public function run()
     {
         //
+        Privilege::truncate();
+        $json = File::get("database/json/privileges.json");
+        $data = json_decode($json);
+        foreach ($data as $d) {
+            Privilege::create([
+                'name_en' => $d->name_en,
+                'name_ar' => $d->name_ar,
+                'key'     => $d->key
+            ]);
+        }
     }
 }
