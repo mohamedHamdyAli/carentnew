@@ -48,7 +48,11 @@ class BrandModelController extends Controller
     public function show($brandModel)
     {
         //
-        return new BrandModelResource(BrandModel::where('brand_id', $brandModel)->get());
+        $data = cache()->rememberForever("brand_models.{$brandModel}", function () use ($brandModel) {
+            return new BrandModelResource(BrandModel::where('brand_id', $brandModel)->get());
+        });
+
+        return $data;
     }
 
     /**

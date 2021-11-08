@@ -16,7 +16,11 @@ class CountryController extends Controller
     public function index()
     {
         //
-        return new CountryResource(Country::all());
+        $data = cache()->rememberForever("countries", function () {
+            return new CountryResource(Country::all());
+        });
+
+        return $data;
     }
 
     /**

@@ -16,7 +16,11 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        return new CategoryResource(Category::all());
+        $data = cache()->rememberForever("categories", function () {
+            return new CategoryResource(Category::all());
+        });
+
+        return $data;
     }
 
     /**
