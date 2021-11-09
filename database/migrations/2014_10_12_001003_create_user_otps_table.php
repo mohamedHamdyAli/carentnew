@@ -18,7 +18,7 @@ class CreateUserOtpsTable extends Migration
             $table->uuid('user_id');
             $table->smallInteger('opt');
             $table->enum('for', ['email', 'phone']);
-            $table->timestamp('expire_at');
+            $table->timestamp('expire_at')->nullable();
         });
     }
 

@@ -31,14 +31,39 @@ Route::group(
             // return Mail::to('mahmoud.ali.kassem@gmail.com')->send(new \App\Mail\EmailOtp(123456));
             return new \App\Mail\EmailOtp(123456);
         });
-
-        // Brand routes
+        
+        /* 
+            @Brand routes
+        */
         Route::apiResource('brands', 'BrandController');
         Route::apiResource('models', 'BrandModelController');
-        // Location Routes
+
+        /* 
+            @Location routes
+        */
         Route::apiResource('countries', 'CountryController');
         Route::apiResource('states', 'StateController');
-        // Category Routes
+
+        /* 
+            @Category routes
+        */
         Route::apiResource('categories', 'CategoryController');
+
+        /* 
+            @Authentication routes
+        */
+        Route::prefix('auth')->group(function () {
+            Route::post('/login', 'AuthController@login');
+            Route::post('/register', 'AuthController@register');
+            Route::post('/logout', 'AuthController@logout');
+            Route::post('/refresh', 'AuthController@refresh');
+            Route::post('/me', 'AuthController@me');
+            Route::post('/send-email-otp', 'AuthController@sendEmailOtp');
+            Route::post('/verify-email-otp', 'AuthController@verifyEmailOtp');
+            Route::post('/send-phone-otp', 'AuthController@sendPhoneOtp');
+            Route::post('/verify-phone-otp', 'AuthController@verifyPhoneOtp');
+            Route::post('/reset-password', 'AuthController@resetPassword');
+            Route::post('/change-password', 'AuthController@changePassword');
+        });
     }
 );

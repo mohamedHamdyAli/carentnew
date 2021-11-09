@@ -1,10 +1,16 @@
 <?php
 
-namespace App\Models;
+// @formatter:off
+/**
+ * A helper file for your Eloquent Models
+ * Copy the phpDocs from this file to the correct Model,
+ * And remove them from this file, to prevent double declarations.
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ */
 
-use App\Traits\Uuid;
-use Illuminate\Database\Eloquent\Model;
 
+namespace App\Models{
 /**
  * App\Models\Brand
  *
@@ -24,31 +30,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Brand whereNameEn($value)
  * @mixin \Eloquent
  */
-class Brand extends Model
-{
-    use Uuid;
-
-    public $timestamps = false;
-
-    protected $fillable = [
-        'display_order',
-        'name_en',
-        'name_ar',
-        'logo',
-    ];
-
-    protected $hidden = [
-        'name_en',
-        'name_ar',
-        'display_order'
-    ];
-
-    protected $appends = [
-        'name',
-    ];
-
-    public function getNameAttribute()
-    {
-        return $this->{'name_' . app()->getLocale()};
-    }
+	class Brand extends \Eloquent {}
 }
+
