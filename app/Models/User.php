@@ -94,6 +94,11 @@ class User extends Authenticatable
         'updated_at',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $appends = [
         'default_address',
     ];
@@ -111,54 +116,93 @@ class User extends Authenticatable
     ];
 
     /**
-     * Returns user addresses.
+     * @comment get user addresses.
      *
-     * @var array
+     * @return object
      */
-
     public function addresses()
     {
         return $this->hasMany(Address::class);
     }
 
+    /**
+     * @comment get user default address.
+     *
+     * @return object|null
+     */
     public function getDefaultAddressAttribute()
     {
         return Address::where('id', $this->default_address_id)->first() ?? null;
     }
 
+    /**
+     * @comment get user orders.
+     *
+     * @return object
+     */
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * @comment get user roles
+     *
+     * @return object
+     */
     public function roles()
     {
         return $this->hasMany(UserRole::class);
     }
 
-    public function hasRole($role)
+    /**
+     * @comment check if user has role
+     *
+     * @return boolean
+     */
+    protected function hasRole($role)
     {
         $role_id = Role::where('key', $role)->first()->id;
         return $this->roles()->where('id', $role_id)->first() ? true : false;
     }
 
+    /**
+     * @comment get user privileges
+     *
+     * @return object
+     */
     public function privileges()
     {
         return $this->hasMany(UserPrivilege::class);
     }
 
-    public function hasPrivilege($privilege)
+    /**
+     * @comment check if user has privilege
+     *
+     * @return boolean
+     */
+    protected function hasPrivilege($privilege)
     {
         $privilege_id = Privilege::where('key', $privilege)->first()->id;
         return $this->privileges()->where('key', $privilege_id)->first() ? true : false;
     }
 
-    public function isEmailVerified()
+    /**
+     * @comment check if user email is verified
+     *
+     * @return boolean
+     */
+    protected function isEmailVerified()
     {
         return $this->email_verified_at !== null ? true : false;
     }
 
-    public function isPhoneVerified()
+    /**
+     * @comment check if user phone is verified
+     *
+     * @return boolean
+     */
+    protected function isPhoneVerified()
     {
         return $this->phone_verified_at !== null ? true : false;
     }

@@ -53,7 +53,7 @@ Route::group(
             @Authentication routes
         */
         Route::prefix('auth')->group(function () {
-            Route::post('/login', 'AuthController@login');
+            Route::post('/login/email', 'AuthController@loginWithEmailAndPassword');
             Route::post('/register', 'AuthController@register');
             Route::post('/logout', 'AuthController@logout');
             Route::post('/refresh', 'AuthController@refresh');

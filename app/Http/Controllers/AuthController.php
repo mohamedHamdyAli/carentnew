@@ -12,33 +12,28 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    //
+    /**
+     * TODO: Register a new user
+     * ? Required Parameters:
+     * @param name user full name
+     * @param email email address
+     * @param password user password
+     * @param phone international phone number
+     * < --------------------------------------- >
+     * ! Functionality !
+     * < --------------------------------------- >
+     * * 1. Validate request
+     * * 2. Hash password
+     * * 3. Create user
+     * * 4. Generate token
+     * * 5. Assign role
+     * * 6. Return auth object
+     * < --------------------------------------- >
+     */
     public function register()
     {
-
-        // if(app()->environment('local')){
-        //     User::truncate();
-        // }
         /**
-         * TODO: Register a new user
-         * ? Required Parameters:
-         * @param name user full name
-         * @param email email address
-         * @param password user password
-         * @param phone international phone number
-         * < --------------------------------------- >
-         * ! Functionality !
-         * < --------------------------------------- >
-         * * 1. Validate request
-         * * 2. Hash password
-         * * 3. Create user
-         * * 4. Generate token
-         * * 5. Return auth object
-         * < --------------------------------------- >
-         */
-
-        /**
-         * TODO: 1. Validate the request
+         * TODO: 1. Validate the request ℹ️
          */
         request()->validate([
             'name'      => ['required', 'regex:/^(?!.*\d)[أ-يa-z\s]{2,66}$/iu'], // * Name without numbers
@@ -48,18 +43,18 @@ class AuthController extends Controller
         ]);
 
         /**
-         * TODO: 2. Hash the password
+         * TODO: 2. Hash the password #️⃣
          */
-        $password = Hash::make(request('password'));
+        $passwordHash = Hash::make(request('password'));
 
         /**
-         * TODO: 3. Create the user
+         * TODO: 3. Create the user 🤵
          */
         try {
-            $user = User::create([
+            User::create([
                 'name'      => request('name'),
                 'email'     => request('email'),
-                'password'  => $password,
+                'password'  => $passwordHash,
                 'phone'     => request('phone'),
             ]);
         } catch (\Exception $e) {
@@ -70,24 +65,19 @@ class AuthController extends Controller
         }
 
         /** 
-         * TODO: 4. Generate token
+         * TODO: 4. Generate token 🕰️
          */
-        try {
-            Auth::attempt(request()->only('email', 'password'));
-            $token = $this->createToken(auth()->user(), 'password');
-
-            $roleManager = new RoleManager(auth()->user());
-            $roleManager->assign('user');
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'message'   => __('messages.error.generate_token'),
-                'error'     => $e->getMessage(),
-            ], 500);
-        }
+        Auth::attempt(request()->only('email', 'password'));
+        $token = $this->createToken(Auth::user(), 'password');
 
         /**
-         * TODO: 5. Return auth object
+         * TODO: 5. Assign defualt role 🎩
+         */
+        $roleManager = new RoleManager(Auth::user());
+        $roleManager->assign('user');
+
+        /**
+         * TODO: 6. Return auth object 🔑
          */
         return response()->json([
             'message'   => __('messages.success.create_user'),
@@ -95,20 +85,83 @@ class AuthController extends Controller
         ], 201);
     }
 
-    private function createToken($user, $type)
+    /**
+     * TODO: Login a user using email and password
+     * ? Required Parameters:
+     * @param email email address
+     * @param password user password
+     * < --------------------------------------- >
+     * ! Functionality !
+     * < --------------------------------------- >
+     * * 1. Validate request
+     * * 2. Attempt login
+     * * 3. Generate token
+     * * 4. Return auth object
+     */
+    public function loginWithEmailAndPassword()
     {
-        return $user->createToken('carent-' . $type)->plainTextToken;
+        /**
+         * TODO: 1. Validate the request ℹ️
+         */
+        request()->validate([
+            'email'     => ['required', 'email'],
+            'password'  => ['required'],
+        ]);
+
+        /**
+         * TODO: 2. Attempt login 🔑
+         */
+        try {
+            Auth::attempt(request()->only('email', 'password'));
+            Auth::user()->id;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.credentials'),
+                'error'     => null,
+            ], 400);
+        }
+
+        /**
+         * TODO: 3. Generate token 🕰️
+         */
+        $token = $this->createToken(Auth::user(), 'password');
+
+        /**
+         * TODO: 4. Return auth object 🔑
+         */
+        return response()->json([
+            'message'   => __('messages.success.login'),
+            'data' => $this->authObject($token),
+        ], 200);
     }
 
+    /**
+     * TODO: Create a new token for the user 🕰️
+     */
+    private function createToken($user, $type)
+    {
+        try {
+            return $user->createToken('carent-' . $type)->plainTextToken;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.generate_token'),
+                'error'     => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * TODO: generate auth object 🔑
+     */
     private function authObject($token)
     {
         return [
-            'user'      => auth()->user(),
+            'user'      => Auth::user(),
             'access_token'     => $token,
-            'email_verified' => auth()->user()->isEmailVerified(),
-            'phone_verified' => auth()->user()->isPhoneVerified(),
-            'roles' => auth()->user()->roles,
-            'privileges' => auth()->user()->privileges,
+            'email_verified' => Auth::user()->isEmailVerified(),
+            'phone_verified' => Auth::user()->isPhoneVerified(),
+            'roles' => Auth::user()->roles,
+            'privileges' => Auth::user()->privileges,
         ];
     }
 }
