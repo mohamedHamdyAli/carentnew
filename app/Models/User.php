@@ -138,7 +138,8 @@ class User extends Authenticatable
 
     public function hasRole($role)
     {
-        return $this->roles()->where('key', $role)->first() ? true : false;
+        $role_id = Role::where('key', $role)->first()->id;
+        return $this->roles()->where('id', $role_id)->first() ? true : false;
     }
 
     public function privileges()
@@ -148,7 +149,8 @@ class User extends Authenticatable
 
     public function hasPrivilege($privilege)
     {
-        return $this->privileges()->where('key', $privilege)->first() ? true : false;
+        $privilege_id = Privilege::where('key', $privilege)->first()->id;
+        return $this->privileges()->where('key', $privilege_id)->first() ? true : false;
     }
 
     public function isEmailVerified()

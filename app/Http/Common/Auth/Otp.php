@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Common;
+namespace App\Http\Common\Auth;
 
 use App\Mail\EmailOtp;
 use App\Models\UserOtp;

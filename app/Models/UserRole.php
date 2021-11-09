@@ -22,4 +22,31 @@ use Illuminate\Database\Eloquent\Model;
 class UserRole extends Model
 {
     use Uuid;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'user_id',
+        'role_id',
+    ];
+
+    protected $hidden = [
+        'id',
+        'user_id',
+        'role'
+    ];
+
+    protected $appends = [
+        'role_key'
+    ];
+
+    public function getRoleKeyAttribute()
+    {
+        return $this->role->key;
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

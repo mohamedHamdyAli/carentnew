@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
-use App\Http\Common\Otp;
+use App\Http\Common\Auth\Otp;
+use App\Http\Common\Auth\RoleManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -74,6 +75,10 @@ class AuthController extends Controller
         try {
             Auth::attempt(request()->only('email', 'password'));
             $token = $this->createToken(auth()->user(), 'password');
+
+            $roleManager = new RoleManager(auth()->user());
+            $roleManager->assign('user');
+
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.generate_token'),
@@ -86,19 +91,24 @@ class AuthController extends Controller
          */
         return response()->json([
             'message'   => __('messages.success.create_user'),
-            'data' => [
-                'user'      => auth()->user(),
-                'access_token'     => $token,
-                'email_verified' => auth()->user()->isEmailVerified(),
-                'phone_verified' => auth()->user()->isPhoneVerified(),
-                'roles' => auth()->user()->roles,
-                'privileges' => auth()->user()->privileges,
-            ],
+            'data' => $this->authObject($token),
         ], 201);
     }
 
     private function createToken($user, $type)
     {
         return $user->createToken('carent-' . $type)->plainTextToken;
+    }
+
+    private function authObject($token)
+    {
+        return [
+            'user'      => auth()->user(),
+            'access_token'     => $token,
+            'email_verified' => auth()->user()->isEmailVerified(),
+            'phone_verified' => auth()->user()->isPhoneVerified(),
+            'roles' => auth()->user()->roles,
+            'privileges' => auth()->user()->privileges,
+        ];
     }
 }
