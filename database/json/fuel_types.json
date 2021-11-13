@@ -1,0 +1,26 @@
+[
+    {
+        "name_en": "Gasoline 92",
+        "name_ar": "بنزين 92"
+    },
+    {
+        "name_en": "Gasoline 95",
+        "name_ar": "بنزين 95"
+    },
+    {
+        "name_en": "Diesel",
+        "name_ar": "ديزل"
+    },
+    {
+        "name_en": "Electricity",
+        "name_ar": "كهرباء"
+    },
+    {
+        "name_en": "Hybrid",
+        "name_ar": "هجين"
+    },
+    {
+        "name_en": "Gas",
+        "name_ar": "غاز"
+    }
+]

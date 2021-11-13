@@ -24,7 +24,12 @@ class CreateUsersTable extends Migration
             $table->uuid('default_address_id')->nullable();
             $table->decimal('balance', 8, 2)->default(0);
             $table->bigInteger('reward_points')->default(0);
+            $table->timestamp('driver_license_verified_at')->nullable();
+            $table->timestamp('identity_document_verified_at')->nullable();
+            $table->timestamp('verified_at')->nullable();
+            $table->boolean('is_active')->default(true);
             // $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

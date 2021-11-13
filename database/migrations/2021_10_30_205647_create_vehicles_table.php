@@ -21,21 +21,19 @@ class CreateVehiclesTable extends Migration
             $table->uuid('category_id')->nullable();
             $table->uuid('brand_id')->nullable();
             $table->uuid('model_id')->nullable();
+            $table->text('thumbnail')->nullable();
             $table->string('plate_number', 20)->nullable();
             $table->string('manufacture_year', 4)->nullable();
             $table->string('color', 20)->nullable();
-            $table->string('fuel', 20)->nullable();
-            // features is array of vehicle_features ids 'id1','id2','id3'
-            $table->longText('features')->nullable();
-            #$table->boolean('air_conditioner')->nullable();
-            #$table->enum('roof', ['window', 'panorama'])->nullable();
-            #$table->enum('transmission', ['manual', 'automatic', 'steptronic'])->nullable();
+            $table->uuid('fuel_type_id')->nullable();
             $table->tinyInteger('seat_count')->nullable();
             $table->tinyInteger('rating')->nullable();
             $table->tinyInteger('views')->default(0);
             $table->tinyInteger('rented')->default(0);
             $table->boolean('active')->default(false);
-            $table->text('inactive_message')->nullable();
+            $table->timestamp('vehicle_license_verified_at')->nullable();
+            $table->timestamp('vehicle_insurance_verified_at')->nullable();
+            $table->timestamp('verified_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

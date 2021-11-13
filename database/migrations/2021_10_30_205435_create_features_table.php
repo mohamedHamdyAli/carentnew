@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIdentityDocumentsTable extends Migration
+class CreateFeaturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateIdentityDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('identity_documents', function (Blueprint $table) {
+        Schema::create('features', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->text('front_image');
-            $table->text('back_image');
-            $table->timestamp('verified_at')->nullable();
-            $table->timestamps();
+            $table->string('name_en', 50);
+            $table->string('name_ar', 50);
         });
     }
 
@@ -30,6 +27,6 @@ class CreateIdentityDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('identity_documents');
+        Schema::dropIfExists('features');
     }
 }

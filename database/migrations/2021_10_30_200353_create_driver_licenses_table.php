@@ -18,7 +18,8 @@ class CreateDriverLicensesTable extends Migration
             $table->uuid('user_id');
             $table->text('front_image');
             $table->text('back_image');
-            $table->timestamp('expire_at');
+            $table->date('expire_at');
+            $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
     }

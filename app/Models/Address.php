@@ -42,4 +42,52 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     use Uuid;
+
+    protected $fillable = [
+        'user_id',
+        'name',
+        'company',
+        'address_0',
+        'address_1',
+        'country_id',
+        'state_id',
+        'city',
+        'post_code',
+        'hint',
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'country_id',
+        'state_id',
+        'user',
+        'deleted_at',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $appends = [
+        'is_default',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function country()
+    {
+        return $this->hasOne(Country::class);
+    }
+
+    public function state()
+    {
+        return $this->hasOne(State::class);
+    }
+
+    public function getIsDefaultAttribute()
+    {
+        return $this->user->default_address_id === $this->id;
+    }
+    
 }

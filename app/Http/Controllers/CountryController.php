@@ -54,7 +54,8 @@ class CountryController extends Controller
     {
         return [
             'message' => __('messages.r_success'),
-            'data' => $country
+            'data' => $country,
+            'error' => null,
         ];
     }
 

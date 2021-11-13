@@ -60,6 +60,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.create_user'),
+                'data' => null,
                 'error'     => $e->getMessage(),
             ], 500);
         }
@@ -68,7 +69,7 @@ class AuthController extends Controller
          * TODO: 4. Generate token 🕰️
          */
         Auth::attempt(request()->only('email', 'password'));
-        $token = $this->createToken(Auth::user(), 'password');
+        $token = $this->createToken(Auth::user(), 'API_V1');
 
         /**
          * TODO: 5. Assign defualt role 🎩
@@ -82,11 +83,12 @@ class AuthController extends Controller
         return response()->json([
             'message'   => __('messages.success.create_user'),
             'data' => $this->authObject($token),
+            'error'     => null,
         ], 201);
     }
 
     /**
-     * TODO: Login a user using email and password
+     * TODO: Login a user using email and password 📧
      * ? Required Parameters:
      * @param email email address
      * @param password user password
@@ -117,6 +119,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.credentials'),
+                'data' => null,
                 'error'     => null,
             ], 400);
         }
@@ -124,7 +127,7 @@ class AuthController extends Controller
         /**
          * TODO: 3. Generate token 🕰️
          */
-        $token = $this->createToken(Auth::user(), 'password');
+        $token = $this->createToken(Auth::user(), 'API_V1');
 
         /**
          * TODO: 4. Return auth object 🔑
@@ -132,7 +135,194 @@ class AuthController extends Controller
         return response()->json([
             'message'   => __('messages.success.login'),
             'data' => $this->authObject($token),
+            'error'     => null,
         ], 200);
+    }
+
+    /**
+     * TODO: Login a user using phone and password 📱
+     * ? Required Parameters:
+     * @param phone international phone number
+     * @param password user password
+     * < --------------------------------------- >
+     * ! Functionality !
+     * < --------------------------------------- >
+     * * 1. Validate request
+     * * 2. Attempt login
+     * * 3. Generate token
+     * * 4. Return auth object
+     * < --------------------------------------- >
+     */
+    public function loginWithPhoneAndPassword()
+    {
+        /**
+         * TODO: 1. Validate the request ℹ️
+         */
+        request()->validate([
+            'phone'     => ['required', 'regex:/^(\+)[0-9]{12,15}$/'], // * International phone number
+            'password'  => ['required'],
+        ]);
+
+        /**
+         * TODO: 2. Attempt login 🔑
+         */
+        try {
+            Auth::attempt(request()->only('phone', 'password'));
+            Auth::user()->id;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.credentials'),
+                'data' => null,
+                'error'     => null,
+            ], 400);
+        }
+
+        /**
+         * TODO: 3. Generate token 🕰️
+         */
+        $token = $this->createToken(Auth::user(), 'API_V1');
+
+        /**
+         * TODO: 4. Return auth object 🔑
+         */
+        return response()->json([
+            'message'   => __('messages.success.login'),
+            'data' => $this->authObject($token),
+            'error'     => null,
+        ], 200);
+    }
+
+    /**
+     * TODO: refresh token 🌟 
+     */
+    public function refresh()
+    {
+        /**
+         * TODO: 1. Generate token 🕰️
+         */
+        try {
+            request()->user()->currentAccessToken()->delete();
+            Auth::user()->id;
+            $token = $this->createToken(request()->user(), 'API_V1');
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.token'),
+                'data' => null,
+                'error'     => null,
+            ], 400);
+        }
+
+        /**
+         * TODO: 2. Return auth object 🔑
+         */
+        return response()->json([
+            'message'   => __('messages.r_success'),
+            'data' => $this->authObject($token),
+            'error'     => null,
+        ], 200);
+    }
+
+    /**
+     *  TODO: Logout a user 🔓
+     */
+    public function logout()
+    {
+        try {
+            auth()->user()->id;
+            request()->user()->currentAccessToken()->delete();
+            return response()->json([
+                'message'   => __('messages.success.logout'),
+                'data' => null,
+                'error'     => null,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.token'),
+                'data' => null,
+                'error'     => null,
+            ], 400);
+        }
+    }
+
+    /**
+     * TODO: Send OTP Email 📧
+     */
+    public function sendEmailOtp()
+    {
+        try {
+            $otp = new Otp(auth()->user());
+            return $otp->sendToEmail();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.otp'),
+                'data' => null,
+                'error'     => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * TODO: Send OTP SMS 📱
+     */
+    public function sendPhoneOtp()
+    {
+
+        try {
+            $otp = new Otp(auth()->user());
+            return $otp->sendToPhone();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.otp'),
+                'data' => null,
+                'error'     => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * TODO: Verify OTP 📧📱
+     * ? Required Parameters:
+     * @param otp user otp
+     * < --------------------------------------- >
+     * ! Functionality !
+     * < --------------------------------------- >
+     * * 1. Validate request ℹ️
+     * * 2. Check if user is verified
+     * * 3. Verify otp ✅
+     */
+    public function verify($type)
+    {
+        /**
+         * TODO: 1. Validate the request ℹ️
+         */
+        request()->validate([
+            'otp' => ['required', 'regex:/^[0-9]{6}$/'],
+        ]);
+
+        /**
+         * TODO: 2. Check if user $type is verified 🔐
+         */
+        if (auth()->user()->{$type . '_verified_at'}) {
+            return response()->json([
+                'message'   => __('messages.error.verified'),
+                'data' => null,
+                'error'     => null,
+            ], 400);
+        }
+
+        /**
+         * TODO: 3. Verify OTP ✅
+         */
+        try {
+            $otp = new Otp(auth()->user());
+            return $otp->verify(request()->only('otp'), $type);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.verify'),
+                'data' => null,
+                'error'     => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -145,6 +335,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.generate_token'),
+                'data' => null,
                 'error'     => $e->getMessage(),
             ], 500);
         }
@@ -158,8 +349,13 @@ class AuthController extends Controller
         return [
             'user'      => Auth::user(),
             'access_token'     => $token,
-            'email_verified' => Auth::user()->isEmailVerified(),
-            'phone_verified' => Auth::user()->isPhoneVerified(),
+            'verified' => Auth::user()->isVerified(),
+            'verification' => [
+                'email' => Auth::user()->isEmailVerified(),
+                'phone' => Auth::user()->isPhoneVerified(),
+                'driver_license' => Auth::user()->isDriverLicenseVerified(),
+                'identity_document' => Auth::user()->isIdentityDocumentVerified(),
+            ],
             'roles' => Auth::user()->roles,
             'privileges' => Auth::user()->privileges,
         ];

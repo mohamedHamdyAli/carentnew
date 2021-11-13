@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Common\Auth\RoleManager;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -73,6 +74,9 @@ class User extends Authenticatable
         'phone_verified_at',
         'balance',
         'reward_points',
+        'verified_at',
+        'approved_at',
+        'is_active',
     ];
 
     /**
@@ -88,6 +92,12 @@ class User extends Authenticatable
         'phone_verified_at',
         'balance',
         'reward_points',
+        'verified_at',
+        'approved_at',
+        'driver_license_verified_at',
+        'identity_document_verified_at',
+        'default_address',
+        'is_active',
         'roles',
         'privileges',
         'created_at',
@@ -111,8 +121,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
-        'balance'       => 'float',
-        'reward_points' => 'integer',
+        'verified_at'       => 'datetime',
+        'approved_at'       => 'datetime',
+        'is_active'         => 'boolean',
+        'balance'           => 'float',
+        'reward_points'     => 'integer',
     ];
 
     /**
@@ -136,16 +149,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @comment get user orders.
-     *
-     * @return object
-     */
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    /**
      * @comment get user roles
      *
      * @return object
@@ -160,7 +163,7 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    protected function hasRole($role)
+    public function hasRole($role)
     {
         $role_id = Role::where('key', $role)->first()->id;
         return $this->roles()->where('id', $role_id)->first() ? true : false;
@@ -181,10 +184,20 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    protected function hasPrivilege($privilege)
+    public function hasPrivilege($privilege)
     {
         $privilege_id = Privilege::where('key', $privilege)->first()->id;
         return $this->privileges()->where('key', $privilege_id)->first() ? true : false;
+    }
+
+    /**
+     * @comment get user vehicles
+     *
+     * @return object
+     */
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class);
     }
 
     /**
@@ -192,7 +205,7 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    protected function isEmailVerified()
+    public function isEmailVerified()
     {
         return $this->email_verified_at !== null ? true : false;
     }
@@ -202,8 +215,79 @@ class User extends Authenticatable
      *
      * @return boolean
      */
-    protected function isPhoneVerified()
+    public function isPhoneVerified()
     {
         return $this->phone_verified_at !== null ? true : false;
+    }
+
+    /**
+     * @comment check if user driver license is verified
+     *
+     * @return boolean
+     */
+    public function isDriverLicenseVerified()
+    {
+        return $this->driver_license_verified_at !== null ? true : false;
+    }
+
+    /**
+     * @comment check if user identity document is verified
+     *
+     * @return boolean
+     */
+    public function isIdentityDocumentVerified()
+    {
+        return $this->identity_document_verified_at !== null ? true : false;
+    }
+
+    /**
+     * @comment get approval requests
+     *
+     * @return object
+     */
+    public function approvalRequests()
+    {
+        return $this->hasMany(ApprovalRequest::class);
+    }
+
+    /**
+     * @comment get approval status
+     *
+     * @return boolean
+     */
+    public function isApproved()
+    {
+        return $this->approved_at !== null ? true : false;
+    }
+
+    /**
+     * @comment get approval status
+     *
+     * @return boolean
+     */
+    public function isVerified()
+    {
+        return $this->verified_at !== null ? true : false;
+    }
+
+    /**
+     * @comment get active status
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->is_active;
+    }
+
+    /**
+     * @comment assign role to user
+     * @param string $role
+     * @return void
+     */
+    public function assignRole($role)
+    {
+        $roleManger = new RoleManager($this);
+        return $roleManger->assign($role);
     }
 }

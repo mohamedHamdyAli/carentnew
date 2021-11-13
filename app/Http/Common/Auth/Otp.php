@@ -32,7 +32,6 @@ class Otp
         /**
          * TODO: Save OTP to database
          */
-
         $this->saveOtpToDatabase('email');
 
         /**
@@ -41,6 +40,12 @@ class Otp
         if (!app()->environment('local')) {
             return Mail::to($this->user->email)->send(new EmailOtp($this->otp));
         }
+
+        return response()->json([
+            'message' => __('messages.success.otp'),
+            'data' => app()->environment('local') ? $this->otp : null,
+            'error' => null,
+        ]);
     }
 
     public function sendToPhone()
@@ -62,6 +67,76 @@ class Otp
         if (!app()->environment('local')) {
             // TODO: Send OTP to user phone function
         }
+
+        return response()->json([
+            'message' => __('messages.success.otp'),
+            'data' => app()->environment('local') ? $this->otp : null,
+            'error' => null,
+        ]);
+    }
+
+    /**
+     * TODO: Verify OTP
+     */
+    public function verify($otp, $type)
+    {
+        /**
+         * TODO: Verify OTP
+         */
+        $checkOTP = UserOtp::where('user_id', $this->user->id)
+            ->where('for', $type === 'password' ? 'email' : $type)
+            ->where('otp', $otp)
+            ->where('expire_at', '>', now())
+            ->first();
+
+
+        /**
+         * TODO: Check OTP is exist
+         */
+        if ($checkOTP === null) {
+            return response()->json([
+                'message' => __('messages.error.verify'),
+                'data' => null,
+                'error' => null,
+            ], 400);
+        }
+
+        /**
+         * TODO: Expire used OTP
+         */
+        $checkOTP->expire_at = now();
+        $checkOTP->save();
+
+        /**
+         * TODO: Genereate password reset token if requested
+         */
+        $data = null;
+
+        if ($type === 'password') {
+
+            $token = $this->user->createToken('carent-limited', ['password:change'])->plainTextToken;
+
+            $data = [
+                'access_token' => $token
+            ];
+        }
+
+        /**
+         * TODO: Verify required field
+         */
+        if ($type !== 'password') {
+            $this->user->{$type . '_verified_at'} = now();
+            $this->user->save();
+        }
+
+        /**
+         * TODO: Return response
+         */
+        return response()->json([
+            'message' => __('messages.success.verify'),
+            'data' => $data,
+            'error' => null,
+        ], 200);
     }
 
     private function generateOtp()
@@ -74,6 +149,7 @@ class Otp
         if (!app()->environment('local')) {
             $otp = rand(100000, 999999);
         }
+
         return $otp;
     }
 

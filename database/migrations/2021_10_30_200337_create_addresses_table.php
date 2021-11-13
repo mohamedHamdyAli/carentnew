@@ -24,6 +24,7 @@ class CreateAddressesTable extends Migration
             $table->uuid('state_id');
             $table->string('city', 50);
             $table->string('post_code', 8)->nullable();
+            $table->text('hint')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

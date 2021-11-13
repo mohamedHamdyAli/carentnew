@@ -16,7 +16,8 @@ class CategoryResource extends ResourceCollection
     {
         return [
             'message' => __('messages.r_success'),
-            'data' => $this->collection
+            'data' => $this->collection,
+            'error' => null,
         ];
     }
 }

@@ -1,0 +1,12 @@
+apps:
+  - name: carentapi
+    script: artisan
+    exec_mode: fork
+    interpreter: php
+    instances: 1
+    args:
+      - octane:start
+      - --server=swoole
+      - --max-requests=1000
+      - --host=127.0.0.1
+      - --port=6000

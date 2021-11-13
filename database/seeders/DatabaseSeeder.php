@@ -19,5 +19,9 @@ class DatabaseSeeder extends Seeder
         Seeder::call('Database\Seeders\LocationSeeder');
         Seeder::call('Database\Seeders\BrandSeeder');
         Seeder::call('Database\Seeders\CategorySeeder');
+        Seeder::call('Database\Seeders\FeatureSeeder');
+        Seeder::call('Database\Seeders\FuelTypeSeeder');
+        Seeder::call('Database\Seeders\AdminSeeder');
+        Seeder::call('Database\Seeders\AppTestSeeder');
     }
 }

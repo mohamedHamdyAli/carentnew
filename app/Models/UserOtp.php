@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,5 +25,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserOtp extends Model
 {
-    use HasFactory, Uuid;
+    use Uuid;
+
+    public $timestamps = false;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'otp',
+        'for',
+        'expire_at',
+    ];
+
 }

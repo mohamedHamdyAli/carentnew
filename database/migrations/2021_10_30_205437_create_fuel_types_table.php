@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIdentityDocumentsTable extends Migration
+class CreateFuelTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateIdentityDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('identity_documents', function (Blueprint $table) {
+        Schema::create('fuel_types', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->text('front_image');
-            $table->text('back_image');
-            $table->timestamp('verified_at')->nullable();
-            $table->timestamps();
+            $table->smallInteger('display_order')->nullable();
+            $table->string('name_en');
+            $table->string('name_ar');
         });
     }
 
@@ -30,6 +28,6 @@ class CreateIdentityDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('identity_documents');
+        Schema::dropIfExists('fuel_types');
     }
 }

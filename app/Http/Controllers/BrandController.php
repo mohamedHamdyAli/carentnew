@@ -54,7 +54,8 @@ class BrandController extends Controller
         //
         return [
             'message' => __('messages.r_success'),
-            'data' => $brand
+            'data' => $brand,
+            'error' => null,
         ];
     }
 

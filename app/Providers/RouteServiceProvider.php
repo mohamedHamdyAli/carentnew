@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -58,6 +59,18 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        RateLimiter::for('email-otp', function (Request $request) {
+            return Limit::perMinute(1)->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        RateLimiter::for('phone-otp', function (Request $request) {
+            return Limit::perMinute(1)->by(optional($request->user())->id ?: $request->ip());
+        });
+
+        RateLimiter::for('reset-otp', function (Request $request) {
+            return Limit::perMinute(1)->by(optional(User::where('email', $request->email)->first())->id ?: $request->ip());
         });
     }
 }
