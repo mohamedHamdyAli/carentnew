@@ -60,4 +60,162 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     use HasFactory, Uuid;
+
+    protected $fillable = [
+        'user_id',
+        'country_id',
+        'state_id',
+        'category_id',
+        'brand_id',
+        'model_id',
+        'plate_number',
+        'manufacture_year',
+        'color',
+        'fuel_type_id',
+        'seat_count',
+        'rating',
+        'views',
+        'rented',
+        'active',
+        'inactive_message',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'user',
+        'country_id',
+        'state_id',
+        'category_id',
+        'brand_id',
+        'model_id',
+        'plate_number',
+        'manufacture_year',
+        'color',
+        'fuel_type_id',
+        'rented',
+        'active',
+        'inactive_message',
+        'vehicle_license_verified_at',
+        'vehicle_insurance_verified_at',
+        'verified_at',
+        'deleted_at',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $appends = [
+        // 'owner',
+        // 'country',
+        'state',
+        'category',
+        // 'images',
+        'brand',
+        'model',
+        // 'fuel_type',
+        // 'features',
+    ];
+
+    public function User()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function Country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function State()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function Category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function Brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function BrandModel()
+    {
+        return $this->belongsTo(BrandModel::class, 'model_id');
+    }
+
+    function VehicleImages()
+    {
+        return $this->hasMany(VehicleImage::class);
+    }
+
+    public function Features()
+    {
+        return $this->hasManyThrough(Feature::class, VehicleFeature::class, 'vehicle_id', 'id', 'id', 'feature_id');
+    }
+
+    public function FuelType()
+    {
+        return $this->belongsTo(FuelType::class);
+    }
+
+    public function getImagesAttribute()
+    {
+        $data = $this->VehicleImages()->orderBy('display_order')->get();
+        $images = [];
+        foreach ($data as $image) {
+            $images[] = $image->image;
+        }
+        return $images;
+    }
+
+    public function getOwnerAttribute()
+    {
+        return $this->user()->first()->name;
+    }
+
+    public function getCountryAttribute()
+    {
+        return $this->country()->first()->name;
+    }
+
+    public function getStateAttribute()
+    {
+        return $this->state()->first()->name;
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->category()->first()->name;
+    }
+
+    public function getBrandAttribute()
+    {
+        return $this->brand()->first()->name;
+    }
+
+    public function getModelAttribute()
+    {
+        return $this->BrandModel()->first()->name;
+    }
+
+    public function getFuelTypeAttribute()
+    {
+        return $this->fuelType()->first()->name;
+    }
+
+    public function getFeaturesAttribute()
+    {
+        $data = $this->Features()->get();
+        $features = [];
+        foreach ($data as $feature) {
+            $features[] = $feature->name;
+        }
+        return $features;
+    }
 }

@@ -22,7 +22,7 @@ class CreateVehiclesTable extends Migration
             $table->uuid('brand_id')->nullable();
             $table->uuid('model_id')->nullable();
             $table->text('thumbnail')->nullable();
-            $table->string('plate_number', 20)->nullable();
+            $table->string('plate_number', 20)->unique()->nullable();
             $table->string('manufacture_year', 4)->nullable();
             $table->string('color', 20)->nullable();
             $table->uuid('fuel_type_id')->nullable();

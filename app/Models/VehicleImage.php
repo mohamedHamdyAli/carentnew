@@ -29,4 +29,11 @@ use Illuminate\Database\Eloquent\Model;
 class VehicleImage extends Model
 {
     use HasFactory, Uuid;
+
+    protected $fillable = [
+        'vehicle_id',
+        'display_order',
+        'image',
+    ];
+
 }

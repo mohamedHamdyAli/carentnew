@@ -16,7 +16,7 @@ class CreateVehicleImagesTable extends Migration
         Schema::create('vehicle_images', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('vehicle_id');
-            $table->smallInteger('displayOrder');
+            $table->smallInteger('display_order');
             $table->text('image');
             $table->timestamps();
         });

@@ -15,8 +15,9 @@ class CreateVehicleFeaturesTable extends Migration
     {
         Schema::create('vehicle_features', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name_en');
-            $table->string('name_ar');
+            $table->uuid('vehicle_id');
+            $table->uuid('feature_id');
+            $table->timestamps();
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,5 +22,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class VehicleFeature extends Model
 {
-    use HasFactory;
+    use HasFactory, Uuid;
+
+    protected $fillable = [
+        'vehicle_id',
+        'feature_id',
+    ];
+
+    public function Feature()
+    {
+        return $this->belongsTo(Feature::class);
+    }
 }
