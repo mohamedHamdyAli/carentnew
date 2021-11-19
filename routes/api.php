@@ -53,8 +53,7 @@ Route::group(
             // $state = DB::table('states')->where('country_id', $country->id)->inRandomOrder()->first();
             // $country->state = (object) $state;
             // return (object) collect($country);
-
-            return Vehicle::paginate(20);
+            // return $country;
         });
 
         /* 
@@ -87,7 +86,7 @@ Route::group(
         /* 
             @Authentication routes
         */
-        Route::prefix('auth')->group(function () {
+        Route::prefix('auth')->middleware('country')->group(function () {
             Route::post('/login/email', [AuthController::class, 'loginWithEmailAndPassword']);
             Route::post('/login/phone', [AuthController::class, 'loginWithPhoneAndPassword']);
             Route::post('/register', [AuthController::class, 'register']);
@@ -101,7 +100,7 @@ Route::group(
         /* 
             @Password routes
         */
-        Route::prefix('password')->group(function () {
+        Route::prefix('password')->middleware('country')->group(function () {
             Route::post('/reset', [PasswordController::class, 'reset'])->middleware('throttle:reset-otp');
             Route::post('/verify-otp', [PasswordController::class, 'verify']);
             Route::post('/change', [PasswordController::class, 'change'])->middleware(['auth:sanctum', 'ability:password:change']);
@@ -110,7 +109,7 @@ Route::group(
         /**
          *   @Vehicle routes
          */
-        Route::prefix('vehicles')->group(function () {
+        Route::prefix('vehicles')->middleware('country')->group(function () {
             Route::post('/', [VehicleController::class, 'index']);
             Route::get('/view', [VehicleController::class, 'view']);
         });

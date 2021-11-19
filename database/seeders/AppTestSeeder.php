@@ -48,7 +48,7 @@ class AppTestSeeder extends Seeder
         // Vehicle::truncate();
         // VehicleImage::truncate();
         // VehicleFeature::truncate();
-        Vehicle::factory(10)->active()->create([
+        Vehicle::factory(20)->active()->create([
             'user_id' => $ownerId,
         ]);
         $this->command->info('App test data seeded');

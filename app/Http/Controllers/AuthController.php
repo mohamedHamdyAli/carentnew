@@ -356,8 +356,28 @@ class AuthController extends Controller
                 'driver_license' => Auth::user()->isDriverLicenseVerified(),
                 'identity_document' => Auth::user()->isIdentityDocumentVerified(),
             ],
-            'roles' => Auth::user()->roles,
-            'privileges' => Auth::user()->privileges,
+            'roles' => $this->rolesToArray(Auth::user()->roles),
+            'privileges' => $this->privilegesToArray(Auth::user()->privileges),
         ];
+    }
+
+    // convert array to objects to string array of key attributes
+    private function rolesToArray($roles)
+    {
+        $roles_array = [];
+        foreach ($roles as $role) {
+            array_push($roles_array, $role->role_key);
+        }
+        return $roles_array;
+    }
+
+    // convert array to objects to string array of key attributes
+    private function privilegesToArray($privileges)
+    {
+        $privileges_array = [];
+        foreach ($privileges as $privilege) {
+            array_push($privileges_array, $privilege->privilege_key);
+        }
+        return $privileges_array;
     }
 }

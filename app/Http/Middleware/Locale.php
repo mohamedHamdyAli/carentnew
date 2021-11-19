@@ -18,6 +18,7 @@ class Locale
     public function handle(Request $request, Closure $next)
     {
         $lang = $request->header('Language');
+        $request->headers->set('Language', strtolower($lang));
         $lang = in_array($lang, ['en', 'ar']) ? $lang : config('app.locale');
         App::setLocale($lang);
         return $next($request);

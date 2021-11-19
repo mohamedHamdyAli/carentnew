@@ -100,6 +100,7 @@ class User extends Authenticatable
         'is_active',
         'roles',
         'privileges',
+        'deleted_at',
         'created_at',
         'updated_at',
     ];
