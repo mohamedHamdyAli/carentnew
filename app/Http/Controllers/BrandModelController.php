@@ -48,7 +48,7 @@ class BrandModelController extends Controller
     public function show($brandModel)
     {
         //
-        $data = cache()->rememberForever("brand_models.{$brandModel}", function () use ($brandModel) {
+        $data = cache()->rememberForever("brand_models.{$brandModel}" . '-' . app()->getLocale(), function () use ($brandModel) {
             return new BrandModelResource(BrandModel::where('brand_id', $brandModel)->get());
         });
 

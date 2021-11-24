@@ -167,7 +167,7 @@ class User extends Authenticatable
     public function hasRole($role)
     {
         $role_id = Role::where('key', $role)->first()->id;
-        return $this->roles()->where('id', $role_id)->first() ? true : false;
+        return $this->roles()->where('role_id', $role_id)->first() ? true : false;
     }
 
     /**
@@ -188,7 +188,7 @@ class User extends Authenticatable
     public function hasPrivilege($privilege)
     {
         $privilege_id = Privilege::where('key', $privilege)->first()->id;
-        return $this->privileges()->where('key', $privilege_id)->first() ? true : false;
+        return $this->privileges()->where('privilege_id', $privilege_id)->first() ? true : false;
     }
 
     /**
@@ -290,5 +290,25 @@ class User extends Authenticatable
     {
         $roleManger = new RoleManager($this);
         return $roleManger->assign($role);
+    }
+
+    public function ownerApplications()
+    {
+        return $this->hasMany(OwnerApplication::class);
+    }
+
+    public function renterApplications()
+    {
+        return $this->hasMany(RenterApplication::class);
+    }
+
+    public function ownerApplication()
+    {
+        return $this->ownerApplications();
+    }
+
+    public function renterApplication()
+    {
+        return $this->renterApplications();
     }
 }

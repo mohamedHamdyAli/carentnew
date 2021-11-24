@@ -16,8 +16,9 @@ class CreateIdentityDocumentsTable extends Migration
         Schema::create('identity_documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->text('front_image');
-            $table->text('back_image');
+            // $table->bigInteger('id_number')->nullable();
+            $table->text('front_image')->nullable();
+            $table->text('back_image')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });

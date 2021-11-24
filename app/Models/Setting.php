@@ -22,4 +22,43 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     use Uuid;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'key',
+        'name_en',
+        'name_ar',
+        'content_en',
+        'content_ar',
+    ];
+
+    protected $hidden = [
+        'id',
+        'key',
+        'name_en',
+        'name_ar',
+        'content_en',
+        'content_ar',
+    ];
+
+    protected $casts = [
+        'content_en' => 'json',
+        'content_ar' => 'json',
+    ];
+
+    protected $appends = [
+        'name',
+        'content',
+    ];
+
+    public function getNameAttribute()
+    {
+        return $this->{'name_' . app()->getLocale()};
+    }
+
+    public function getContentAttribute()
+    {
+        return $this->{'content_' . app()->getLocale()};
+    }
 }

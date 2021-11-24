@@ -16,9 +16,8 @@ class CreateVehicleInsurancesTable extends Migration
         Schema::create('vehicle_insurances', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('vehicle_id');
-            $table->text('front_image');
-            $table->text('back_image');
-            $table->timestamp('approved_at')->nullable();
+            $table->text('image');
+            $table->timestamp('verified_at')->nullable();
             $table->timestamp('expire_at')->nullable();
             $table->timestamps();
         });

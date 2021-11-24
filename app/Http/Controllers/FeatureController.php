@@ -15,7 +15,7 @@ class FeatureController extends Controller
      */
     public function index()
     {
-        $data = cache()->rememberForever("features", function () {
+        $data = cache()->rememberForever("features" . '-' . app()->getLocale(), function () {
             return new FeatureResoure(Feature::all());
         });
 

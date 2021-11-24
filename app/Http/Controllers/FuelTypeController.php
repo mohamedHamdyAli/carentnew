@@ -15,7 +15,7 @@ class FuelTypeController extends Controller
      */
     public function index()
     {
-        $data = cache()->rememberForever("fuel-types", function () {
+        $data = cache()->rememberForever("fuel-types" . '-' . app()->getLocale(), function () {
             return new FuelTypeResoure(FuelType::all());
         });
 

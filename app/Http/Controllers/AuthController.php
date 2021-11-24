@@ -37,7 +37,7 @@ class AuthController extends Controller
          */
         request()->validate([
             'name'      => ['required', 'regex:/^(?!.*\d)[أ-يa-z\s]{2,66}$/iu'], // * Name without numbers
-            'phone'     => ['required', 'unique:users', 'regex:/^(\+)[0-9]{12,15}$/'], // * International phone number
+            'phone'     => ['required', 'unique:users', 'regex:/^(\+)[0-9]{10,15}$/'], // * International phone number
             'email'     => ['required', 'email', 'unique:users'], // * Unique email address
             'password'  => ['required', Password::min(8)->letters()->numbers()], // * Strong password
         ]);
@@ -339,6 +339,27 @@ class AuthController extends Controller
                 'error'     => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * TODO: Return authed user object 🔑
+     */
+    public function user()
+    {
+        return [
+            'user'      => Auth::user(),
+            'verified' => Auth::user()->isVerified(),
+            'verification' => [
+                'email' => Auth::user()->isEmailVerified(),
+                'phone' => Auth::user()->isPhoneVerified(),
+                'driver_license' => Auth::user()->isDriverLicenseVerified(),
+                'identity_document' => Auth::user()->isIdentityDocumentVerified(),
+            ],
+            'roles' => $this->rolesToArray(Auth::user()->roles),
+            'privileges' => $this->privilegesToArray(Auth::user()->privileges),
+            'owner_application' => Auth::user()->ownerApplication()->where('status', '!=', 'approved')->first(),
+            'renter_application' => Auth::user()->renterApplication()->where('status', '!=', 'approved')->first(),
+        ];
     }
 
     /**

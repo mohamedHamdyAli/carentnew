@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SecureFileController;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\IdentityDocument
@@ -28,4 +29,17 @@ use Illuminate\Database\Eloquent\Model;
 class IdentityDocument extends Model
 {
     use Uuid;
+
+    protected $fillable = [
+        'user_id',
+        'front_image',
+        'back_image',
+    ];
+
+    protected $hidden = [
+        'id',
+        'user_id',
+        'created_at',
+        'updated_at',
+    ];
 }

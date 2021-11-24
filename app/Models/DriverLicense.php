@@ -30,4 +30,22 @@ use Illuminate\Database\Eloquent\Model;
 class DriverLicense extends Model
 {
     use Uuid;
+
+    protected $fillable = [
+        'user_id',
+        'front_image',
+        'back_image',
+        'expire_at',
+    ];
+
+    protected $dates = [
+        'expire_at',
+    ];
+
+    protected $hidden = [
+        'id',
+        'user_id',
+        'created_at',
+        'updated_at',
+    ];
 }

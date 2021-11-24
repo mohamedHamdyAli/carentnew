@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DriverLicenseController;
+use App\Http\Controllers\IdentityDocumentController;
+use App\Http\Controllers\OwnerApplicationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 
 // Controllers
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\SecureFileController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\VehicleController;
 use App\Models\Vehicle;
 
@@ -92,6 +97,7 @@ Route::group(
             Route::post('/register', [AuthController::class, 'register']);
             Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
             Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum');
+            Route::post('/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
             Route::post('/send-email-otp', [AuthController::class, 'sendEmailOtp'])->middleware(['auth:sanctum', 'throttle:email-otp']);
             Route::post('/verify/{type}', [AuthController::class, 'verify'])->middleware('auth:sanctum');
             Route::post('/send-phone-otp', [AuthController::class, 'sendPhoneOtp'])->middleware(['auth:sanctum', 'throttle:phone-otp']);
@@ -112,6 +118,49 @@ Route::group(
         Route::prefix('vehicles')->middleware('country')->group(function () {
             Route::post('/', [VehicleController::class, 'index']);
             Route::get('/view', [VehicleController::class, 'view']);
+        });
+
+        /**
+         *   @Identity Document routes
+         */
+        Route::prefix('identity-documents')->middleware('auth:sanctum')->group(function () {
+            Route::post('/', [IdentityDocumentController::class, 'store']);
+            Route::get('/', [IdentityDocumentController::class, 'show']);
+            Route::delete('/delete', [IdentityDocumentController::class, 'devDelete']);
+        });
+
+        /**
+         *   @Driver License routes
+         */
+        Route::prefix('driver-licenses')->middleware('auth:sanctum')->group(function () {
+            Route::post('/', [DriverLicenseController::class, 'store']);
+            Route::get('/', [DriverLicenseController::class, 'show']);
+            Route::delete('/delete', [DriverLicenseController::class, 'devDelete']);
+        });
+
+        /**
+         *   @Secure File routes
+         */
+        Route::post('/secure', [SecureFileController::class, 'file']);
+
+        /**
+         *   @Settings routes
+         */
+        Route::prefix('settings')->group(function () {
+            Route::get('/{key}', [SettingController::class, 'settings']);
+        });
+
+        /**
+         *   @Owner Application routes
+         */
+        Route::prefix('owner-application')->middleware('auth:sanctum')->group(function () {
+            Route::get('/status', [OwnerApplicationController::class, 'status']);
+            Route::post('/sign-agreement', [OwnerApplicationController::class, 'signAgreement']);
+            Route::post('/submit', [OwnerApplicationController::class, 'submit']);
+
+            // Development Routes
+            Route::put('/status', [OwnerApplicationController::class, 'dev']);
+            Route::delete('/delete', [OwnerApplicationController::class, 'devDelete']);
         });
     }
 );

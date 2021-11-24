@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('token:sanitize')->dailyAt('01:30');
         $schedule->command('otp:sanitize')->dailyAt('01:30');
         // run command every hourly
-        $schedule->command('db:seed --class=AppTestSeeder')->everyMinute();
+        // $schedule->command('db:seed --class=AppTestSeeder')->everyMinute();
     }
 
     /**

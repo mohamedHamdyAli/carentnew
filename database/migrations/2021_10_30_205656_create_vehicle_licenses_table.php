@@ -16,11 +16,10 @@ class CreateVehicleLicensesTable extends Migration
         Schema::create('vehicle_licenses', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('vehicle_id');
-            $table->uuid('state_id');
             $table->text('front_image');
             $table->text('back_image');
             $table->date('expire_at')->nullable();
-            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
     }
