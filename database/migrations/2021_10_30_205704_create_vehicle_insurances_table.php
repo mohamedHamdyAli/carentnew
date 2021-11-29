@@ -17,7 +17,7 @@ class CreateVehicleInsurancesTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('vehicle_id');
             $table->text('image');
-            $table->timestamp('expire_at')->nullable();
+            $table->date('expire_at');
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });

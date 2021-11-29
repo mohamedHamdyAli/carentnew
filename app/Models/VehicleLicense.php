@@ -41,12 +41,18 @@ class VehicleLicense extends Model
         'front_image',
         'back_image',
         'expire_at',
+        'verified_at',
     ];
 
     protected $hidden = [
         'id',
         'vehicle_id',
+        'verified_at',
         'created_at',
         'updated_at',
+    ];
+
+    protected $casts = [
+        'verified_at' => 'datetime',
     ];
 }

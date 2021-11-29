@@ -19,6 +19,7 @@ return [
         'forbidden' => 'لا تمتلك صلاحية الوصول لهذا المصدر',
         'image_uploaded' => 'حدث خطأ أثناء رفع الصورة',
         'verified' => 'هذا المستخدم غير محقق',
+        'vehicle_verified' => 'هذا السيارة محققة',
     ],
     'success' => [
         'create_user' => 'تم إنشاء المستخدم بنجاح',
@@ -33,5 +34,6 @@ return [
         'application_submitted' => 'تم إرسال الطلب بنجاح',
         'agreement_signed' => 'تم توقيع الشروط بنجاح',
         'image_uploaded' => 'تم رفع الصورة بنجاح',
+        'vehicle_submitted' => 'تم إرسال طلب تحقيق السيارة بنجاح',
     ],
 ];

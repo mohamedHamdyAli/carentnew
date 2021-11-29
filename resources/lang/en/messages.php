@@ -19,6 +19,7 @@ return [
         'forbidden' => 'You don\'t have the right permission to do this action',
         'image_uploaded' => 'Error while uploading image',
         'verified' => 'User is not verified',
+        'vehicle_verified' => 'Vehicle is already verified',
     ],
     'success' => [
         'create_user' => 'User created successfully',
@@ -33,5 +34,6 @@ return [
         'application_submitted' => 'Application submitted successfully',
         'agreement_signed' => 'Agreement signed successfully',
         'image_uploaded' => 'Image uploaded successfully',
+        'vehicle_submitted' => 'Vehicle verification submitted successfully',
     ],
 ];

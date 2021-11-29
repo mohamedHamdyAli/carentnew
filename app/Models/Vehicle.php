@@ -111,7 +111,9 @@ class Vehicle extends Model
         'fuel_type',
         'features',
         'pricing',
+        'status',
         'verified',
+        'status',
         'verified_at',
         'deleted_at',
         'created_at',
@@ -132,6 +134,7 @@ class Vehicle extends Model
         'features',
         'pricing',
         'verified',
+        'status',
     ];
 
     public function User()
@@ -189,14 +192,24 @@ class Vehicle extends Model
         return $this->hasOne(VehiclePricing::class);
     }
 
+    public function VehicleVerification()
+    {
+        return $this->hasOne(VehicleVerification::class);
+    }
+
     public function getDailyPriceAttribute()
     {
-        return $this->VehiclePricing()->first()->daily_price;
+        return $this->VehiclePricing()->first()->daily_price ?? null;
     }
 
     public function getVerifiedAttribute()
     {
         return $this->verified_at !== null;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->VehicleVerification()->first()->status ?? null;
     }
 
     public function Features()
@@ -308,5 +321,24 @@ class Vehicle extends Model
             ]);
             $counter++;
         }
+    }
+
+    // if vehicle has insurance
+    public function hasInsurance()
+    {
+        $insurance = $this->VehicleInsurance()->first();
+        return $insurance !== null && $insurance->expire_at > Carbon::now() && $insurance->image;
+    }
+
+    // if vehicle has license
+    public function hasLicense()
+    {
+        $license = $this->VehicleLicense()->first();
+        return $license !== null && $license->expire_at > Carbon::now() && $license->front_image && $license->back_image;
+    }
+
+    public function isVerified()
+    {
+        return $this->verified_at !== null;
     }
 }

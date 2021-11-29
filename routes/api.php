@@ -187,7 +187,11 @@ Route::group(
                 Route::get('/', [OwnerVehicleController::class, 'index']);
                 Route::post('/', [OwnerVehicleController::class, 'store'])->middleware('country');
                 Route::get('/{id}', [OwnerVehicleController::class, 'vehicle']);
+                // submit for verification
+                Route::post('/verification/{id}', [OwnerVehicleController::class, 'verification']);
                 Route::delete('/images/{id}', [OwnerVehicleController::class, 'deleteImage']);
+                // development routes
+                Route::put('/status/{id}', [OwnerVehicleController::class, 'dev']);
             });
         });
 

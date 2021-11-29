@@ -37,13 +37,19 @@ class VehicleInsurance extends Model
     protected $fillable = [
         'vehicle_id',
         'expire_at',
+        'verified_at',
         'image',
     ];
 
     protected $hidden = [
         'id',
+        'verified_at',
         'vehicle_id',
         'created_at',
         'updated_at',
+    ];
+
+    protected $casts = [
+        'verified_at' => 'datetime',
     ];
 }

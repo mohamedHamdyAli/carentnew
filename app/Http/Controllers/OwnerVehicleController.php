@@ -8,6 +8,7 @@ use App\Models\VehicleImage;
 use App\Models\VehicleInsurance;
 use App\Models\VehicleLicense;
 use App\Models\VehiclePricing;
+use App\Models\VehicleVerification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,7 +22,7 @@ class OwnerVehicleController extends Controller
         $key = 'owner-vehicles-' . app()->getLocale() . '-' . $userId . '-' . request('page');
         $data = Cache::tags(['vehicles'])->remember($key, 3600, function () use ($userId) {
             $results = Vehicle::where('user_id', $userId)->simplePaginate();
-            return $results->setCollection($results->getCollection()->makeVisible(['verified', 'thumbnail_url']));
+            return $results->setCollection($results->getCollection()->makeVisible(['verified', 'thumbnail_url', 'status']));
         });
 
         return response()->json([
@@ -36,10 +37,12 @@ class OwnerVehicleController extends Controller
         // validate the request
         $country = request()->header('Country');
         $isUpdate = false;
-        if (request()->has('id') && Vehicle::find(request('id')) !== null) {
+        if (request()->has('id') && request('id') !== null && request('id') !== "" && Vehicle::find(request('id')) !== null) {
             $isUpdate = true;
         }
+
         $uniquePlate = $isUpdate ? ',id,' . request('id') : '';
+        
         $this->validate(request(), [
             'state_id' => ['required', 'exists:states,id'],
             'category_id' => ['required', 'exists:categories,id'],
@@ -89,10 +92,23 @@ class OwnerVehicleController extends Controller
         );
 
         if ($isUpdate) {
-            $vehicleData['id'] = request('id');
+            $vehicleData['verified_at'] = null;
+            VehicleVerification::where('vehicle_id', request('id'))->update(['status' => 'created']);
+            $vehicle = Vehicle::find(request('id'));
+            $vehicle->update($vehicleData);
+        } else {
+            $vehicle = Vehicle::create($vehicleData);
         }
 
-        $vehicle = Vehicle::updateOrCreate($vehicleData);
+
+        if ($isUpdate) {
+            VehicleVerification::where('vehicle_id', request('id'))->update(['status' => 'created']);
+        } else {
+            VehicleVerification::create([
+                'vehicle_id' => $vehicle->id,
+                'status' => 'created',
+            ]);
+        }
 
         if (request()->has('thumbnail') && request('thumbnail') !== null) {
             $vehicle->updateThumbnail(request('thumbnail'));
@@ -112,11 +128,11 @@ class OwnerVehicleController extends Controller
 
             // move the file secure vehicles folder
             $newFrontImagePath = 'secure/vehicles/' . $vehicle->id . '/license/' . Carbon::now()->timestamp . '_' . $frontImage->name;
-            Storage::move($frontImage->path, $newFrontImagePath);
+            Storage::copy($frontImage->path, $newFrontImagePath);
 
             // move the file secure vehicles folder
             $newBackImagePath = 'secure/vehicles/' . $vehicle->id . '/license/' . Carbon::now()->timestamp . '_' . $backImage->name;
-            Storage::move($backImage->path, $newBackImagePath);
+            Storage::copy($backImage->path, $newBackImagePath);
 
             // make license data object
             $licenseData = [
@@ -141,7 +157,7 @@ class OwnerVehicleController extends Controller
 
             // move the file public vehicles folder
             $newImagePath = 'secure/vehicles/' . $vehicle->id . '/insurance/' . Carbon::now()->timestamp . '_' . $image->name;
-            Storage::move($image->path, $newImagePath);
+            Storage::copy($image->path, $newImagePath);
 
             // check if the vehicle has insurance
             $insuranceExist = VehicleInsurance::whereVehicleId($vehicle->id)->orderBy('created_at', 'desc')->first();
@@ -200,6 +216,7 @@ class OwnerVehicleController extends Controller
                 'VehicleLicense',
                 'VehicleInsurance',
                 'VehiclePricing',
+                'VehicleVerification'
             ])->findOrFail($id)
             ->makeVisible([
                 'state_id',
@@ -229,6 +246,106 @@ class OwnerVehicleController extends Controller
         return $vehicle;
     }
 
+    public function verification($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+
+        // check if the vehicle is already verified
+        if ($vehicle->isVerified()) {
+            return response()->json([
+                'message' => __('messages.error.vehicle_verified'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+
+        // if vehicle has ongoin verification request
+        $ongoingVerification = VehicleVerification::whereVehicleId($vehicle->id)->whereStatus('in-review')->first();
+        if ($ongoingVerification) {
+            return response()->json([
+                'message' => __('messages.error.request_ongoing'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+
+        // check if the vehicle has license and insurance
+        if (!$vehicle->hasLicense() || !$vehicle->hasInsurance()) {
+            return response()->json([
+                'message' => __('messages.error.data_missing'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+
+        // update or create vehicle verification if not exist
+        $vehicleVerification = VehicleVerification::updateOrCreate([
+            'vehicle_id' => $vehicle->id,
+        ], [
+            'vehicle_license_id' => $vehicle->VehicleLicense->id,
+            'vehicle_insurance_id' => $vehicle->VehicleInsurance->id,
+            'status' => 'in-review',
+        ]);
+
+        // send email to admin
+        // TODO: send email to admin
+
+        return response()->json([
+            'message' => __('messages.success.vehicle_submitted'),
+            'data' => $vehicleVerification,
+            'error' => false,
+        ], 200);
+    }
+
+    public function dev($id)
+    {
+        // delete applications
+
+        $application =
+            VehicleVerification::where('vehicle_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$application) {
+            // return 400 response user already has ongoing request
+            return response()->json([
+                'message' => __('messages.error.missing_data'),
+                'data' => null,
+                'error' => true
+            ], 400);
+        }
+        // Dev only set status to approved or rejected
+        if (app()->environment('local')) {
+            $vehicle = Vehicle::find($id);
+            if (request('status') && in_array(request('status'), ['approved', 'rejected', 'created', 'in-review'])) {
+                $application->update([
+                    'status' => request('status'),
+                    'reason' => request('reason') ?? null
+                ]);
+
+                if (request('status') === 'approved') {
+                    $application->update([
+                        'vehicle_insurance_verified' => true,
+                        'vehicle_license_verified' => true,
+                    ]);
+                    VehicleInsurance::whereVerifiedAt(null)->where('id', $application->vehicle_insurance_id)->update([
+                        'verified_at' => now()
+                    ]);
+                    VehicleLicense::whereVerifiedAt(null)->where('id', $application->vehicle_license_id)->update([
+                        'verified_at' => now()
+                    ]);
+                    $vehicle->update([
+                        'verified_at' => now()
+                    ]);
+                } else {
+                    $vehicle->update([
+                        'verified_at' => null
+                    ]);
+                }
+            }
+        }
+    }
+
     public function deleteImage($id)
     {
         try {
@@ -245,23 +362,11 @@ class OwnerVehicleController extends Controller
         }
     }
 
-    public function update()
-    {
-
-        // if vehicle updated successfully clear all vehicles cache
-        Cache::tags(['vehicles'])->flush();
-    }
-
 
     public function destroy()
     {
 
         // if vehicle deleted successfully clear all vehicles cache
         Cache::tags(['vehicles'])->flush();
-    }
-
-    private function syncFeatures($vehicle, $features)
-    {
-        $vehicle->VehicleFeatures()->sync($features);
     }
 }
