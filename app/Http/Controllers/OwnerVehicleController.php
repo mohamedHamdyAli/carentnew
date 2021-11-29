@@ -45,7 +45,7 @@ class OwnerVehicleController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'brand_id' => ['required', 'exists:brands,id'],
             'model_id' => ['sometimes', 'exists:brand_models,id'],
-            'thumbnail' => ['sometimes', 'exists:temp_files,id'],
+            'thumbnail' => ['nullable', 'sometimes', 'exists:temp_files,id'],
             'plate_number' => ['required', 'unique:vehicles' . $uniquePlate],
             'manufacture_year' => ['required', 'integer', 'min:' . (Carbon::now()->year - env('VEHICLE_YEAR_MAX')), 'max:' . (Carbon::now()->year + 1)],
             'color' => ['required', 'string', 'max:255'],
@@ -94,19 +94,19 @@ class OwnerVehicleController extends Controller
 
         $vehicle = Vehicle::updateOrCreate($vehicleData);
 
-        if (request()->has('thumbnail') && request('thumbnail') != null) {
+        if (request()->has('thumbnail') && request('thumbnail') !== null) {
             $vehicle->updateThumbnail(request('thumbnail'));
         }
 
-        if (request()->has('features')) {
+        if (request()->has('features') && request('features') !== null) {
             $vehicle->syncVehicleFeatures(request('features'));
         }
 
-        if (request()->has('images')) {
+        if (request()->has('images') && request('images') !== null) {
             $vehicle->addVehicleImages(request('images'));
         }
 
-        if (request()->has('license')) {
+        if (request()->has('license') && request('license') !== null) {
             $frontImage = TempFile::where('id', request('license.front_image'))->first();
             $backImage = TempFile::where('id', request('license.back_image'))->first();
 
@@ -136,7 +136,7 @@ class OwnerVehicleController extends Controller
             VehicleLicense::updateOrCreate($licenseData);
         }
 
-        if (request()->has('insurance')) {
+        if (request()->has('insurance') && request('insurance') !== null) {
             $image = TempFile::where('id', request('insurance.image'))->first();
 
             // move the file public vehicles folder
@@ -176,11 +176,10 @@ class OwnerVehicleController extends Controller
         // check if the vehicle has pricing
         $pricingExist = VehiclePricing::whereVehicleId($vehicle->id)->orderBy('created_at', 'desc')->first();
         if ($pricingExist) {
-            $pricingData['id'] = $pricingExist->id;
+            VehiclePricing::find($pricingExist->id)->update($pricingData);
+        } else {
+            VehiclePricing::create($pricingData);
         }
-
-        // update or create vehicle pricing
-        VehiclePricing::updateOrCreate($pricingData);
 
         // if vehicle created successfully clear all vehicles cache
         Cache::tags(['vehicles'])->flush();
