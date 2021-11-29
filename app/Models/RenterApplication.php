@@ -22,7 +22,7 @@ class RenterApplication extends Model
         'identity_document_verified',
         'driver_license_id',
         'driver_license_verified',
-        'approved',
+        'status',
         'reason',
     ];
 
@@ -46,7 +46,16 @@ class RenterApplication extends Model
         'user_id',
         'identity_document_id',
         'driver_license_id',
+        'created_at',
+        'updated_at',
     ];
+
+    protected $appends = [
+        'identity_document_uploaded',
+        'driver_license_uploaded',
+        'approved',
+    ];
+
     /**
      * Get the user that owns the application.
      */
@@ -55,12 +64,26 @@ class RenterApplication extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getApprovedAttribute()
+    {
+        return $this->status === 'approved';
+    }
+
     /**
      * Get the identity document that owns the application.
      */
     public function identityDocument()
     {
-        return $this->belongsTo(IdentityDocument::class);
+        return $this->hasMany(IdentityDocument::class, 'user_id', 'user_id');
+    }
+
+    public function getIdentityDocumentUploadedAttribute()
+    {
+        return $this->identityDocument()
+            ->orderBy('created_at', 'desc')
+            ->first([
+                'id', 'user_id', 'verified_at', 'created_at'
+            ]) ? true : false;
     }
 
     /**
@@ -68,6 +91,15 @@ class RenterApplication extends Model
      */
     public function driverLicense()
     {
-        return $this->belongsTo(DriverLicense::class);
+        return $this->hasMany(DriverLicense::class, 'user_id', 'user_id');
+    }
+
+    public function getDriverLicenseUploadedAttribute()
+    {
+        return $this->driverLicense()
+            ->orderBy('created_at', 'desc')
+            ->first([
+                'id', 'user_id', 'verified_at', 'created_at'
+            ]) ? true : false;
     }
 }

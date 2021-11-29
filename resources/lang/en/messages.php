@@ -16,6 +16,9 @@ return [
         'data_missing' => 'Data missing',
         'approved' => 'You are already approved',
         'agreement' => 'You didn\'t the agreement',
+        'forbidden' => 'You don\'t have the right permission to do this action',
+        'image_uploaded' => 'Error while uploading image',
+        'verified' => 'User is not verified',
     ],
     'success' => [
         'create_user' => 'User created successfully',
@@ -29,5 +32,6 @@ return [
         'agreement_signed' => 'Agreement signed successfully',
         'application_submitted' => 'Application submitted successfully',
         'agreement_signed' => 'Agreement signed successfully',
+        'image_uploaded' => 'Image uploaded successfully',
     ],
 ];

@@ -27,7 +27,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('telescope:prune --hours=24')->dailyAt('01:00');
         $schedule->command('token:sanitize')->dailyAt('01:30');
-        $schedule->command('otp:sanitize')->dailyAt('01:30');
+        $schedule->command('otp:sanitize')->dailyAt('02:00');
+        // $schedule->command('tempfiles:sanitize')->everyTenMinutes();
         // run command every hourly
         // $schedule->command('db:seed --class=AppTestSeeder')->everyMinute();
     }
@@ -39,7 +40,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Hash;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -30,7 +31,7 @@ class AdminSeeder extends Seeder
         /**
          * * Assign super admin role to user
          */
-        User::find($superAdminId)->assignRole('super admin');
+        User::find($superAdminId)->assignRole('superadmin');
 
         /**
          * * Create a admin user
@@ -48,5 +49,18 @@ class AdminSeeder extends Seeder
          * * Assign admin role to user
          */
         User::find($adminId)->assignRole('admin');
+
+        /**
+         * * Create a ahmed user
+         */
+        //uuid of admin user
+        $ahmedId = Str::uuid();
+        User::factory(1)->hasBalance()->create([
+            'id' => $ahmedId,
+            'name' => 'Ahmed',
+            'email' => 'ahmedrgb101@gmail.com',
+            'phone' => '+201067001577',
+            'password' => Hash::make('123'),
+        ]);
     }
 }

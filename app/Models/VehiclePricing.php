@@ -25,4 +25,30 @@ use Illuminate\Database\Eloquent\Model;
 class VehiclePricing extends Model
 {
     use HasFactory, Uuid;
+
+    protected $fillable = [
+        'vehicle_id',
+        'daily_price',
+        'week_to_month',
+        'month_or_more',
+        'has_driver',
+        'driver_daily_price',
+        'is_driver_required',
+    ];
+
+    protected $casts = [
+        'daily_price' => 'float',
+        'week_to_month' => 'float',
+        'month_or_more' => 'float',
+        'has_driver' => 'boolean',
+        'driver_daily_price' => 'float',
+        'is_driver_required' => 'boolean',
+    ];
+
+    protected $hidden = [
+        'id',
+        'vehicle_id',
+        'created_at',
+        'updated_at',
+    ];
 }

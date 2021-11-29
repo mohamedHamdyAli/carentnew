@@ -127,6 +127,12 @@ class Otp
         if ($type !== 'password') {
             $this->user->{$type . '_verified_at'} = now();
             $this->user->save();
+
+            // verify user if all required field is verified
+            if ($this->user->email_verified_at !== null && $this->user->phone_verified_at !== null) {
+                $this->user->verified_at = now();
+                $this->user->save();
+            }
         }
 
         /**

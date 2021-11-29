@@ -26,7 +26,7 @@ class AppTestSeeder extends Seeder
         // User::where('email', 'owner@carent.com')->delete();
 
         $owner = User::where('email', 'owner@carent.com')->first();
-        $ownerId = $owner->id;
+        $ownerId = $owner->id ?? null;
         if (!$ownerId) {
             $ownerId = Str::uuid();
             User::factory(1)->hasBalance()->create([
@@ -48,9 +48,9 @@ class AppTestSeeder extends Seeder
         // Vehicle::truncate();
         // VehicleImage::truncate();
         // VehicleFeature::truncate();
-        Vehicle::factory(20)->active()->create([
-            'user_id' => $ownerId,
-        ]);
+        // Vehicle::factory(20)->active()->create([
+        //     'user_id' => $ownerId,
+        // ]);
         $this->command->info('App test data seeded');
     }
 }

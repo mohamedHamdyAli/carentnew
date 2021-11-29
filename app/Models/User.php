@@ -166,7 +166,7 @@ class User extends Authenticatable
      */
     public function hasRole($role)
     {
-        $role_id = Role::where('key', $role)->first()->id;
+        $role_id = Role::where('key', $role)->first()?->id;
         return $this->roles()->where('role_id', $role_id)->first() ? true : false;
     }
 

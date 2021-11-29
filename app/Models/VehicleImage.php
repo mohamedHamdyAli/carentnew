@@ -36,4 +36,9 @@ class VehicleImage extends Model
         'image',
     ];
 
+    protected $hidden = [
+        'vehicle_id',
+        'created_at',
+        'updated_at',
+    ];
 }

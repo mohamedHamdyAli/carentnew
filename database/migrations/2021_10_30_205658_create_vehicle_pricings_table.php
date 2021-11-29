@@ -16,6 +16,12 @@ class CreateVehiclePricingsTable extends Migration
         Schema::create('vehicle_pricings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('vehicle_id');
+            $table->decimal('daily_price', 8, 2);
+            $table->decimal('week_to_month', 8, 2)->nullable();
+            $table->decimal('month_or_more', 8, 2)->nullable();
+            $table->boolean('has_driver')->default(false);
+            $table->decimal('driver_daily_price', 8, 2)->nullable();
+            $table->boolean('is_driver_required')->default(false);
             $table->timestamps();
         });
     }

@@ -48,8 +48,8 @@ class StateController extends Controller
     public function show($state)
     {
         //
-        
-        $data = cache()->rememberForever("country_states.{$state}", function () use ($state) {
+
+        $data = cache()->tags(['countries', 'states'])->rememberForever("country_states.{$state}", function () use ($state) {
             return new StateResource(State::where('country_id', $state)->get());
         });
 

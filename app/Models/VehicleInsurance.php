@@ -33,4 +33,17 @@ use Illuminate\Database\Eloquent\Model;
 class VehicleInsurance extends Model
 {
     use HasFactory, Uuid;
+
+    protected $fillable = [
+        'vehicle_id',
+        'expire_at',
+        'image',
+    ];
+
+    protected $hidden = [
+        'id',
+        'vehicle_id',
+        'created_at',
+        'updated_at',
+    ];
 }

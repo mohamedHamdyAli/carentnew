@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Vehicle
@@ -68,6 +70,7 @@ class Vehicle extends Model
         'category_id',
         'brand_id',
         'model_id',
+        'thumbnail',
         'plate_number',
         'manufacture_year',
         'color',
@@ -77,11 +80,12 @@ class Vehicle extends Model
         'views',
         'rented',
         'active',
-        'inactive_message',
+        'verified_at',
     ];
 
     protected $casts = [
         'active' => 'boolean',
+        'verified' => 'boolean',
     ];
 
     protected $hidden = [
@@ -92,15 +96,22 @@ class Vehicle extends Model
         'category_id',
         'brand_id',
         'model_id',
+        'thumbnail',
         'plate_number',
         'manufacture_year',
+        'thumbnail_url',
         'color',
         'fuel_type_id',
         'rented',
         'active',
-        'inactive_message',
-        'vehicle_license_verified_at',
-        'vehicle_insurance_verified_at',
+        'views',
+        'owner',
+        'country',
+        'images',
+        'fuel_type',
+        'features',
+        'pricing',
+        'verified',
         'verified_at',
         'deleted_at',
         'created_at',
@@ -108,15 +119,19 @@ class Vehicle extends Model
     ];
 
     protected $appends = [
-        // 'owner',
-        // 'country',
+        'owner',
+        'country',
         'state',
         'category',
-        // 'images',
+        'thumbnail_url',
+        'images',
+        'daily_price',
         'brand',
         'model',
-        // 'fuel_type',
-        // 'features',
+        'fuel_type',
+        'features',
+        'pricing',
+        'verified',
     ];
 
     public function User()
@@ -149,9 +164,39 @@ class Vehicle extends Model
         return $this->belongsTo(BrandModel::class, 'model_id');
     }
 
-    function VehicleImages()
+    public function VehicleFeatures()
+    {
+        return $this->belongsTo(VehicleFeature::class);
+    }
+
+    public function VehicleImages()
     {
         return $this->hasMany(VehicleImage::class);
+    }
+
+    public function VehicleLicense()
+    {
+        return $this->hasOne(VehicleLicense::class);
+    }
+
+    public function VehicleInsurance()
+    {
+        return $this->hasOne(VehicleInsurance::class);
+    }
+
+    public function VehiclePricing()
+    {
+        return $this->hasOne(VehiclePricing::class);
+    }
+
+    public function getDailyPriceAttribute()
+    {
+        return $this->VehiclePricing()->first()->daily_price;
+    }
+
+    public function getVerifiedAttribute()
+    {
+        return $this->verified_at !== null;
     }
 
     public function Features()
@@ -169,9 +214,14 @@ class Vehicle extends Model
         $data = $this->VehicleImages()->orderBy('display_order')->get();
         $images = [];
         foreach ($data as $image) {
-            $images[] = $image->image;
+            $images[] = url(Storage::url($image->image));
         }
         return $images;
+    }
+
+    public function getPricingAttribute()
+    {
+        return $this->VehiclePricing()->first();
     }
 
     public function getOwnerAttribute()
@@ -209,6 +259,11 @@ class Vehicle extends Model
         return $this->fuelType()->first()->name;
     }
 
+    public function getThumbnailUrlAttribute()
+    {
+        return url(Storage::url($this->thumbnail));
+    }
+
     public function getFeaturesAttribute()
     {
         $data = $this->Features()->get();
@@ -217,5 +272,41 @@ class Vehicle extends Model
             $features[] = $feature->name;
         }
         return $features;
+    }
+
+    public function syncVehicleFeatures($features)
+    {
+        $this->VehicleFeatures()->whereNotIn('feature_id', $features)->delete();
+        foreach ($features as $feature) {
+            $this->VehicleFeatures()->updateOrCreate([
+                'vehicle_id' => $this->id,
+                'feature_id' => $feature,
+            ]);
+        }
+    }
+
+    public function updateThumbnail($thumbnailId)
+    {
+        $thumbnail = TempFile::where('id', $thumbnailId)->first();
+        $newThumbnailLocation = 'public/vehicles/' . $this->id . '/thumbnail/' . Carbon::now()->timestamp . '_' . $thumbnail->name;
+        Storage::move($thumbnail->path, $newThumbnailLocation);
+        $this->thumbnail = $newThumbnailLocation;
+        $this->save();
+    }
+
+    public function addVehicleImages($images)
+    {
+        $counter = 0;
+        foreach ($images as $image) {
+            $tempFile = TempFile::where('id', $image)->first();
+            $newImageLocation = 'public/vehicles/' . $this->id . '/images/' . Carbon::now()->timestamp . '_' . $tempFile->name;
+            Storage::move($tempFile->path, $newImageLocation);
+            VehicleImage::create([
+                'vehicle_id' => $this->id,
+                'display_order' => $counter,
+                'image' => $newImageLocation,
+            ]);
+            $counter++;
+        }
     }
 }

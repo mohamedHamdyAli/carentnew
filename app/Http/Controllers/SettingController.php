@@ -11,7 +11,7 @@ class SettingController extends Controller
     //
     public function settings($key)
     {
-        $setting = Cache::rememberForever('setting-' . $key . '-' . app()->getLocale(), function () use ($key) {
+        $setting = Cache::tags(['settings'])->rememberForever('setting-' . $key . '-' . app()->getLocale(), function () use ($key) {
             return Setting::where('key', $key)->first();
         });
 

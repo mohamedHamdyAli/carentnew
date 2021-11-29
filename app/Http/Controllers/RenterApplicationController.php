@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DriverLicense;
 use App\Models\IdentityDocument;
-use App\Models\OwnerApplication;
+use App\Models\RenterApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OwnerApplicationController extends Controller
+class RenterApplicationController extends Controller
 {
-
     public function status()
     {
         $ongoingApplication =
-            OwnerApplication::where('user_id', auth()->user()->id)
+            RenterApplication::where('user_id', auth()->user()->id)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -28,7 +28,7 @@ class OwnerApplicationController extends Controller
     {
         // find on going application
         $ongoingApplication =
-            OwnerApplication::where('user_id', auth()->user()->id)
+            RenterApplication::where('user_id', auth()->user()->id)
             ->where('status', '!=', 'in-review')
             ->first();
 
@@ -41,14 +41,16 @@ class OwnerApplicationController extends Controller
             ], 400);
         }
 
-        $application =  OwnerApplication::create([
+        $application =  RenterApplication::create([
             'user_id' => auth()->id(),
             'terms_agreed' => true,
+            'identity_document_verified' => IdentityDocument::where('user_id', auth()->id())->where('verified_at', '!=', null)->first() ? true : false,
+            'driver_license_verified' => DriverLicense::where('user_id', auth()->id())->where('verified_at', '!=', null)->first() ? true : false,
         ]);
 
         return response()->json([
             'message' => __('messages.success.agreement_signed'),
-            'data' => OwnerApplication::find($application->id),
+            'data' => RenterApplication::find($application->id),
             'error' => null,
         ]);
     }
@@ -58,7 +60,7 @@ class OwnerApplicationController extends Controller
         $userId = auth()->user()->id;
         // find on going application
         $application =
-            OwnerApplication::where('user_id', $userId)
+            RenterApplication::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -90,8 +92,19 @@ class OwnerApplicationController extends Controller
             ], 400);
         }
 
+        $unverifiedLicenese = $this->getDriverLincese();
+
+        if (!$unverifiedLicenese) {
+            return response()->json([
+                'message' => __('messages.error.data_missing'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+
         $application->update([
             'identity_document_id' => $identityDocument->id,
+            'driver_license_id' => $unverifiedLicenese->id,
             'status' => 'in-review',
             'reason' => null,
         ]);
@@ -110,7 +123,7 @@ class OwnerApplicationController extends Controller
         $userId = auth()->user()->id;
         // find on going application
         if (app()->environment('local')) {
-            return OwnerApplication::where('user_id', $userId)->delete();
+            return RenterApplication::where('user_id', $userId)->delete();
         }
     }
 
@@ -120,7 +133,7 @@ class OwnerApplicationController extends Controller
         // delete applications
 
         $application =
-            OwnerApplication::where('user_id', $userId)
+            RenterApplication::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -142,12 +155,16 @@ class OwnerApplicationController extends Controller
 
                 if (request('status') === 'approved') {
                     $application->update([
-                        'identity_document_verified' => true
+                        'identity_document_verified' => true,
+                        'driver_license_verified' => true,
                     ]);
                     IdentityDocument::whereVerifiedAt(null)->where('id', $application->identity_document_id)->update([
                         'verified_at' => now()
                     ]);
-                    Auth::user()->assignRole('owner');
+                    DriverLicense::whereVerifiedAt(null)->where('id', $application->driver_license_id)->update([
+                        'verified_at' => now()
+                    ]);
+                    Auth::user()->assignRole('renter');
                 }
             }
         }
@@ -156,6 +173,12 @@ class OwnerApplicationController extends Controller
     private function getIdentityDocument()
     {
         return IdentityDocument::where('user_id', auth()->user()->id)
+            ->first();
+    }
+
+    private function getDriverLincese()
+    {
+        return DriverLicense::where('user_id', auth()->user()->id)
             ->first();
     }
 }

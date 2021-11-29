@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         Seeder::call('Database\Seeders\FuelTypeSeeder');
         Seeder::call('Database\Seeders\AdminSeeder');
         Seeder::call('Database\Seeders\AppTestSeeder');
+        Seeder::call('Database\Seeders\SettingSeeder');
     }
 }

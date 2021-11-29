@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
 use App\Http\Controllers\OwnerApplicationController;
+use App\Http\Controllers\OwnerVehicleController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,8 +16,10 @@ use Illuminate\Support\Facades\Hash;
 
 // Controllers
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\RenterApplicationController;
 use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UploadController;
 use App\Http\Controllers\VehicleController;
 use App\Models\Vehicle;
 
@@ -117,7 +120,7 @@ Route::group(
          */
         Route::prefix('vehicles')->middleware('country')->group(function () {
             Route::post('/', [VehicleController::class, 'index']);
-            Route::get('/view', [VehicleController::class, 'view']);
+            Route::get('/{id}', [VehicleController::class, 'view']);
         });
 
         /**
@@ -153,7 +156,7 @@ Route::group(
         /**
          *   @Owner Application routes
          */
-        Route::prefix('owner-application')->middleware('auth:sanctum')->group(function () {
+        Route::prefix('owner-application')->middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('/status', [OwnerApplicationController::class, 'status']);
             Route::post('/sign-agreement', [OwnerApplicationController::class, 'signAgreement']);
             Route::post('/submit', [OwnerApplicationController::class, 'submit']);
@@ -161,6 +164,38 @@ Route::group(
             // Development Routes
             Route::put('/status', [OwnerApplicationController::class, 'dev']);
             Route::delete('/delete', [OwnerApplicationController::class, 'devDelete']);
+        });
+
+        /**
+         *   @Renter Application routes
+         */
+        Route::prefix('renter-application')->middleware(['auth:sanctum', 'verified'])->group(function () {
+            Route::get('/status', [RenterApplicationController::class, 'status']);
+            Route::post('/sign-agreement', [RenterApplicationController::class, 'signAgreement']);
+            Route::post('/submit', [RenterApplicationController::class, 'submit']);
+
+            // Development Routes
+            Route::put('/status', [RenterApplicationController::class, 'dev']);
+            Route::delete('/delete', [RenterApplicationController::class, 'devDelete']);
+        });
+
+        /**
+         *   @Owner routes
+         */
+        Route::prefix('owner')->middleware(['auth:sanctum', 'verified', 'role:owner'])->group(function () {
+            Route::prefix('vehicles')->group(function () {
+                Route::get('/', [OwnerVehicleController::class, 'index']);
+                Route::post('/', [OwnerVehicleController::class, 'store'])->middleware('country');
+                Route::get('/{id}', [OwnerVehicleController::class, 'vehicle']);
+                Route::delete('/images/{id}', [OwnerVehicleController::class, 'deleteImage']);
+            });
+        });
+
+        /**
+         *   @Upload routes
+         */
+        Route::prefix('upload')->middleware('auth:sanctum')->group(function () {
+            Route::post('/image', [UploadController::class, 'image']);
         });
     }
 );

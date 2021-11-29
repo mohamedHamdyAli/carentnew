@@ -31,8 +31,6 @@ class CreateVehiclesTable extends Migration
             $table->tinyInteger('views')->default(0);
             $table->tinyInteger('rented')->default(0);
             $table->boolean('active')->default(false);
-            $table->timestamp('vehicle_license_verified_at')->nullable();
-            $table->timestamp('vehicle_insurance_verified_at')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->softDeletes();
             $table->timestamps();

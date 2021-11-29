@@ -31,7 +31,7 @@ class DriverLicenseController extends Controller
         request()->validate([
             'front_image' => 'required|image|mimes:jpeg,png,jpg|max:20480',
             'back_image' => 'required|image|mimes:jpeg,png,jpg|max:20480',
-            'expire_at' => 'required|date',
+            'expire_at' => 'sometimes|date',
         ]);
 
         /**

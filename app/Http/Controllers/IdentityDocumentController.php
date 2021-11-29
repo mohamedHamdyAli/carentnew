@@ -96,9 +96,56 @@ class IdentityDocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        //
+        /**
+         * ! Validate Request
+         */
+        request()->validate([
+            'front_image' => 'sometimes|image|mimes:jpeg,png,jpg|max:20480',
+            'back_image' => 'sometimes|image|mimes:jpeg,png,jpg|max:20480',
+        ]);
+
+
+        $data = [];
+
+        /**
+         * ! Upload Images
+         */
+        if (request()->has('front_image')) {
+            $front_image = request()->file('front_image')->store('identity_documents');
+            $data = array_merge($data, ['front_image' => $front_image]);
+        }
+        if (request()->has('back_image')) {
+            $back_image = request()->file('back_image')->store('identity_documents');
+            $data = array_merge($data, ['back_image' => $back_image]);
+        }
+        /**
+         * ! Create Driver License
+         */
+
+        $identity_document = IdentityDocument::where('verified_at', null)->first();
+
+        if ($identity_document) {
+            // delete old images
+            if (file_exists(storage_path('app/' . $identity_document->front_image))) {
+                unlink(storage_path('app/' . $identity_document->front_image));
+            }
+            if (file_exists(storage_path('app/' . $identity_document->back_image))) {
+                unlink(storage_path('app/' . $identity_document->back_image));
+            }
+            $identity_document->update($data);
+        } else {
+            IdentityDocument::create($data);
+        }
+
+        /**
+         * ! Return Response
+         */
+        return response()->json([
+            'message' => __('messages.r_success'),
+            'data' => $identity_document,
+        ]);
     }
 
     public function devDelete()

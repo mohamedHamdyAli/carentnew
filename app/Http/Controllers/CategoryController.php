@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $data = cache()->rememberForever("categories" . '-' . app()->getLocale(), function () {
+        $data = cache()->tags(['categories'])->rememberForever("categories" . '-' . app()->getLocale(), function () {
             return new CategoryResource(Category::all());
         });
 

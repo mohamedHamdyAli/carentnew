@@ -18,7 +18,7 @@ class CreateVehicleLicensesTable extends Migration
             $table->uuid('vehicle_id');
             $table->text('front_image');
             $table->text('back_image');
-            $table->date('expire_at')->nullable();
+            $table->date('expire_at');
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });

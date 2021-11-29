@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class VehicleController extends Controller
 {
@@ -27,8 +28,8 @@ class VehicleController extends Controller
         // get Country from request header
         $country = request()->header('Country');
 
-        $data = cache()->remember("vehicles:" . json_encode(request()->all()), 3600, function () use($country) {
-            return Vehicle::where('country_id', $country)
+        $data = Cache::tags(['vehicles'])->remember("vehicles:" . json_encode(request()->all()), 3600, function () use ($country) {
+            $result = Vehicle::where('country_id', $country)
                 ->when(request('state_id'), function ($query) {
                     return $query->where('state_id', request('state_id'));
                 })
@@ -59,6 +60,8 @@ class VehicleController extends Controller
                 ->where('active', true)
                 ->whereNotNull('verified_at')
                 ->paginate(15);
+
+            return $result->setCollection($result->getCollection()->makeVisible('thumbnail_url'));
         });
 
         return $data;
@@ -81,9 +84,10 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function show(Vehicle $vehicle)
+    public function view($id)
     {
         //
+        return Vehicle::whereActive(true)->where('Verified_at', '!=', null)->findOrFail($id)->makeVisible(['images', 'features', 'thumbnail_url', 'pricing']);
     }
 
     /**

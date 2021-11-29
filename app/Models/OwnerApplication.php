@@ -75,7 +75,6 @@ class OwnerApplication extends Model
     public function getIdentityDocumentUploadedAttribute()
     {
         return $this->identityDocument()
-            ->where('verified_at', null)
             ->orderBy('created_at', 'desc')
             ->first([
                 'id', 'user_id', 'verified_at', 'created_at'

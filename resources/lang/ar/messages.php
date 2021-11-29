@@ -16,6 +16,9 @@ return [
         'data_missing' => 'بيانات مفقودة',
         'approved' => 'لقد تم الموافقة على طلبك مسبقاً',
         'agreement' => 'لم تقم بالموافقة على الشروط',
+        'forbidden' => 'لا تمتلك صلاحية الوصول لهذا المصدر',
+        'image_uploaded' => 'حدث خطأ أثناء رفع الصورة',
+        'verified' => 'هذا المستخدم غير محقق',
     ],
     'success' => [
         'create_user' => 'تم إنشاء المستخدم بنجاح',
@@ -29,5 +32,6 @@ return [
         'agreement_signed' => 'تم توقيع الشروط بنجاح',
         'application_submitted' => 'تم إرسال الطلب بنجاح',
         'agreement_signed' => 'تم توقيع الشروط بنجاح',
+        'image_uploaded' => 'تم رفع الصورة بنجاح',
     ],
 ];

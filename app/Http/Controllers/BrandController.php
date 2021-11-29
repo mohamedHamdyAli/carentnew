@@ -15,7 +15,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = cache()->rememberForever("brands" . '-' . app()->getLocale(), function () {
+        $data = cache()->tags(['brands'])->rememberForever("brands" . '-' . app()->getLocale(), function () {
             return new BrandResource(Brand::all());
         });
 
