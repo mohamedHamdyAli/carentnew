@@ -29,8 +29,24 @@ class VehicleFeature extends Model
         'feature_id',
     ];
 
+    protected $hidden = [
+        'vehicle_id',
+        'feature_id',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $appends = [
+        'name',
+    ];
+
     public function Feature()
     {
         return $this->belongsTo(Feature::class);
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->Feature->name;
     }
 }

@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use PhpParser\Node\Expr\Cast\Bool_;
 
 class OwnerVehicleController extends Controller
 {
@@ -22,7 +23,7 @@ class OwnerVehicleController extends Controller
         $key = 'owner-vehicles-' . app()->getLocale() . '-' . $userId . '-' . request('page');
         $data = Cache::tags(['vehicles'])->remember($key, 3600, function () use ($userId) {
             $results = Vehicle::where('user_id', $userId)->simplePaginate();
-            return $results->setCollection($results->getCollection()->makeVisible(['verified', 'thumbnail_url', 'status']));
+            return $results->setCollection($results->getCollection()->makeVisible(['verified', 'thumbnail_url', 'status', 'active']));
         });
 
         return response()->json([
@@ -42,7 +43,7 @@ class OwnerVehicleController extends Controller
         }
 
         $uniquePlate = $isUpdate ? ',id,' . request('id') : '';
-        
+
         $this->validate(request(), [
             'state_id' => ['required', 'exists:states,id'],
             'category_id' => ['required', 'exists:categories,id'],
@@ -56,14 +57,17 @@ class OwnerVehicleController extends Controller
             'seat_count' => ['required', 'integer', 'min:1', 'max:20'],
             'features' => ['nullable', 'sometimes', 'array'],
             'features.*' => ['sometimes', 'exists:features,id'],
-            'images' => ['nullable', 'sometimes', 'array', 'max:10'],
+            'images' => [
+                'nullable', 'sometimes', 'array',
+                /** TODO: add validation of maximum images, calucalate current images count + request images must not exceed limit */
+            ],
             'images.*' => ['required', 'exists:temp_files,id'],
             'license' => ['nullable', 'sometimes', 'array'],
-            'license.front_image' => ['required_with:license', 'exists:temp_files,id'],
-            'license.back_image' => ['required_with:license', 'exists:temp_files,id'],
+            'license.front_image' => [$isUpdate ? 'nullable' : 'required_with:license', 'exists:temp_files,id'],
+            'license.back_image' => [$isUpdate ? 'nullable' : 'required_with:license', 'exists:temp_files,id'],
             'license.expire_at' => ['required_with:license', 'date:Y-m-d', 'after:' . Carbon::now()->addMonths(3)->format('Y-m-d')],
             'insurance' => ['nullable', 'sometimes', 'array'],
-            'insurance.image' => ['required_with:insurance', 'exists:temp_files,id'],
+            'insurance.image' => [$isUpdate ? 'nullable' : 'required_with:insurance', 'exists:temp_files,id'],
             'insurance.expire_at' => ['required_with:insurance', 'date:Y-m-d', 'after:' . Carbon::now()->addMonths(3)->format('Y-m-d')],
             'pricing.daily_price' => ['required', 'integer', 'min:1'],
             'pricing.week_to_month' => ['sometimes', 'nullable', 'integer', 'max:' . request('pricing.daily_price')],
@@ -123,59 +127,67 @@ class OwnerVehicleController extends Controller
         }
 
         if (request()->has('license') && request('license') !== null) {
-            $frontImage = TempFile::where('id', request('license.front_image'))->first();
-            $backImage = TempFile::where('id', request('license.back_image'))->first();
-
-            // move the file secure vehicles folder
-            $newFrontImagePath = 'secure/vehicles/' . $vehicle->id . '/license/' . Carbon::now()->timestamp . '_' . $frontImage->name;
-            Storage::copy($frontImage->path, $newFrontImagePath);
-
-            // move the file secure vehicles folder
-            $newBackImagePath = 'secure/vehicles/' . $vehicle->id . '/license/' . Carbon::now()->timestamp . '_' . $backImage->name;
-            Storage::copy($backImage->path, $newBackImagePath);
 
             // make license data object
             $licenseData = [
                 'vehicle_id' => $vehicle->id,
-                'front_image' => $newFrontImagePath,
-                'back_image' => $newBackImagePath,
                 'expire_at' => request('license.expire_at'),
             ];
+
+            if (request()->has('license.front_image') && request('license.front_image') !== null) {
+                $frontImage = TempFile::where('id', request('license.front_image'))->first();
+                // move the file secure vehicles folder
+                $newFrontImagePath = 'secure/vehicles/' . $vehicle->id . '/license/' . Carbon::now()->timestamp . '_' . $frontImage->name;
+                Storage::copy($frontImage->path, $newFrontImagePath);
+                $licenseData['front_image'] = $newFrontImagePath;
+            }
+
+            if (request()->has('license.back_image') && request('license.back_image') !== null) {
+                $backImage = TempFile::where('id', request('license.back_image'))->first();
+                // move the file secure vehicles folder
+                $newBackImagePath = 'secure/vehicles/' . $vehicle->id . '/license/' . Carbon::now()->timestamp . '_' . $backImage->name;
+                Storage::copy($backImage->path, $newBackImagePath);
+                $licenseData['back_image'] = $newBackImagePath;
+            }
 
             // check if the vehicle has license
             $licenseExist = VehicleLicense::whereVehicleId($vehicle->id)->orderBy('created_at', 'desc')->first();
             if ($licenseExist) {
-                $licenseData['id'] = $licenseExist->id;
+                VehicleLicense::find($licenseExist->id)->update($licenseData);
+            } else {
+                VehicleLicense::create($licenseData);
             }
 
-            // add the image to the vehicle
-            VehicleLicense::updateOrCreate($licenseData);
+            VehicleVerification::where('vehicle_id', $vehicle->id)->update(['vehicle_license_verified' => false]);
         }
 
         if (request()->has('insurance') && request('insurance') !== null) {
-            $image = TempFile::where('id', request('insurance.image'))->first();
-
-            // move the file public vehicles folder
-            $newImagePath = 'secure/vehicles/' . $vehicle->id . '/insurance/' . Carbon::now()->timestamp . '_' . $image->name;
-            Storage::copy($image->path, $newImagePath);
-
-            // check if the vehicle has insurance
-            $insuranceExist = VehicleInsurance::whereVehicleId($vehicle->id)->orderBy('created_at', 'desc')->first();
 
             // make insurance data object
             $insuranceData = [
                 'vehicle_id' => $vehicle->id,
-                'image' => $newImagePath,
                 'expire_at' => request('insurance.expire_at'),
             ];
 
-            // check if the vehicle has insurance
-            if ($insuranceExist) {
-                $insuranceData['id'] = $insuranceExist->id;
+            if (request()->has('insurance.image') && request('insurance.image') !== null) {
+                $image = TempFile::where('id', request('insurance.image'))->first();
+                // move the file public vehicles folder
+                $newImagePath = 'secure/vehicles/' . $vehicle->id . '/insurance/' . Carbon::now()->timestamp . '_' . $image->name;
+                Storage::copy($image->path, $newImagePath);
+                $insuranceData['image'] = $newImagePath;
             }
 
-            // update vehicle insurance
-            VehicleInsurance::updateOrCreate($insuranceData);
+            // check if the vehicle has insurance
+            $insuranceExist = VehicleInsurance::whereVehicleId($vehicle->id)->orderBy('created_at', 'desc')->first();
+
+            // check if the vehicle has insurance
+            if ($insuranceExist) {
+                VehicleInsurance::find($insuranceExist->id)->update($insuranceData);
+            } else {
+                VehicleInsurance::create($insuranceData);
+            }
+
+            VehicleVerification::where('vehicle_id', $vehicle->id)->update(['vehicle_insurance_verified' => false]);
         }
 
         // make pricing data object
@@ -227,6 +239,7 @@ class OwnerVehicleController extends Controller
                 'fuel_type_id',
                 'manufacture_year',
                 'plate_number',
+                'vehicle_features',
                 'color',
                 'verified',
             ])
@@ -241,6 +254,10 @@ class OwnerVehicleController extends Controller
 
         foreach ($vehicle->VehicleImages as $image) {
             $image->image = url(Storage::url($image->image));
+        };
+
+        foreach ($vehicle->Features as $feature) {
+            unset($feature->laravel_through_key);
         };
 
         return $vehicle;
@@ -294,6 +311,33 @@ class OwnerVehicleController extends Controller
             'message' => __('messages.success.vehicle_submitted'),
             'data' => $vehicleVerification,
             'error' => false,
+        ], 200);
+    }
+
+    // activate or deactivate vehicle
+    public function activate($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+
+        // check if the vehicle is already verified
+        if (request('active') === 'true' && $vehicle->verified_at === null) {
+            return response()->json([
+                'message' => __('messages.error.vehicle_verified'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+        // string to boolean
+        $vehicle->active = (request('active') === 'true') ? true : false;
+        $vehicle->save();
+
+        // flush all vehicles cache
+        Cache::tags(['vehicles'])->flush();
+
+        return response()->json([
+            'message' => __('messages.success.vehicle_updated'),
+            'data' => $vehicle->makeVisible(['verified', 'thumbnail_url', 'status', 'active']),
+            'error' => null,
         ], 200);
     }
 

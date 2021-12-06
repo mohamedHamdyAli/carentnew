@@ -87,7 +87,18 @@ class VehicleController extends Controller
     public function view($id)
     {
         //
-        return Vehicle::whereActive(true)->where('Verified_at', '!=', null)->findOrFail($id)->makeVisible(['images', 'features', 'thumbnail_url', 'pricing']);
+        return Vehicle::whereActive(true)
+            ->where('Verified_at', '!=', null)
+            ->findOrFail($id)
+            ->makeVisible([
+                'images',
+                'features',
+                'thumbnail_url',
+                'pricing',
+                'fuel_type',
+                'rating',
+                'rating_count', 'color'
+            ]);
     }
 
     /**

@@ -27,9 +27,10 @@ class CreateVehiclesTable extends Migration
             $table->string('color', 20)->nullable();
             $table->uuid('fuel_type_id')->nullable();
             $table->tinyInteger('seat_count')->nullable();
-            $table->tinyInteger('rating')->nullable();
-            $table->tinyInteger('views')->default(0);
-            $table->tinyInteger('rented')->default(0);
+            $table->float('rating', 4, 2)->nullable();
+            $table->mediumInteger('rating_count')->default(0);
+            $table->bigInteger('views')->default(0);
+            $table->mediumInteger('rented')->default(0);
             $table->boolean('active')->default(false);
             $table->timestamp('verified_at')->nullable();
             $table->softDeletes();

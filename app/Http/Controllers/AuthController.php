@@ -159,7 +159,7 @@ class AuthController extends Controller
          * TODO: 1. Validate the request ℹ️
          */
         request()->validate([
-            'phone'     => ['required', 'regex:/^(\+)[0-9]{12,15}$/'], // * International phone number
+            'phone'     => ['required', 'regex:/^(\+)[0-9]{10,15}$/'], // * International phone number
             'password'  => ['required'],
         ]);
 
@@ -352,8 +352,6 @@ class AuthController extends Controller
             'verification' => [
                 'email' => Auth::user()->isEmailVerified(),
                 'phone' => Auth::user()->isPhoneVerified(),
-                'driver_license' => Auth::user()->isDriverLicenseVerified(),
-                'identity_document' => Auth::user()->isIdentityDocumentVerified(),
             ],
             'roles' => $this->rolesToArray(Auth::user()->roles),
             'privileges' => $this->privilegesToArray(Auth::user()->privileges),
@@ -374,8 +372,6 @@ class AuthController extends Controller
             'verification' => [
                 'email' => Auth::user()->isEmailVerified(),
                 'phone' => Auth::user()->isPhoneVerified(),
-                'driver_license' => Auth::user()->isDriverLicenseVerified(),
-                'identity_document' => Auth::user()->isIdentityDocumentVerified(),
             ],
             'roles' => $this->rolesToArray(Auth::user()->roles),
             'privileges' => $this->privilegesToArray(Auth::user()->privileges),

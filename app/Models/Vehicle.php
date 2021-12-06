@@ -84,6 +84,7 @@ class Vehicle extends Model
     ];
 
     protected $casts = [
+        'rating' => 'float',
         'active' => 'boolean',
         'verified' => 'boolean',
     ];
@@ -111,8 +112,11 @@ class Vehicle extends Model
         'fuel_type',
         'features',
         'pricing',
+        'rating',
+        'rating_count',
         'status',
         'verified',
+        'vehicle_features',
         'status',
         'verified_at',
         'deleted_at',
@@ -130,6 +134,7 @@ class Vehicle extends Model
         'daily_price',
         'brand',
         'model',
+        'vehicle_features',
         'fuel_type',
         'features',
         'pricing',
@@ -169,7 +174,16 @@ class Vehicle extends Model
 
     public function VehicleFeatures()
     {
-        return $this->belongsTo(VehicleFeature::class);
+        return $this->hasMany(VehicleFeature::class);
+    }
+
+    public function getVehicleFeaturesAttribute()
+    {
+        $features = [];
+        foreach ($this->VehicleFeatures()->get() as $feature) {
+            $features[] = $feature->feature->id;
+        }
+        return $features;
     }
 
     public function VehicleImages()

@@ -34,6 +34,7 @@ class IdentityDocument extends Model
         'user_id',
         'front_image',
         'back_image',
+        'selfie_image',
     ];
 
     protected $hidden = [

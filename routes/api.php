@@ -192,6 +192,8 @@ Route::group(
                 Route::delete('/images/{id}', [OwnerVehicleController::class, 'deleteImage']);
                 // development routes
                 Route::put('/status/{id}', [OwnerVehicleController::class, 'dev']);
+                // activation routes
+                Route::post('/activate/{id}', [OwnerVehicleController::class, 'activate']);
             });
         });
 

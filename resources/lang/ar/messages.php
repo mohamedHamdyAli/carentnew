@@ -35,5 +35,6 @@ return [
         'agreement_signed' => 'تم توقيع الشروط بنجاح',
         'image_uploaded' => 'تم رفع الصورة بنجاح',
         'vehicle_submitted' => 'تم إرسال طلب تحقيق السيارة بنجاح',
+        'vehicle_updated' => 'تم تحديث بيانات السيارة بنجاح',
     ],
 ];

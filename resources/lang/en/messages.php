@@ -35,5 +35,6 @@ return [
         'agreement_signed' => 'Agreement signed successfully',
         'image_uploaded' => 'Image uploaded successfully',
         'vehicle_submitted' => 'Vehicle verification submitted successfully',
+        'vehicle_updated' => 'Vehicle updated successfully',
     ],
 ];

@@ -19,6 +19,7 @@ class CreateIdentityDocumentsTable extends Migration
             // $table->bigInteger('id_number')->nullable();
             $table->text('front_image')->nullable();
             $table->text('back_image')->nullable();
+            $table->text('selfie_image')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
