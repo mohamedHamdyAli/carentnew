@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AgencyApplicationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BusinessDocumentController;
 use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
 use App\Http\Controllers\OwnerApplicationController;
@@ -133,6 +135,15 @@ Route::group(
         });
 
         /**
+         *   @Business Document routes
+         */
+        Route::prefix('business-documents')->middleware('auth:sanctum')->group(function () {
+            Route::post('/', [BusinessDocumentController::class, 'store']);
+            Route::get('/', [BusinessDocumentController::class, 'show']);
+            Route::delete('/delete', [BusinessDocumentController::class, 'devDelete']);
+        });
+
+        /**
          *   @Driver License routes
          */
         Route::prefix('driver-licenses')->middleware('auth:sanctum')->group(function () {
@@ -164,6 +175,19 @@ Route::group(
             // Development Routes
             Route::put('/status', [OwnerApplicationController::class, 'dev']);
             Route::delete('/delete', [OwnerApplicationController::class, 'devDelete']);
+        });
+
+        /**
+         *   @Agency Application routes
+         */
+        Route::prefix('agency-application')->middleware(['auth:sanctum', 'verified'])->group(function () {
+            Route::get('/status', [AgencyApplicationController::class, 'status']);
+            Route::post('/sign-agreement', [AgencyApplicationController::class, 'signAgreement']);
+            Route::post('/submit', [AgencyApplicationController::class, 'submit']);
+
+            // Development Routes
+            Route::put('/status', [AgencyApplicationController::class, 'dev']);
+            Route::delete('/delete', [AgencyApplicationController::class, 'devDelete']);
         });
 
         /**

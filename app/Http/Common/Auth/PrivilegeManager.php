@@ -14,9 +14,14 @@ class PrivilegeManager
         $this->user = $user;
     }
 
+    /**
+     * Grant a privilege to user.
+     * @param $privilege
+     * @return void
+     */
     public function grant($privilege)
     {
-        if($this->user->hasPrivilege($privilege)) {
+        if ($this->user->hasPrivilege($privilege)) {
             return;
         }
 
@@ -28,4 +33,21 @@ class PrivilegeManager
         ]);
     }
 
+    /**
+     * Revoke a privilege from the user.
+     * @param $privilege
+     * @return void
+     */
+    public function revoke($privilege)
+    {
+        if (!$this->user->hasPrivilege($privilege)) {
+            return;
+        }
+
+        $privilege_id = Privilege::where('key', $privilege)->first()->id;
+
+        UserPrivilege::where('user_id', $this->user->id)
+            ->where('privilege_id', $privilege_id)
+            ->delete();
+    }
 }

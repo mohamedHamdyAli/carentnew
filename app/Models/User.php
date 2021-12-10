@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Common\Auth\PrivilegeManager;
 use App\Http\Common\Auth\RoleManager;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -290,6 +291,12 @@ class User extends Authenticatable
     {
         $roleManger = new RoleManager($this);
         return $roleManger->assign($role);
+    }
+
+    public function grantPrivilege($privilege)
+    {
+        $privilegeManger = new PrivilegeManager($this);
+        return $privilegeManger->grant($privilege);
     }
 
     public function ownerApplications()

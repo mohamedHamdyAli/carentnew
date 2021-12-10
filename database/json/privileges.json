@@ -1,17 +1,22 @@
 [
     {
-        "name_en": "Create Order",
-        "name_ar": "إنشاء طلب",
-        "key": "create order"
+        "name_en": "Book Car",
+        "name_ar": "حجز سيارة",
+        "key": "book_car"
+    },
+    {
+        "name_en": "Rent Without Driver",
+        "name_ar": "تأجير بدون سائق",
+        "key": "rent_without_driver"
     },
     {
         "name_en": "Create User Payment",
         "name_ar": "إنشاء دفع مستخدم",
-        "key": "create user payment"
+        "key": "create_user_payment"
     },
     {
         "name_en": "Send User Payment",
         "name_ar": "إرسال دفع مستخدم",
-        "key": "send user payment"
+        "key": "send_user_payment"
     }
 ]

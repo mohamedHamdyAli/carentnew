@@ -15,6 +15,11 @@
         "key": "accountant"
     },
     {
+        "name_en": "Agency",
+        "name_ar": "وكالة",
+        "key": "agency"
+    },
+    {
         "name_en": "Owner",
         "name_ar": "مالك",
         "key": "owner"

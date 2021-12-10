@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DriverLicense;
+use App\Models\AgencyApplication;
+use App\Models\BusinessDocument;
 use App\Models\IdentityDocument;
-use App\Models\RenterApplication;
+use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class RenterApplicationController extends Controller
+class AgencyApplicationController extends Controller
 {
     public function status()
     {
         $ongoingApplication =
-            RenterApplication::where('user_id', auth()->user()->id)
+            AgencyApplication::where('user_id', auth()->user()->id)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -28,7 +28,7 @@ class RenterApplicationController extends Controller
     {
         // find on going application
         $ongoingApplication =
-            RenterApplication::where('user_id', auth()->user()->id)
+            AgencyApplication::where('user_id', auth()->user()->id)
             ->where('status', '!=', 'in-review')
             ->first();
 
@@ -41,16 +41,16 @@ class RenterApplicationController extends Controller
             ], 400);
         }
 
-        $application =  RenterApplication::create([
+        $application =  AgencyApplication::create([
             'user_id' => auth()->id(),
             'terms_agreed' => true,
             'identity_document_verified' => IdentityDocument::where('user_id', auth()->id())->where('verified_at', '!=', null)->first() ? true : false,
-            'driver_license_verified' => DriverLicense::where('user_id', auth()->id())->where('verified_at', '!=', null)->first() ? true : false,
+            'business_document_verified' => BusinessDocument::where('user_id', auth()->id())->where('verified_at', '!=', null)->first() ? true : false,
         ]);
 
         return response()->json([
             'message' => __('messages.success.agreement_signed'),
-            'data' => RenterApplication::find($application->id),
+            'data' => AgencyApplication::find($application->id),
             'error' => null,
         ]);
     }
@@ -60,7 +60,7 @@ class RenterApplicationController extends Controller
         $userId = auth()->user()->id;
         // find on going application
         $application =
-            RenterApplication::where('user_id', $userId)
+            AgencyApplication::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -92,11 +92,19 @@ class RenterApplicationController extends Controller
             ], 400);
         }
 
-        $unverifiedLicenese = $this->getDriverLincese();
+        $businessDocument = $this->getBusinessDocument();
+
+        if (!$businessDocument) {
+            return response()->json([
+                'message' => __('messages.error.data_missing'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
 
         $application->update([
             'identity_document_id' => $identityDocument->id,
-            'driver_license_id' => $unverifiedLicenese->id,
+            'business_document_id' => $businessDocument->id,
             'status' => 'in-review',
             'reason' => null,
         ]);
@@ -115,7 +123,7 @@ class RenterApplicationController extends Controller
         $userId = auth()->user()->id;
         // find on going application
         if (app()->environment('local')) {
-            return RenterApplication::where('user_id', $userId)->delete();
+            return AgencyApplication::where('user_id', $userId)->delete();
         }
     }
 
@@ -125,7 +133,7 @@ class RenterApplicationController extends Controller
 
         // delete applications
         $application =
-            RenterApplication::where('user_id', $userId)
+            AgencyApplication::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -149,36 +157,22 @@ class RenterApplicationController extends Controller
                 if (request('status') === 'approved') {
                     $application->update([
                         'identity_document_verified' => request('verify_identity_document') ?? false,
-                        'driver_license_verified' => request('verify_driver_license') ?? false,
+                        'business_document_verified' => request('business_document_verified') ?? false,
                     ]);
 
-                    // update idiotity document verified at 
-                    if (request()->has('verify_identity_document') && request('verify_identity_document')) {
-                        // update identity document verified at
-                        $verifyIdentity = IdentityDocument::whereVerifiedAt(null)->where('id', $application->identity_document_id)->update([
-                            'verified_at' => now()
-                        ]);
+                    // update identity document verified at
+                    $verifyIdentity = IdentityDocument::whereVerifiedAt(null)->where('id', $application->identity_document_id)->update([
+                        'verified_at' => now()
+                    ]);
 
-                        if ($verifyIdentity) {
-                            // grant the corosponding privilege to user
-                            Auth::user()->grantPrivilege('book_car');
+                    // update business document verified at
+                    $verifyBusiness = BusinessDocument::whereVerifiedAt(null)->where('id', $application->business_document_id)->update([
+                        'verified_at' => now()
+                    ]);
 
-                            // assign renter role
-                            Auth::user()->assignRole('renter');
-                        }
-                    }
-
-                    // update driver license verified at
-                    if (request()->has('verify_driver_license') && request('verify_driver_license')) {
-                        // update driver license verified at
-                        $verifyLicense = DriverLicense::whereVerifiedAt(null)->where('id', $application->driver_license_id)->update([
-                            'verified_at' => now()
-                        ]);
-
-                        if ($verifyLicense) {
-                            // grant the corosponding privilege to user
-                            Auth::user()->grantPrivilege('rent_without_driver');
-                        }
+                    if ($verifyBusiness && $verifyIdentity) {
+                        // assign role as a resullt of verification
+                        Auth::user()->assignRole('agency');
                     }
                 }
             }
@@ -191,9 +185,9 @@ class RenterApplicationController extends Controller
             ->first();
     }
 
-    private function getDriverLincese()
+    private function getBusinessDocument()
     {
-        return DriverLicense::where('user_id', auth()->user()->id)
+        return BusinessDocument::where('user_id', auth()->user()->id)
             ->first();
     }
 }

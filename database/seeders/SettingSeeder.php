@@ -39,5 +39,15 @@ class SettingSeeder extends Seeder
         ];
 
         Setting::create($owner_agreements);
+
+        $agency_agreements = [
+            'key' => 'agency-agreement',
+            'name_en' => 'Carent Egypt Terms of Use',
+            'name_ar' => 'شروط الإستخدام كارنت مصر',
+            'content_en' => $contentEn,
+            'content_ar' => $contentAr,
+        ];
+
+        Setting::create($agency_agreements);
     }
 }

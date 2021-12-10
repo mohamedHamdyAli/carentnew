@@ -31,6 +31,7 @@ class IdentityDocumentController extends Controller
         request()->validate([
             'front_image' => 'required|image|mimes:jpeg,png,jpg|max:20480',
             'back_image' => 'required|image|mimes:jpeg,png,jpg|max:20480',
+            'selfie_image' => 'required|image|mimes:jpeg,png,jpg|max:20480',
         ]);
 
         /**
@@ -38,6 +39,7 @@ class IdentityDocumentController extends Controller
          */
         $front_image = request()->file('front_image')->store('identity_documents');
         $back_image = request()->file('back_image')->store('identity_documents');
+        $selfie_image = request()->file('selfie_image')->store('identity_documents');
 
         /**
          * ! Create Driver License
@@ -46,6 +48,7 @@ class IdentityDocumentController extends Controller
             'user_id' => auth()->user()->id,
             'front_image' => $front_image,
             'back_image' => $back_image,
+            'selfie_image' => $selfie_image,
         ];
 
         $identity_document = IdentityDocument::where('verified_at', null)->first();
@@ -57,6 +60,9 @@ class IdentityDocumentController extends Controller
             }
             if (file_exists(storage_path('app/' . $identity_document->back_image))) {
                 unlink(storage_path('app/' . $identity_document->back_image));
+            }
+            if (file_exists(storage_path('app/' . $identity_document->selfie_image))) {
+                unlink(storage_path('app/' . $identity_document->selfie_image));
             }
             $identity_document->update($data);
         } else {
@@ -104,6 +110,7 @@ class IdentityDocumentController extends Controller
         request()->validate([
             'front_image' => 'sometimes|image|mimes:jpeg,png,jpg|max:20480',
             'back_image' => 'sometimes|image|mimes:jpeg,png,jpg|max:20480',
+            'selfie_image' => 'sometimes|image|mimes:jpeg,png,jpg|max:20480',
         ]);
 
 
@@ -120,6 +127,11 @@ class IdentityDocumentController extends Controller
             $back_image = request()->file('back_image')->store('identity_documents');
             $data = array_merge($data, ['back_image' => $back_image]);
         }
+
+        if (request()->has('selfie_image')) {
+            $selfie_image = request()->file('selfie_image')->store('identity_documents');
+            $data = array_merge($data, ['selfie_image' => $selfie_image]);
+        }
         /**
          * ! Create Driver License
          */
@@ -133,6 +145,9 @@ class IdentityDocumentController extends Controller
             }
             if (file_exists(storage_path('app/' . $identity_document->back_image))) {
                 unlink(storage_path('app/' . $identity_document->back_image));
+            }
+            if (file_exists(storage_path('app/' . $identity_document->selfie_image))) {
+                unlink(storage_path('app/' . $identity_document->selfie_image));
             }
             $identity_document->update($data);
         } else {
@@ -151,7 +166,7 @@ class IdentityDocumentController extends Controller
     public function devDelete()
     {
         $userId = auth()->user()->id;
-        // find on going application
+        // find on going applications and delete them
         if (app()->environment('local')) {
             return IdentityDocument::where('user_id', $userId)->delete();
         }

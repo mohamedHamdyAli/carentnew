@@ -287,7 +287,7 @@ class AuthController extends Controller
      * ! Functionality !
      * < --------------------------------------- >
      * * 1. Validate request ℹ️
-     * * 2. Check if user is verified
+     * * 2. Check if user is verified ⚠️
      * * 3. Verify otp ✅
      */
     public function verify($type)
@@ -296,7 +296,7 @@ class AuthController extends Controller
          * TODO: 1. Validate the request ℹ️
          */
         request()->validate([
-            'otp' => ['required', 'regex:/^[0-9]{6}$/'],
+            'otp' => ['required', 'regex:/^[0-9]{6}$/'], // * 6 digit otp
         ]);
 
         /**

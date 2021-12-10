@@ -14,9 +14,14 @@ class RoleManager
         $this->user = $user;
     }
 
+    /**
+     * Assign a role to the user.
+     * @param $role
+     * @return void
+     */
     public function assign($role)
     {
-        if($this->user->hasRole($role)) {
+        if ($this->user->hasRole($role)) {
             return;
         }
 
@@ -28,4 +33,21 @@ class RoleManager
         ]);
     }
 
+    /**
+     * Unassign a role from the user.
+     * @param $role
+     * @return void
+     */
+    public function unassign($role)
+    {
+        if (!$this->user->hasRole($role)) {
+            return;
+        }
+
+        $role_id = Role::where('key', $role)->first()->id;
+
+        UserRole::where('user_id', $this->user->id)
+            ->where('role_id', $role_id)
+            ->delete();
+    }
 }
