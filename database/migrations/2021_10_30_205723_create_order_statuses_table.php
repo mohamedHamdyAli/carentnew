@@ -17,8 +17,10 @@ class CreateOrderStatusesTable extends Migration
             $table->id();
             $table->string('name_en', 50);
             $table->string('name_ar', 50);
-            $table->string('description_en', 150);
-            $table->string('description_ar', 150);
+            $table->boolean('terminate')->default(false);
+            $table->boolean('notify')->default(false);
+            $table->string('message_en', 150);
+            $table->string('message_ar', 150);
         });
     }
 

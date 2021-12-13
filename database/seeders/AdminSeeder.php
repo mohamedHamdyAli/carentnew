@@ -62,5 +62,10 @@ class AdminSeeder extends Seeder
             'phone' => '+201067001577',
             'password' => Hash::make('123'),
         ]);
+
+        /**
+         * * Assign user role to user
+         */
+        User::find($ahmedId)->assignRole('user');
     }
 }

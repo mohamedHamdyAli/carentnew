@@ -22,4 +22,31 @@ use Illuminate\Database\Eloquent\Model;
 class UserPrivilege extends Model
 {
     use Uuid;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'user_id',
+        'privilege_id',
+    ];
+
+    protected $hidden = [
+        'id',
+        'user_id',
+        'privilege'
+    ];
+
+    protected $appends = [
+        'privilege_key'
+    ];
+
+    public function getPrivilegeKeyAttribute()
+    {
+        return $this->privilege->key;
+    }
+
+    public function privilege()
+    {
+        return $this->belongsTo(Privilege::class);
+    }
 }

@@ -1,0 +1,106 @@
+[
+    {
+        "name_en": "Created",
+        "name_ar": "تم الإنشاء",
+        "terminate": false,
+        "notify": false,
+        "message_en": "Order created",
+        "message_ar": "تم إنشاء طلبك"
+    },
+    {
+        "name_en": "Accepted",
+        "name_ar": "تم القبول",
+        "terminate": false,
+        "notify": true,
+        "message_en": "Order accepted",
+        "message_ar": "تم قبول طلبك"
+    },
+    {
+        "name_en": "Pending Payment",
+        "name_ar": "في انتظار الدفع",
+        "terminate": false,
+        "notify": false,
+        "message_en": "Order pending payment",
+        "message_ar": "طلبك في انتظار الدفع"
+    },
+    {
+        "name_en": "Paid",
+        "name_ar": "تم الدفع",
+        "terminate": false,
+        "notify": false,
+        "message_en": "Order payment is complete",
+        "message_ar": "تم دفع الطلب"
+    },
+    {
+        "name_en": "Confirmed",
+        "name_ar": "تم التأكيد",
+        "terminate": false,
+        "notify": true,
+        "message_en": "The order is confirmed",
+        "message_ar": "تم تأكيد طلبك"
+    },
+    {
+        "name_en": "Car Arrived",
+        "name_ar": "وصلت السيارة",
+        "terminate": false,
+        "notify": true,
+        "message_en": "The car has arrived",
+        "message_ar": "تم وصول السيارة"
+    },
+    {
+        "name_en": "Car Delivered",
+        "name_ar": "تم التسليم",
+        "terminate": false,
+        "notify": true,
+        "message_en": "The car has been delivered",
+        "message_ar": "تم تسليم السيارة"
+    },
+    {
+        "name_en": "Car Returned",
+        "name_ar": "تم الإرجاع",
+        "terminate": false,
+        "notify": false,
+        "message_en": "The car has been returned",
+        "message_ar": "تم إرجاع السيارة"
+    },
+    {
+        "name_en": "Completed",
+        "name_ar": "تم الانتهاء",
+        "terminate": true,
+        "notify": false,
+        "message_en": "The order is completed",
+        "message_ar": "تم انتهاء طلبك"
+    },
+    {
+        "name_en": "Delivery Failed",
+        "name_ar": "فشل التوصيل",
+        "terminate": true,
+        "notify": true,
+        "message_en": "The car delivery has failed",
+        "message_ar": "تعذر توصيل السيارة إليك"
+    },
+    {
+        "name_en": "Rejected",
+        "name_ar": "تم الرفض",
+        "terminate": true,
+        "notify": true,
+        "message_en": "The order was rejected",
+        "message_ar": "تم رفض طلبك"
+    },
+    {
+        "name_en": "Canceled",
+        "name_ar": "تم الإلغاء",
+        "terminate": true,
+        "notify": true,
+        "message_en": "The order was canceled",
+        "message_ar": "تم إلغاء طلبك"
+    },
+    {
+        "name_en": "Refunded",
+        "name_ar": "تم الرد",
+        "terminate": true,
+        "notify": true,
+        "message_en": "The order is refunded",
+        "message_ar": "تم رد طلبك"
+    }
+]

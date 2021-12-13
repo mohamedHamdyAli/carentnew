@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -25,5 +24,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OrderStatus extends Model
 {
-    use Uuid;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'name_en',
+        'name_ar',
+        'terminate',
+        'notify',
+        'message_en',
+        'message_ar',
+    ];
 }

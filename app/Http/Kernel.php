@@ -59,6 +59,7 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'verified' => \App\Http\Middleware\VerifiedUser::class,
         'role' => \App\Http\Middleware\Role::class,
+        'anyrole' => \App\Http\Middleware\AnyRole::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
