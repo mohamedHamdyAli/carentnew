@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         Seeder::call('Database\Seeders\AppTestSeeder');
         Seeder::call('Database\Seeders\SettingSeeder');
         Seeder::call('Database\Seeders\OrderStatusSeeder');
+        Seeder::call('Database\Seeders\AppSettingSeeder');
     }
 }

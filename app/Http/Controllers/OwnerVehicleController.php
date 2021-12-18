@@ -320,7 +320,7 @@ class OwnerVehicleController extends Controller
         $vehicle = Vehicle::findOrFail($id);
 
         // check if the vehicle is already verified
-        if (request('active') === 'true' && $vehicle->verified_at === null) {
+        if (request('active') == 'true' && $vehicle->verified_at === null) {
             return response()->json([
                 'message' => __('messages.error.vehicle_verified'),
                 'data' => null,
@@ -328,7 +328,7 @@ class OwnerVehicleController extends Controller
             ], 400);
         }
         // string to boolean
-        $vehicle->active = (request('active') === 'true') ? true : false;
+        $vehicle->active = (request('active') == 'true') ? true : false;
         $vehicle->save();
 
         // flush all vehicles cache

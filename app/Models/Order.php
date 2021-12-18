@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\OrderedUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Order
@@ -44,4 +45,88 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use OrderedUuid;
+
+    protected $fillable = [
+        'number',
+        'user_id',
+        'vehicle_id',
+        'owner_id',
+        'order_Status_id',
+        'start_date',
+        'end_date',
+        'with_driver',
+        'vehicle_total',
+        'driver_total',
+        'sub_total',
+        'vat',
+        'discount',
+        'total',
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'vehicle_id',
+        'owner_id',
+        'order_Status_id',
+        'vehicle_total',
+        'driver_total',
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date:Y-m-d',
+        'end_date' => 'date:Y-m-d',
+        'with_driver' => 'boolean',
+        'vehicle_total' => 'float',
+        'driver_total' => 'float',
+        'sub_total' => 'float',
+        'vat' => 'float',
+        'discount' => 'float',
+        'total' => 'float',
+    ];
+
+    protected $appends = [
+        'vehicle',
+        'status',
+    ];
+
+    public function getVehicleAttribute()
+    {
+        $data = $this->vehicle()->first()->makeVisible('thumbnail');
+        $data->thumbnail = url(Storage::url($data->thumbnail));
+        return $data;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->orderStatus()->first();
+    }
+
+    public function vehicle()
+    {
+        return $this->hasOne(Vehicle::class, 'id', 'vehicle_id');
+    }
+
+    public function orderStatus()
+    {
+        return $this->hasOne(OrderStatus::class, 'id', 'order_Status_id');
+    }
+
+    // scope overlaps dates
+    public function scopeOverlaps($query, $start_date, $end_date)
+    {
+        return $query->where(function ($query) use ($start_date, $end_date) {
+            $query->where(function ($query) use ($start_date,) {
+                $query->where('start_date', '<=', $start_date)
+                    ->where('end_date', '>=', $start_date);
+            })->orWhere(function ($query) use ($end_date) {
+                $query->where('start_date', '<=', $end_date)
+                    ->where('end_date', '>=', $end_date);
+            })->orWhere(function ($query) use ($start_date, $end_date) {
+                $query->where('start_date', '>=', $start_date)
+                    ->where('end_date', '<=', $end_date);
+            });
+        });
+    }
 }

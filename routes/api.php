@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessDocumentController;
 use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerApplicationController;
 use App\Http\Controllers\OwnerVehicleController;
 use Carbon\Carbon;
@@ -23,6 +24,7 @@ use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\VehicleController;
+use App\Models\AppSetting;
 use App\Models\Vehicle;
 
 /*
@@ -67,18 +69,6 @@ Route::group(
             // $country->state = (object) $state;
             // return (object) collect($country);
             // return $country;
-            return response()->json([
-                ['name_en' => 'Created', 'name_ar' => 'تم الإنشاء', 'terminate' => false, 'notify' => false, 'message_en' => 'Order created', 'message_ar' => 'تم إنشاء طلبك'],
-                ['name_en' => 'Paid', 'name_ar' => 'تم الدفع', 'terminate' => false, 'notify' => false, 'message_en' => 'Order payment is complete', 'message_ar' => 'تم دفع الطلب'],
-                ['name_en' => 'Pending', 'name_ar' => 'قيد الإنتظار', 'terminate' => false, 'notify' => false, 'message_en' => 'The order is pending confirmation', 'message_ar' => 'طلبك في إنتظار التأكيد'],
-                ['name_en' => 'Confirmed', 'name_ar' => 'تم التأكيد', 'terminate' => false, 'notify' => true, 'message_en' => 'The order is confirmed', 'message_ar' => 'تم تأكيد طلبك'],
-                ['name_en' => 'Preparing', 'name_ar' => 'قيد التنفيذ', 'terminate' => false, 'notify' => false, 'message_en' => 'The order is beeing prepared', 'message_ar' => 'جاري تنفيذ طلبك'],
-                ['name_en' => 'Ready', 'name_ar' => 'جاهز', 'terminate' => false, 'notify' => true, 'message_en' => 'Your order is ready for delivery', 'message_ar' => 'طلبك جاهز للتوصيل'],
-                ['name_en' => 'On Delivery', 'name_ar' => 'جاري التوصيل', 'terminate' => false, 'notify' => true, 'message_en' => 'Your order is on the way to you', 'message_ar' => 'طلبك في الطريق إليك'],
-                ['name_en' => 'Delivered', 'name_ar' => 'تم التوصيل', 'terminate' => true, 'notify' => true, 'message_en' => 'The order was delivered successfully', 'message_ar' => 'تم توصيل طلبك'],
-                ['name_en' => 'Delivery Failed', 'name_ar' => 'فشل التوصيل', 'terminate' => true, 'notify' => true, 'message_en' => 'The order delivery has failed', 'message_ar' => 'تعذر توصيل الطلب إليك'],
-                ['name_en' => 'Canceled', 'name_ar' => 'تم الإلغاء', 'terminate' => true, 'notify' => true, 'message_en' => 'The order was canceled', 'message_ar' => 'تم إلغاء طلبك'],
-            ]);
         });
 
         /* 
@@ -138,6 +128,19 @@ Route::group(
         Route::prefix('vehicles')->middleware('country')->group(function () {
             Route::post('/', [VehicleController::class, 'index']);
             Route::get('/{id}', [VehicleController::class, 'view']);
+            Route::get('/pricing', [OrderController::class, 'getTotals']);
+        });
+
+        /**
+         *   @Order routes
+         */
+        Route::prefix('orders')->middleware(['auth:sanctum', 'country', 'privilege:book_car'])->group(function () {
+            Route::get('/pricing', [OrderController::class, 'getTotals']);
+            Route::post('/create', [OrderController::class, 'create']);
+            Route::post('/{id}/cancel', [OrderController::class, 'cancel']);
+            Route::post('/{id}/confirm', [OrderController::class, 'confirm']);
+            Route::get('/my-orders', [OrderController::class, 'myOrders']);
+            Route::get('/by-number/{number}', [OrderController::class, 'byNumber']);
         });
 
         /**
@@ -241,6 +244,15 @@ Route::group(
          */
         Route::prefix('upload')->middleware('auth:sanctum')->group(function () {
             Route::post('/image', [UploadController::class, 'image']);
+        });
+
+        /**
+         *   @App Setting routes
+         */
+        Route::prefix('app')->group(function () {
+            Route::get('settings', function () {
+                return response()->json(AppSetting::findOrFail(1));
+            });
         });
     }
 );

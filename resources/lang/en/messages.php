@@ -37,4 +37,5 @@ return [
         'vehicle_submitted' => 'Vehicle verification submitted successfully',
         'vehicle_updated' => 'Vehicle updated successfully',
     ],
+    'suggested_price_less_than_80_percent' => 'Suggested price can\'t be less than 80% of the total price',
 ];

@@ -37,4 +37,5 @@ return [
         'vehicle_submitted' => 'تم إرسال طلب تحقيق السيارة بنجاح',
         'vehicle_updated' => 'تم تحديث بيانات السيارة بنجاح',
     ],
+    'suggested_price_less_than_80_percent' => 'السعر المقترح لا يجب ان يقل عن 80% من السعر المطلوب',
 ];
