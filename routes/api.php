@@ -7,6 +7,7 @@ use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerApplicationController;
+use App\Http\Controllers\OwnerOrderController;
 use App\Http\Controllers\OwnerVehicleController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserCardController;
 use App\Http\Controllers\VehicleController;
 use App\Models\AppSetting;
+use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use App\Models\Vehicle;
 use Maherelgamil\LaravelFawry\Fawry;
 
@@ -45,17 +48,29 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/test', function () {
-    // Get user
-    $user = App\Models\User::find('39bd006c-f6b3-4b6b-b728-18c432e9945d');
-
-
-    $fawry = new Fawry();
-    $listOfTokes = $fawry->listCustomerTokens($user);
-    // $fawry->deleteCardToken($user, $listOfTokes->cards[0]->token);
-    return $listOfTokes;
-    $tokenResponse = $fawry->createCardToken(request('card_number'), request('expiry_year'), request('expiry_month'), request('cvv'), $user);
-
-    return $tokenResponse;
+    // 
+    // try {
+    //     $orders = Order::all();
+    //     foreach ($orders as $order) {
+    //         OrderStatusHistory::create([
+    //             'order_id' => $order->id,
+    //             'order_status_id' => $order->order_Status_id,
+    //             'created_at' => $order->created_at,
+    //             'updated_at' => $order->updated_at
+    //         ]);
+    //     }
+    //     return response()->json([
+    //         'message' => __('messages.r_success'),
+    //         'data' => null,
+    //         'error' => null
+    //     ], 200);
+    // } catch (\Exception $e) {
+    //     return response()->json([
+    //         'message' => __('messages.r_error'),
+    //         'data' => null,
+    //         'error' => $e->getMessage()
+    //     ], 500);
+    // }
 });
 
 Route::group(
@@ -249,6 +264,7 @@ Route::group(
          *   @Owner routes
          */
         Route::prefix('owner')->middleware(['auth:sanctum', 'verified', 'anyrole:owner|agency'])->group(function () {
+            // Owner Vehicles Routes
             Route::prefix('vehicles')->group(function () {
                 Route::get('/', [OwnerVehicleController::class, 'index']);
                 Route::post('/', [OwnerVehicleController::class, 'store'])->middleware('country');
@@ -260,6 +276,15 @@ Route::group(
                 Route::put('/status/{id}', [OwnerVehicleController::class, 'dev']);
                 // activation routes
                 Route::post('/activate/{id}', [OwnerVehicleController::class, 'activate']);
+            });
+
+            // Owner Orders routes
+            Route::prefix('orders')->group(function () {
+                Route::get('/', [OwnerOrderController::class, 'index']);
+                Route::get('/{id}', [OwnerOrderController::class, 'view']);
+
+                // accept order
+                Route::patch('/accept/{id}', [OwnerOrderController::class, 'accept']);
             });
         });
 

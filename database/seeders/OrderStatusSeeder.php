@@ -24,9 +24,16 @@ class OrderStatusSeeder extends Seeder
                 'name_en' => $d->name_en,
                 'name_ar'   => $d->name_ar,
                 'terminate'  => $d->terminate,
-                'notify'  => $d->notify,
-                'message_en'  => $d->message_en,
-                'message_ar'  => $d->message_ar,
+                'notify_client' => $d->notify_client,
+                'notify_owner' => $d->notify_owner,
+                'client_title_en' => $d->client_title_en,
+                'client_title_ar' => $d->client_title_ar,
+                'client_body_en' => $d->client_body_en,
+                'client_body_ar' => $d->client_body_ar,
+                'owner_title_en' =>  $d->owner_title_en,
+                'owner_title_ar' => $d->owner_title_ar,
+                'owner_body_en' => $d->owner_body_en,
+                'owner_body_ar' => $d->owner_body_ar,
             ]);
             $dataCount++;
         }

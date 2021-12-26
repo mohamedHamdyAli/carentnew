@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\OrderedUuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -67,6 +68,8 @@ class Order extends Model
         'user_id',
         'vehicle_id',
         'owner_id',
+        'user',
+        'owner',
         'order_Status_id',
         'vehicle_total',
         'driver_total',
@@ -113,6 +116,16 @@ class Order extends Model
         return $this->hasOne(OrderStatus::class, 'id', 'order_Status_id');
     }
 
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(User::class, 'id', 'owner_id');
+    }
+
     // scope overlaps dates
     public function scopeOverlaps($query, $start_date, $end_date)
     {
@@ -128,5 +141,39 @@ class Order extends Model
                     ->where('end_date', '<=', $end_date);
             });
         });
+    }
+
+    public function orderExpireAt()
+    {
+        $now = Carbon::now();
+        $orderExpireAfterMinutes = config('app.order_expire_after');
+        return $now->addMinutes($orderExpireAfterMinutes);
+    }
+
+    public function paymentExpireAt()
+    {
+        $now = Carbon::now();
+        $paymentExpireAfterMinutes = config('app.payment_expire_after');
+        return $now->addMinutes($paymentExpireAfterMinutes);
+    }
+
+    public function canAccept()
+    {
+        return $this->order_Status_id == 1 && $this->orderExpireAt() > Carbon::now();
+    }
+
+    public function canPay()
+    {
+        return $this->order_Status_id == 2 && $this->paymentExpireAt() > Carbon::now();
+    }
+
+    public function canCancel()
+    {
+        return $this->order_Status_id <= 3;
+    }
+
+    public function canExtend()
+    {
+        return $this->order_Status_id == 7;
     }
 }

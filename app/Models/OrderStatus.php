@@ -31,8 +31,39 @@ class OrderStatus extends Model
         'name_en',
         'name_ar',
         'terminate',
-        'notify',
-        'message_en',
-        'message_ar',
+        'notify_client',
+        'notify_owner',
+        'client_title_en',
+        'client_title_ar',
+        'client_body_en',
+        'client_body_ar',
+        'owner_title_en',
+        'owner_title_ar',
+        'owner_body_en',
+        'owner_body_ar',
     ];
+
+    protected $hidden = [
+        'name_en',
+        'name_ar',
+        'notify_client',
+        'notify_owner',
+        'client_title_en',
+        'client_title_ar',
+        'client_body_en',
+        'client_body_ar',
+        'owner_title_en',
+        'owner_title_ar',
+        'owner_body_en',
+        'owner_body_ar',
+    ];
+
+    protected $appends = [
+        'name',
+    ];
+
+    public function getNameAttribute()
+    {
+        return $this->{'name_' . app()->getLocale()};
+    }
 }
