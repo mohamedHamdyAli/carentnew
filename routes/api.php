@@ -23,9 +23,11 @@ use App\Http\Controllers\RenterApplicationController;
 use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\UserCardController;
 use App\Http\Controllers\VehicleController;
 use App\Models\AppSetting;
 use App\Models\Vehicle;
+use Maherelgamil\LaravelFawry\Fawry;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +44,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', function () {
+Route::post('/test', function () {
+    // Get user
+    $user = App\Models\User::find('39bd006c-f6b3-4b6b-b728-18c432e9945d');
+
+
+    $fawry = new Fawry();
+    $listOfTokes = $fawry->listCustomerTokens($user);
+    // $fawry->deleteCardToken($user, $listOfTokes->cards[0]->token);
+    return $listOfTokes;
+    $tokenResponse = $fawry->createCardToken(request('card_number'), request('expiry_year'), request('expiry_month'), request('cvv'), $user);
+
+    return $tokenResponse;
 });
 
 Route::group(
@@ -141,6 +154,17 @@ Route::group(
             Route::post('/{id}/confirm', [OrderController::class, 'confirm']);
             Route::get('/my-orders', [OrderController::class, 'myOrders']);
             Route::get('/by-number/{number}', [OrderController::class, 'byNumber']);
+        });
+
+        /**
+         *   @User routes
+         */
+        Route::prefix('users')->middleware(['auth:sanctum'])->group(function () {
+            Route::prefix('cards')->group(function () {
+                Route::get('/', [UserCardController::class, 'index']);
+                Route::post('/', [UserCardController::class, 'add']);
+                Route::delete('/{token}', [UserCardController::class, 'delete']);
+            });
         });
 
         /**

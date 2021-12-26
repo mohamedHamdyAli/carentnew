@@ -2,6 +2,12 @@
 
 return [
     'r_success' => 'Your request is successful',
+    'r_error' => 'Your request is failed',
+    'add_card_success' => 'Your card is added successfully',
+    'add_card_error' => 'Error while adding your card',
+    'card_expired' => 'Your card is expired or will expire in next 30 days',
+    'invalid_expiry_month' => 'Invalid expiry month',
+    'delete_card_success' => 'Your card is deleted successfully',
     'error' => [
         'create_user' => 'Error while creating user',
         'generate_token' => 'Error while generating token',
