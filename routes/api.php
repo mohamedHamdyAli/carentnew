@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 // Controllers
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\RenterApplicationController;
+use App\Http\Controllers\RenterOrderController;
 use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UploadController;
@@ -54,7 +55,7 @@ Route::post('/test', function () {
     //     foreach ($orders as $order) {
     //         OrderStatusHistory::create([
     //             'order_id' => $order->id,
-    //             'order_status_id' => $order->order_Status_id,
+    //             'order_status_id' => $order->order_status_id,
     //             'created_at' => $order->created_at,
     //             'updated_at' => $order->updated_at
     //         ]);
@@ -87,16 +88,6 @@ Route::group(
         });
 
         Route::get('/test', function () {
-            // return [
-            //    'data' => DB::select('select * from personal_access_tokens where (last_used_at < ?) or (last_used_at is null and created_at < ?)', [Carbon::now()->subDays(30), Carbon::now()->subDays(30)]),
-            //    'monthAgo' => Carbon::now()->subDays(30),
-            //];
-            //return User::factory(1)->hasBalance()->isActive()->create();
-            // $country = DB::table('countries')->inRandomOrder()->first();
-            // $state = DB::table('states')->where('country_id', $country->id)->inRandomOrder()->first();
-            // $country->state = (object) $state;
-            // return (object) collect($country);
-            // return $country;
         });
 
         /* 
@@ -165,12 +156,28 @@ Route::group(
         Route::prefix('orders')->middleware(['auth:sanctum', 'country', 'privilege:book_car'])->group(function () {
             Route::get('/pricing', [OrderController::class, 'getTotals']);
             Route::post('/create', [OrderController::class, 'create']);
-            Route::post('/{id}/cancel', [OrderController::class, 'cancel']);
-            Route::post('/{id}/confirm', [OrderController::class, 'confirm']);
+
+            // will be removed
             Route::get('/my-orders', [OrderController::class, 'myOrders']);
             Route::get('/by-number/{number}', [OrderController::class, 'byNumber']);
         });
 
+
+        /**
+         *   @Renter routes
+         */
+        Route::prefix('renter')->middleware(['auth:sanctum', 'verified', 'role:renter'])->group(function () {
+
+
+            // Renter Orders routes
+            Route::prefix('orders')->group(function () {
+                Route::get('/', [RenterOrderController::class, 'index']);
+                Route::get('/{id}', [RenterOrderController::class, 'view']);
+
+                // cancel order by renter
+                Route::patch('/cancel/{id}', [RenterOrderController::class, 'cancel']);
+            });
+        });
         /**
          *   @User routes
          */
@@ -285,6 +292,8 @@ Route::group(
 
                 // accept order
                 Route::patch('/accept/{id}', [OwnerOrderController::class, 'accept']);
+                // cancel order
+                Route::patch('/cancel/{id}', [OwnerOrderController::class, 'cancel']);
             });
         });
 

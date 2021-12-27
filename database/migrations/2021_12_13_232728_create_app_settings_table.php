@@ -14,12 +14,14 @@ class CreateAppSettingsTable extends Migration
     public function up()
     {
         Schema::create('app_settings', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->mediumInteger('version')->unique();
             $table->smallInteger('vat_percentage')->default(14);
             $table->boolean('point_to_money')->default(false);
             $table->decimal('point_to_money_rate', 10, 2)->default(1);
             $table->boolean('money_to_point')->default(false);
             $table->decimal('money_to_point_rate', 10, 2)->default(1);
+            $table->timestamps();
         });
     }
 

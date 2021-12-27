@@ -3,6 +3,7 @@
 return [
     'r_success' => 'Your request is successful',
     'r_error' => 'Your request is failed',
+    'r_failed' => 'Your request is failed',
     'add_card_success' => 'Your card is added successfully',
     'add_card_error' => 'Error while adding your card',
     'card_expired' => 'Your card is expired or will expire in next 30 days',

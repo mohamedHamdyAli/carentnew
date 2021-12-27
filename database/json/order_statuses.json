@@ -161,7 +161,7 @@
         "client_body_ar": "تم إلغاء الطلب",
         "owner_title_en": "Canceled Order",
         "owner_title_ar": "تم الإلغاء",
-        "owner_body_en": "You have canceled the order",
+        "owner_body_en": "The order was canceled",
         "owner_body_ar": "لقد تم إلغاء الطلب"
     },
     {

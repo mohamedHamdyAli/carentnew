@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string $renter_id
  * @property string $vehicle_id
  * @property string $owner_id
- * @property string $order_Status_id
+ * @property string $order_status_id
  * @property string $type
  * @property string|null $extended_from_id
  * @property string $start_date
@@ -52,7 +52,7 @@ class Order extends Model
         'user_id',
         'vehicle_id',
         'owner_id',
-        'order_Status_id',
+        'order_status_id',
         'start_date',
         'end_date',
         'with_driver',
@@ -70,7 +70,6 @@ class Order extends Model
         'owner_id',
         'user',
         'owner',
-        'order_Status_id',
         'vehicle_total',
         'driver_total',
         'created_at',
@@ -113,7 +112,7 @@ class Order extends Model
 
     public function orderStatus()
     {
-        return $this->hasOne(OrderStatus::class, 'id', 'order_Status_id');
+        return $this->hasOne(OrderStatus::class, 'id', 'order_status_id');
     }
 
     public function user()
@@ -124,6 +123,16 @@ class Order extends Model
     public function owner()
     {
         return $this->hasOne(User::class, 'id', 'owner_id');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(OrderPayment::class, 'order_id', 'id');
+    }
+
+    public function refund()
+    {
+        return $this->hasOne(OrderRefund::class, 'order_id', 'id');
     }
 
     // scope overlaps dates
@@ -157,23 +166,33 @@ class Order extends Model
         return $now->addMinutes($paymentExpireAfterMinutes);
     }
 
-    public function canAccept()
+    public function ownerCanAccept()
     {
-        return $this->order_Status_id == 1 && $this->orderExpireAt() > Carbon::now();
+        return $this->order_status_id == 1 && $this->orderExpireAt() > Carbon::now();
     }
 
-    public function canPay()
+    public function renterCanPay()
     {
-        return $this->order_Status_id == 2 && $this->paymentExpireAt() > Carbon::now();
+        return $this->order_status_id == 2 && $this->paymentExpireAt() > Carbon::now();
     }
 
-    public function canCancel()
+    public function renterCanCancel()
     {
-        return $this->order_Status_id <= 3;
+        return $this->order_status_id <= 3;
     }
 
-    public function canExtend()
+    public function ownerCanCancel()
     {
-        return $this->order_Status_id == 7;
+        return $this->order_status_id < 7;
+    }
+
+    public function renterCanRequestRefund()
+    {
+        return $this->order_status_id == 11 && $this->payment()->paid && $this->refund()->isEmpty();
+    }
+
+    public function renterCanExtend()
+    {
+        return $this->order_status_id == 7 && $this->payment()->paid;
     }
 }

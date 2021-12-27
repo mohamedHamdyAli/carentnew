@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -56,6 +57,11 @@ class VehicleController extends Controller
                 })
                 ->when(request('rented_before'), function ($query) {
                     return $query->where('rented', '>', 0);
+                })
+                ->when(request('from_date'), function ($query) {
+                    return $query->whereDoesntHave('orders', function ($query) {
+                        $query->Overlaps(request('from_date'), request('to_date'));
+                    });
                 })
                 ->where('active', true)
                 ->whereNotNull('verified_at')

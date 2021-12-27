@@ -246,6 +246,11 @@ class Vehicle extends Model
         return $images;
     }
 
+    public function Orders()
+    {
+        return $this->hasMany(Order::class, 'vehicle_id');
+    }
+
     public function getPricingAttribute()
     {
         return $this->VehiclePricing()->first();

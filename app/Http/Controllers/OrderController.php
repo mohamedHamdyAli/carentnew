@@ -121,6 +121,15 @@ class OrderController extends Controller
     {
         $data = Order::where('number', $number)->firstOrFail();
 
+        $settings = [
+            'can_cancel' => $data->renterCanCancel(),
+            'can_pay' => $data->renterCanPay(),
+            'can_extend' => $data->renterCanExtend(),
+        ];
+
+        // add settings to data
+        $data->settings = $settings;
+
         return response()->json([
             'message' => __('messages.r_success'),
             'data' => $data,
