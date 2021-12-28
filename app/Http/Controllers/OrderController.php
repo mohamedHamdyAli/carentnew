@@ -81,7 +81,7 @@ class OrderController extends Controller
 
         $vehicle = Vehicle::findOrFail(request('vehicle_id'));
 
-        $order = Order::create([
+        $data = [
             'number' => $number,
             'user_id' => auth()->user()->id,
             'vehicle_id' => request('vehicle_id'),
@@ -90,14 +90,18 @@ class OrderController extends Controller
             'end_date' => request('end_date'),
             'with_driver' => request('with_driver'),
             'suggested_price' => request('suggested_price'),
-            'order_Status_id' => 1,
+            'order_status_id' => 1,
             'vehicle_total' => $totals['vehicle_total'],
             'driver_total' => $totals['driver_total'],
             'sub_total' => $totals['sub_total'],
             'vat' => $totals['vat'],
             'discount' => $totals['discount'],
             'total' => $totals['total'],
-        ]);
+        ];
+
+        $order = Order::create($data);
+
+
 
         return response()->json([
             'message' => __('messages.r_success'),
