@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessDocumentController;
 use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerApplicationController;
 use App\Http\Controllers\OwnerOrderController;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 
 // Controllers
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RenterApplicationController;
 use App\Http\Controllers\RenterOrderController;
 use App\Http\Controllers\SecureFileController;
@@ -88,6 +90,15 @@ Route::group(
         });
 
         Route::get('/test', function () {
+        });
+
+        // Payment Notification
+        Route::post('/payment-notifications', function (Request $request) {
+            return response()->json([
+                'message' => 'Payment notification received',
+                'data' => $request->all(),
+                'error' => null
+            ], 200);
         });
 
         /* 
@@ -167,8 +178,6 @@ Route::group(
          *   @Renter routes
          */
         Route::prefix('renter')->middleware(['auth:sanctum', 'verified', 'role:renter'])->group(function () {
-
-
             // Renter Orders routes
             Route::prefix('orders')->group(function () {
                 Route::get('/', [RenterOrderController::class, 'index']);
@@ -178,10 +187,24 @@ Route::group(
                 Route::patch('/cancel/{id}', [RenterOrderController::class, 'cancel']);
             });
         });
+
+        /**
+         *   @Payment routes
+         */
+        Route::prefix('payments')->middleware(['auth:sanctum', 'verified', 'role:renter'])->group(function () {
+            Route::post('/pay', [PaymentController::class, 'pay'])->middleware(['country']);
+        });
+
         /**
          *   @User routes
          */
         Route::prefix('users')->middleware(['auth:sanctum'])->group(function () {
+            Route::prefix('notifications')->group(function () {
+                Route::get('/', [NotificationController::class, 'index']);
+                Route::get('/unread', [NotificationController::class, 'unread']);
+                Route::patch('/read/all', [NotificationController::class, 'readAll']);
+                Route::patch('/read/{id}', [NotificationController::class, 'read']);
+            });
             Route::prefix('cards')->group(function () {
                 Route::get('/', [UserCardController::class, 'index']);
                 Route::post('/', [UserCardController::class, 'add']);

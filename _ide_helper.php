@@ -16098,6 +16098,117 @@
      
 }
 
+    namespace Maherelgamil\LaravelFawry\Facades { 
+            /**
+     * 
+     *
+     */ 
+        class FawryFacade {
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function endpoint($uri)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->endpoint($uri);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function createCardToken($cardNumber, $expiryYear, $expiryMonth, $cvv, $user)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->createCardToken($cardNumber, $expiryYear, $expiryMonth, $cvv, $user);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function listCustomerTokens($user)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->listCustomerTokens($user);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function deleteCardToken($user, $token = null)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->deleteCardToken($user, $token);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function chargeViaCard($merchantRefNum, $user, $amount, $chargeItems = [], $description = null)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->chargeViaCard($merchantRefNum, $user, $amount, $chargeItems, $description);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function chargeViaFawry($merchantRefNum, $user, $paymentExpiry, $amount, $chargeItems = [], $description = null)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->chargeViaFawry($merchantRefNum, $user, $paymentExpiry, $amount, $chargeItems, $description);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function refund($fawryRefNumber, $refundAmount, $reason = null)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->refund($fawryRefNumber, $refundAmount, $reason);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function get($url, $data)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->get($url, $data);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function post($url, $data)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->post($url, $data);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function delete($url, $data)
+        {
+                        /** @var \Maherelgamil\LaravelFawry\Fawry $instance */
+                        return $instance->delete($url, $data);
+        }
+         
+    }
+     
+}
+
     namespace Facade\Ignition\Facades { 
             /**
      * Class Flare.
@@ -20046,6 +20157,7 @@ namespace  {
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
             class Image extends \Intervention\Image\Facades\Image {}
+            class Fawry extends \Maherelgamil\LaravelFawry\Facades\FawryFacade {}
             class Flare extends \Facade\Ignition\Facades\Flare {}
             class Octane extends \Laravel\Octane\Facades\Octane {}
      

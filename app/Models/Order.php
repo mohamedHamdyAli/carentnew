@@ -125,14 +125,19 @@ class Order extends Model
         return $this->hasOne(User::class, 'id', 'owner_id');
     }
 
-    public function payment()
+    public function invoice()
     {
-        return $this->hasOne(OrderPayment::class, 'order_id', 'id');
+        return $this->hasOne(Invoice::class, 'order_id', 'id');
     }
 
     public function refund()
     {
         return $this->hasOne(OrderRefund::class, 'order_id', 'id');
+    }
+
+    public function isPaid()
+    {
+        return $this->invoice()->exists();
     }
 
     // scope overlaps dates
@@ -154,16 +159,16 @@ class Order extends Model
 
     public function orderExpireAt()
     {
-        $now = Carbon::now();
+        $updatedAt = $this->updated_at;
         $orderExpireAfterMinutes = config('app.order_expire_after');
-        return $now->addMinutes($orderExpireAfterMinutes);
+        return $updatedAt->addMinutes($orderExpireAfterMinutes);
     }
 
     public function paymentExpireAt()
     {
-        $now = Carbon::now();
+        $updatedAt = Carbon::parse($this->updated_at);
         $paymentExpireAfterMinutes = config('app.payment_expire_after');
-        return $now->addMinutes($paymentExpireAfterMinutes);
+        return $updatedAt->addMinutes($paymentExpireAfterMinutes);
     }
 
     public function ownerCanAccept()
@@ -173,7 +178,7 @@ class Order extends Model
 
     public function renterCanPay()
     {
-        return $this->order_status_id == 2 && $this->paymentExpireAt() > Carbon::now();
+        return $this->order_status_id == 3 && $this->paymentExpireAt() > Carbon::now();
     }
 
     public function renterCanCancel()

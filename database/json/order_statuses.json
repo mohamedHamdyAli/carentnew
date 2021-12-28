@@ -12,7 +12,8 @@
         "owner_title_en": "New Order",
         "owner_title_ar": "طلب جديد",
         "owner_body_en": "You have a new order",
-        "owner_body_ar": "لديك طلب جديد"
+        "owner_body_ar": "لديك طلب جديد",
+        "alert_type": "info"
     },
     {
         "name_en": "Accepted",
@@ -27,7 +28,8 @@
         "owner_title_en": "Accepted Order",
         "owner_title_ar": "قبول الطلب",
         "owner_body_en": "You have accepted the order",
-        "owner_body_ar": "لقد قمت بقبول الطلب"
+        "owner_body_ar": "لقد قمت بقبول الطلب",
+        "alert_type": "success"
     },
     {
         "name_en": "Pending Payment",
@@ -42,7 +44,8 @@
         "owner_title_en": "Pending Payment",
         "owner_title_ar": "ينتظر الدفع",
         "owner_body_en": "Order is pending payment",
-        "owner_body_ar": "الطلب في انتظار الدفع"
+        "owner_body_ar": "الطلب في انتظار الدفع",
+        "alert_type": "info"
     },
     {
         "name_en": "Paid",
@@ -57,7 +60,8 @@
         "owner_title_en": "Order Paid",
         "owner_title_ar": "تم الدفع",
         "owner_body_en": "Order payment is complete",
-        "owner_body_ar": "تم دفع الطلب"
+        "owner_body_ar": "تم دفع الطلب",
+        "alert_type": "success"
     },
     {
         "name_en": "Confirmed",
@@ -72,7 +76,8 @@
         "owner_title_en": "Confirmed Order",
         "owner_title_ar": "تم التأكيد",
         "owner_body_en": "You have confirmed the order",
-        "owner_body_ar": "لقد تم تأكيد الطلب"
+        "owner_body_ar": "لقد تم تأكيد الطلب",
+        "alert_type": "info"
     },
     {
         "name_en": "Car Arrived",
@@ -87,7 +92,8 @@
         "owner_title_en": "Car Arrived",
         "owner_title_ar": "وصلت السيارة",
         "owner_body_en": "The car has arrived",
-        "owner_body_ar": "تم وصول السيارة"
+        "owner_body_ar": "تم وصول السيارة",
+        "alert_type": "info"
     },
     {
         "name_en": "Car Delivered",
@@ -102,7 +108,8 @@
         "owner_title_en": "Car Delivered",
         "owner_title_ar": "تم التسليم",
         "owner_body_en": "The car has been delivered",
-        "owner_body_ar": "تم تسليم السيارة"
+        "owner_body_ar": "تم تسليم السيارة",
+        "alert_type": "info"
     },
     {
         "name_en": "Car Returned",
@@ -117,7 +124,8 @@
         "owner_title_en": "Car Returned",
         "owner_title_ar": "تم الإرجاع",
         "owner_body_en": "The car has been returned",
-        "owner_body_ar": "تم إرجاع السيارة"
+        "owner_body_ar": "تم إرجاع السيارة",
+        "alert_type": "info"
     },
     {
         "name_en": "Completed",
@@ -132,7 +140,8 @@
         "owner_title_en": "Completed Order",
         "owner_title_ar": "تم الانتهاء",
         "owner_body_en": "You have completed the order",
-        "owner_body_ar": "لقد انتهيت من تنفيذ الطلب"
+        "owner_body_ar": "لقد انتهيت من تنفيذ الطلب",
+        "alert_type": "success"
     },
     {
         "name_en": "Rejected",
@@ -147,7 +156,8 @@
         "owner_title_en": "Rejected Order",
         "owner_title_ar": "تم الرفض",
         "owner_body_en": "You have rejected the order",
-        "owner_body_ar": "لقد تم رفض الطلب"
+        "owner_body_ar": "لقد تم رفض الطلب",
+        "alert_type": "warning"
     },
     {
         "name_en": "Canceled",
@@ -162,7 +172,8 @@
         "owner_title_en": "Canceled Order",
         "owner_title_ar": "تم الإلغاء",
         "owner_body_en": "The order was canceled",
-        "owner_body_ar": "لقد تم إلغاء الطلب"
+        "owner_body_ar": "لقد تم إلغاء الطلب",
+        "alert_type": "danger"
     },
     {
         "name_en": "Refunded",
@@ -177,6 +188,7 @@
         "owner_title_en": "Refunded Order",
         "owner_title_ar": "تم الرد",
         "owner_body_en": "You have refunded the order",
-        "owner_body_ar": "لقد تم رد الطلب"
+        "owner_body_ar": "لقد تم رد الطلب",
+        "alert_type": "info"
     }
 ]

@@ -41,6 +41,7 @@ class OrderStatus extends Model
         'owner_title_ar',
         'owner_body_en',
         'owner_body_ar',
+        'alert_type',
     ];
 
     protected $hidden = [

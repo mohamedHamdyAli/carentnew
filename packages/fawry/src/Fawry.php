@@ -8,6 +8,11 @@ class Fawry
 
     public $securityKey;
 
+    private $langs = [
+        'en' => 'en-gb',
+        'ar' => 'ar-eg',
+    ];
+
     public function __construct()
     {
         $this->merchantCode = config('fawry.merchant_code');
@@ -71,7 +76,7 @@ class Fawry
     public function deleteCardToken($user, $token = null)
     {
         $iToken = $token ? $token : $user->payment_card_fawry_token;
-        $signature = hash('sha256' , $this->merchantCode . md5($user->id) . $iToken . $this->securityKey);
+        $signature = hash('sha256', $this->merchantCode . md5($user->id) . $iToken . $this->securityKey);
         $result =  $this->delete(
             $this->endpoint("cards/cardToken"),
             [
@@ -120,6 +125,38 @@ class Fawry
                         $this->securityKey
                 )
             ]
+        );
+    }
+    public function chargeViaCardToken($cardToken, $merchantRefNum, $user, $currency, $amount, $cvv, $itemId, $description = null)
+    {
+        $signature = hash('sha256', $this->merchantCode . $merchantRefNum . md5($user->id) . 'CARD' . $amount . $cardToken . $cvv . $this->securityKey);
+        $data = [
+            'merchantCode' => $this->merchantCode,
+            'merchantRefNum' => $merchantRefNum,
+            'paymentMethod' => 'CARD',
+            'cardToken' => $cardToken,
+            'cvv' => $cvv,
+            'customerName' => $user->name,
+            'customerProfileId' => md5($user->id),
+            'customerMobile' => $user->mobile ?? $user->phone,
+            'customerEmail' => $user->email,
+            'amount' => $amount,
+            'currencyCode' => $currency,
+            'chargeItems' =>
+            [
+                'itemId' => $itemId,
+                'description' => 'Rent a car',
+                'price' => $amount,
+                'quantity' => 1
+            ],
+            'description' => $description,
+            'language' => $this->langs[app()->getLocale()],
+            'signature' => $signature,
+        ];
+        // return $data;
+        return $this->post(
+            $this->endpoint("payments/charge"),
+            $data
         );
     }
 

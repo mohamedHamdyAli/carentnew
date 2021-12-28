@@ -19,7 +19,33 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|OrderPayment whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class OrderPayment extends Model
+class Invoice extends Model
 {
     use OrderedUuid;
+    protected $fillable = [
+        'order_id',
+        'payment_id',
+        'sub_total',
+        'vat',
+        'discount',
+        'total',
+        'currency',
+    ];
+
+    protected $hidden = [
+        'id',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'sub_total' => 'float',
+        'vat' => 'float',
+        'discount' => 'float',
+        'total' => 'float',
+    ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

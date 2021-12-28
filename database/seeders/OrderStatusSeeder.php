@@ -34,6 +34,7 @@ class OrderStatusSeeder extends Seeder
                 'owner_title_ar' => $d->owner_title_ar,
                 'owner_body_en' => $d->owner_body_en,
                 'owner_body_ar' => $d->owner_body_ar,
+                'alert_type' => $d->alert_type,
             ]);
             $dataCount++;
         }

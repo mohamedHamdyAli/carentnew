@@ -70,6 +70,7 @@ class OrderStatusChanged extends Notification
                 'body_en' => $this->status->{$this->for . '_body_en'},
                 'title_ar' => $this->status->{$this->for . '_title_ar'},
                 'body_ar' => $this->status->{$this->for . '_body_ar'},
+                'alert_type' => $this->status->alert_type,
             ]
         ];
 
