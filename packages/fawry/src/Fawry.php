@@ -33,9 +33,10 @@ class Fawry
             $this->endpoint("cards/cardToken"),
             [
                 "merchantCode" => $this->merchantCode,
-                "customerProfileId" => md5($user->id),
+                "customerProfileId" => $user->id,
                 "customerMobile" => $user->mobile,
                 "customerEmail" => $user->email,
+                'cardAlias' => $user->name,
                 "cardNumber" => $cardNumber,
                 "expiryYear" => $expiryYear,
                 "expiryMonth" => $expiryMonth,
@@ -67,8 +68,8 @@ class Fawry
             $this->endpoint("cards/cardToken"),
             [
                 'merchantCode' => $this->merchantCode,
-                'customerProfileId' => md5($user->id),
-                'signature' => hash('sha256', $this->merchantCode . md5($user->id) . $this->securityKey),
+                'customerProfileId' => $user->id,
+                'signature' => hash('sha256', $this->merchantCode . $user->id . $this->securityKey),
             ]
         );
     }
@@ -76,12 +77,12 @@ class Fawry
     public function deleteCardToken($user, $token = null)
     {
         $iToken = $token ? $token : $user->payment_card_fawry_token;
-        $signature = hash('sha256', $this->merchantCode . md5($user->id) . $iToken . $this->securityKey);
+        $signature = hash('sha256', $this->merchantCode . $user->id . $iToken . $this->securityKey);
         $result =  $this->delete(
             $this->endpoint("cards/cardToken"),
             [
                 'merchantCode' => $this->merchantCode,
-                'customerProfileId' => md5($user->id),
+                'customerProfileId' => $user->id,
                 'cardToken' => $iToken,
                 'signature' => $signature,
             ]
@@ -129,7 +130,8 @@ class Fawry
     }
     public function chargeViaCardToken($cardToken, $merchantRefNum, $user, $currency, $amount, $cvv, $itemId, $description = null)
     {
-        $signature = hash('sha256', $this->merchantCode . $merchantRefNum . md5($user->id) . 'CARD' . $amount . $cardToken . $cvv . $this->securityKey);
+        $signature = hash('sha256', $this->merchantCode . $merchantRefNum . $user->id . 'CARD' . $amount . $cardToken . $cvv . $this->securityKey);
+
         $data = [
             'merchantCode' => $this->merchantCode,
             'merchantRefNum' => $merchantRefNum,
@@ -137,22 +139,23 @@ class Fawry
             'cardToken' => $cardToken,
             'cvv' => $cvv,
             'customerName' => $user->name,
-            'customerProfileId' => md5($user->id),
+            'customerProfileId' => $user->id,
             'customerMobile' => $user->mobile ?? $user->phone,
             'customerEmail' => $user->email,
             'amount' => $amount,
             'currencyCode' => $currency,
             'chargeItems' =>
-            [
+            [[
                 'itemId' => $itemId,
                 'description' => 'Rent a car',
                 'price' => $amount,
-                'quantity' => 1
-            ],
+                'quantity' => '1'
+            ]],
             'description' => $description,
             'language' => $this->langs[app()->getLocale()],
             'signature' => $signature,
         ];
+
         // return $data;
         return $this->post(
             $this->endpoint("payments/charge"),
@@ -230,7 +233,7 @@ class Fawry
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, true));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt(
             $ch,

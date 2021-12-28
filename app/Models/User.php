@@ -182,6 +182,16 @@ class User extends Authenticatable
     }
 
     /**
+     * @comment get user balance transactions
+     *
+     * @return boolean
+     */
+    public function balanceTransactions()
+    {
+        return $this->hasMany(BalanceTransaction::class);
+    }
+
+    /**
      * @comment check if user has privilege
      *
      * @return boolean

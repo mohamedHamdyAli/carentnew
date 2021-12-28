@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgencyApplicationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\BusinessDocumentController;
 use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
@@ -10,20 +11,18 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerApplicationController;
 use App\Http\Controllers\OwnerOrderController;
 use App\Http\Controllers\OwnerVehicleController;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Development & Testing
-use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 // Controllers
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RenterApplicationController;
 use App\Http\Controllers\RenterOrderController;
+use App\Http\Controllers\RewardPointController;
 use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UploadController;
@@ -31,9 +30,7 @@ use App\Http\Controllers\UserCardController;
 use App\Http\Controllers\VehicleController;
 use App\Models\AppSetting;
 use App\Models\Order;
-use App\Models\OrderStatusHistory;
 use App\Models\Vehicle;
-use Maherelgamil\LaravelFawry\Fawry;
 
 /*
 |--------------------------------------------------------------------------
@@ -209,6 +206,12 @@ Route::group(
                 Route::get('/', [UserCardController::class, 'index']);
                 Route::post('/', [UserCardController::class, 'add']);
                 Route::delete('/{token}', [UserCardController::class, 'delete']);
+            });
+            Route::prefix('balance')->group(function () {
+                Route::get('/transactions', [BalanceController::class, 'transactions']);
+            });
+            Route::prefix('reward-points')->group(function () {
+                Route::get('/transactions', [RewardPointController::class, 'transactions']);
             });
         });
 

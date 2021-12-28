@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\OrderedUuid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -31,5 +32,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RewardPointTransaction extends Model
 {
-    use OrderedUuid;
+    use HasFactory, OrderedUuid;
+
+    protected $fillable = [
+        'user_id',
+        'points',
+        'operation',
+        'type',
+        'order_id',
+        'refund_id',
+    ];
 }

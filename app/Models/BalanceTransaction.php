@@ -37,4 +37,14 @@ use Illuminate\Database\Eloquent\Model;
 class BalanceTransaction extends Model
 {
     use HasFactory, OrderedUuid;
+
+    protected $fillable = [
+        'user_id',
+        'amount',
+        'operation',
+        'type',
+        'order_id',
+        'refund_id',
+        'user_payment_id',
+    ];
 }

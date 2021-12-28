@@ -25,15 +25,19 @@ class PaymentController extends Controller
         // check if order is paid
         if ($order->isPaid()) {
             return response()->json([
-                'message' => 'Order is already paid',
-            ], 422);
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => 'Order is already paid',
+            ], 400);
         }
 
         // check if order is not expired
         if (!$order->renterCanPay()) {
             return response()->json([
-                'message' => 'Order has expired',
-            ], 422);
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => 'Order has expired',
+            ], 400);
         }
 
         // get app currency
@@ -48,8 +52,10 @@ class PaymentController extends Controller
         // check if charge is successful
         if ($charge->statusCode != 200) {
             return response()->json([
-                'message' => 'Charge failed',
-            ], 422);
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => 'Failed to charge card',
+            ], 400);
         }
 
         return $charge;
