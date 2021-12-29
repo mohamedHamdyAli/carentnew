@@ -166,14 +166,14 @@ class Order extends Model
 
     public function paymentExpireAt()
     {
-        $updatedAt = Carbon::parse($this->updated_at);
+        $updatedAt = $this->updated_at;
         $paymentExpireAfterMinutes = config('app.payment_expire_after');
         return $updatedAt->addMinutes($paymentExpireAfterMinutes);
     }
 
     public function ownerCanAccept()
     {
-        return $this->order_status_id == 1 && $this->orderExpireAt() > Carbon::now();
+        return $this->order_status_id == 1 /*&& $this->orderExpireAt() > Carbon::now()*/;
     }
 
     public function renterCanPay()
@@ -188,7 +188,12 @@ class Order extends Model
 
     public function ownerCanCancel()
     {
-        return $this->order_status_id < 7;
+        return $this->order_status_id < 7 && $this->order_status_id > 3;
+    }
+
+    public function ownerCanReject()
+    {
+        return $this->order_status_id <= 3;
     }
 
     public function renterCanRequestRefund()

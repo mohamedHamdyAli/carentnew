@@ -30,6 +30,7 @@ class OwnerOrderController extends Controller
         $data = Order::findOrFail($id);
 
         $settings = [
+            'can_reject' => $data->ownerCanReject(),
             'can_cancel' => $data->ownerCanCancel(),
             'can_accept' => $data->ownerCanAccept(),
         ];
@@ -61,11 +62,31 @@ class OwnerOrderController extends Controller
                     'error' => 'Order can not be accepted'
                 ], 400);
             }
+            return $this->view($id);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => __('messages.r_success'),
-                'data' => Order::findOrFail($id),
-                'error' => null
-            ], 200);
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function reject($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            if ($order->ownerCanReject()) {
+                $order->order_status_id = 10;
+                $order->save();
+            } else {
+                return response()->json([
+                    'message' => __('messages.r_failed'),
+                    'data' => null,
+                    'error' => 'Order can not be rejected'
+                ], 400);
+            }
+            return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => __('messages.r_failed'),
@@ -89,11 +110,7 @@ class OwnerOrderController extends Controller
                     'error' => 'Order can not be canceled'
                 ], 400);
             }
-            return response()->json([
-                'message' => __('messages.r_success'),
-                'data' => Order::findOrFail($id),
-                'error' => null
-            ], 200);
+            return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => __('messages.r_failed'),

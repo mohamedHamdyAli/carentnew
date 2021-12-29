@@ -51,7 +51,6 @@ class RenterOrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
-            return $order->renterCanCancel();
             if ($order->renterCanCancel()) {
                 $order->order_status_id = 11;
                 $order->save();
@@ -62,11 +61,7 @@ class RenterOrderController extends Controller
                     'error' => 'Order can not be canceled'
                 ], 400);
             }
-            return response()->json([
-                'message' => __('messages.r_success'),
-                'data' => Order::findOrFail($id),
-                'error' => null
-            ], 200);
+            return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => __('messages.r_failed'),

@@ -318,6 +318,8 @@ Route::group(
 
                 // accept order
                 Route::patch('/accept/{id}', [OwnerOrderController::class, 'accept']);
+                // reject order
+                Route::patch('/reject/{id}', [OwnerOrderController::class, 'reject']);
                 // cancel order
                 Route::patch('/cancel/{id}', [OwnerOrderController::class, 'cancel']);
             });
