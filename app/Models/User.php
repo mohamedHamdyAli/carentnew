@@ -78,6 +78,7 @@ class User extends Authenticatable
         'verified_at',
         'approved_at',
         'is_active',
+        'fcm',
     ];
 
     /**
@@ -86,7 +87,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'id',
         'password',
         'default_address_id',
         'email_verified_at',
@@ -104,6 +104,7 @@ class User extends Authenticatable
         'deleted_at',
         'created_at',
         'updated_at',
+        'fcm',
     ];
 
     /**

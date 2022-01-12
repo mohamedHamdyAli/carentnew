@@ -27,6 +27,7 @@ use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserCardController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Models\AppSetting;
 use App\Models\Order;
@@ -80,10 +81,21 @@ Route::group(
         'namespace' => 'App\Http\Controllers',
     ],
     function ($router) {
+        // default
+        Route::get('/', function () {
+            return response()->json([
+                'message' => 'CARENET API v1.0',
+                'data' => null,
+                'error' => null
+            ], 200);
+        });
+
         // test email
         Route::get('/test-email', function () {
             // return Mail::to('mahmoud.ali.kassem@gmail.com')->send(new \App\Mail\EmailOtp(123456));
-            return new \App\Mail\EmailOtp(123456);
+            if (app()->environment('local')) {
+                return new \App\Mail\EmailOtp(123456);
+            }
         });
 
         Route::get('/test', function () {
@@ -161,13 +173,14 @@ Route::group(
         /**
          *   @Order routes
          */
-        Route::prefix('orders')->middleware(['auth:sanctum', 'country', 'privilege:book_car'])->group(function () {
-            Route::get('/pricing', [OrderController::class, 'getTotals']);
-            Route::post('/create', [OrderController::class, 'create']);
+        Route::prefix('orders')->middleware(['auth:sanctum', 'country'])->group(function () {
+            Route::get('/pricing', [OrderController::class, 'getTotals'])->middleware(['privilege:book_car']);
+            Route::post('/create', [OrderController::class, 'create'])->middleware(['privilege:book_car']);
+            Route::get('statuses', [OrderController::class, 'getStatuses']);
 
             // will be removed
-            Route::get('/my-orders', [OrderController::class, 'myOrders']);
-            Route::get('/by-number/{number}', [OrderController::class, 'byNumber']);
+            Route::get('/my-orders', [OrderController::class, 'myOrders'])->middleware(['privilege:book_car']);
+            Route::get('/by-number/{number}', [OrderController::class, 'byNumber'])->middleware(['privilege:book_car']);
         });
 
 
@@ -196,15 +209,27 @@ Route::group(
          *   @User routes
          */
         Route::prefix('users')->middleware(['auth:sanctum'])->group(function () {
+            Route::get('/profile', [UserController::class, 'profile']);
+            Route::post('/profile', [UserController::class, 'update']);
+            Route::post('/fcm', [UserController::class, 'fcm']);
+
             Route::prefix('notifications')->group(function () {
                 Route::get('/', [NotificationController::class, 'index']);
                 Route::get('/unread', [NotificationController::class, 'unread']);
                 Route::patch('/read/all', [NotificationController::class, 'readAll']);
                 Route::patch('/read/{id}', [NotificationController::class, 'read']);
             });
+
             Route::prefix('cards')->group(function () {
                 Route::get('/', [UserCardController::class, 'index']);
-                Route::post('/', [UserCardController::class, 'add']);
+                // Route::post('/', [UserCardController::class, 'add']);
+                Route::post('/', function () {
+                    return response()->json([
+                        'message' => 'This route is not available, please use fawey web tokenization',
+                        'data' => null,
+                        'error' => null
+                    ], 404);
+                });
                 Route::delete('/{token}', [UserCardController::class, 'delete']);
             });
             Route::prefix('balance')->group(function () {
@@ -337,7 +362,7 @@ Route::group(
          */
         Route::prefix('app')->group(function () {
             Route::get('settings', function () {
-                return response()->json(AppSetting::findOrFail(1));
+                return response()->json(AppSetting::orderBy('version', 'desc')->first());
             });
         });
     }

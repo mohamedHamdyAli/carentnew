@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Functions\OrderManager;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use App\Models\Vehicle;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -55,6 +57,24 @@ class OrderController extends Controller
             'with_driver' => 'required|boolean',
             'suggested_price' => 'sometimes|integer|min:0',
         ]);
+
+        if (!request('with_driver') && !Auth::user()->hasPrivilege('rent_without_driver')) {
+            return response()->json([
+                'message' => 'You do not have permission to rent without driver.',
+                'data' => null,
+                'error' => true,
+            ], 403);
+        }
+
+        $isDriverRequired = Vehicle::find(request('vehicle_id'))->pricing->is_driver_required;
+
+        if ($isDriverRequired && !request('with_driver')) {
+            return response()->json([
+                'message' => 'You need to select driver.',
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
 
         // check if vehicle has any booking overlaps with the requested dates
         $hasOverlap = Order::where('vehicle_id', request('vehicle_id'))->Overlaps(request('start_date'), request('end_date'))->first();
@@ -133,6 +153,25 @@ class OrderController extends Controller
 
         // add settings to data
         $data->settings = $settings;
+
+        return response()->json([
+            'message' => __('messages.r_success'),
+            'data' => $data,
+            'error' => null
+        ], 200);
+    }
+
+    public function getStatuses()
+    {
+        $data = Cache::rememberForever('order-statuses-' . app()->getLocale(), function () {
+            return OrderStatus::get([
+                'id',
+                'name_en',
+                'name_ar',
+                'alert_type',
+                'terminate'
+            ]);
+        });
 
         return response()->json([
             'message' => __('messages.r_success'),

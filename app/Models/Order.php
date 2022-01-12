@@ -143,18 +143,21 @@ class Order extends Model
     // scope overlaps dates
     public function scopeOverlaps($query, $start_date, $end_date)
     {
-        return $query->where(function ($query) use ($start_date, $end_date) {
-            $query->where(function ($query) use ($start_date,) {
-                $query->where('start_date', '<=', $start_date)
-                    ->where('end_date', '>=', $start_date);
-            })->orWhere(function ($query) use ($end_date) {
-                $query->where('start_date', '<=', $end_date)
-                    ->where('end_date', '>=', $end_date);
-            })->orWhere(function ($query) use ($start_date, $end_date) {
-                $query->where('start_date', '>=', $start_date)
-                    ->where('end_date', '<=', $end_date);
+        return $query->whereHas('OrderStatus', function ($query) {
+            $query->where('terminate', false);
+        })
+            ->where(function ($query) use ($start_date, $end_date) {
+                $query->where(function ($query) use ($start_date,) {
+                    $query->where('start_date', '<=', $start_date)
+                        ->where('end_date', '>=', $start_date);
+                })->orWhere(function ($query) use ($end_date) {
+                    $query->where('start_date', '<=', $end_date)
+                        ->where('end_date', '>=', $end_date);
+                })->orWhere(function ($query) use ($start_date, $end_date) {
+                    $query->where('start_date', '>=', $start_date)
+                        ->where('end_date', '<=', $end_date);
+                });
             });
-        });
     }
 
     public function orderExpireAt()

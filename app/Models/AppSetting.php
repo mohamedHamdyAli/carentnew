@@ -33,6 +33,7 @@ class AppSetting extends Model
         'id',
         'version',
         'updated_at',
+        'created_at',
     ];
 
     public function getVatPercentageAttribute($value)

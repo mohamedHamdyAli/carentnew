@@ -17,7 +17,12 @@ class RenterOrderController extends Controller
                 if ($ids && count(explode(',', $ids)) > 0) {
                     $query->whereIn('id', explode(',', $ids));
                 }
+                $isTerminated = request('terminated');
+                if ($isTerminated) {
+                    $query->where('terminate', $isTerminated);
+                }
             })
+            ->orderBy('created_at', 'desc')
             ->simplePaginate();
 
         return response()->json([

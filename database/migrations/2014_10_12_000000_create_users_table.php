@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('identity_document_verified_at')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->text('fcm')->nullable();
             // $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

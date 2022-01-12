@@ -36,7 +36,7 @@ class PaymentController extends Controller
             return response()->json([
                 'message' => __('messages.r_failed'),
                 'data' => null,
-                'error' => 'Order has expired',
+                'error' => 'Order can not be paid',
             ], 400);
         }
 

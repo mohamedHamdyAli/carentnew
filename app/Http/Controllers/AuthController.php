@@ -347,7 +347,7 @@ class AuthController extends Controller
     public function user()
     {
         return [
-            'user'      => Auth::user(),
+            'user'      => Auth::user()->makeVisible('id'),
             'verified' => Auth::user()->isVerified(),
             'verification' => [
                 'email' => Auth::user()->isEmailVerified(),
@@ -366,7 +366,7 @@ class AuthController extends Controller
     private function authObject($token)
     {
         return [
-            'user'      => Auth::user(),
+            'user'      => Auth::user()->makeVisible('id'),
             'access_token'     => $token,
             'verified' => Auth::user()->isVerified(),
             'verification' => [
