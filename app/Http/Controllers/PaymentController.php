@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Consts\Status;
 use App\Models\Country;
+use App\Models\Invoice;
 use App\Models\Order;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Hash;
 use Illuminate\Http\Request;
@@ -32,13 +35,13 @@ class PaymentController extends Controller
         }
 
         // check if order is not expired
-        if (!$order->renterCanPay()) {
-            return response()->json([
-                'message' => __('messages.r_failed'),
-                'data' => null,
-                'error' => 'Order can not be paid',
-            ], 400);
-        }
+        // if (!$order->renterCanPay()) {
+        //     return response()->json([
+        //         'message' => __('messages.r_failed'),
+        //         'data' => null,
+        //         'error' => 'Order can not be paid',
+        //     ], 400);
+        // }
 
         // get app currency
         $country = request()->header('Country');
@@ -46,19 +49,58 @@ class PaymentController extends Controller
 
         // charge card
         $charge = $this->chargeCardToken(request('cardToken'), $order, $currency, request('cvv'));
-
-
-        return $charge;
         // check if charge is successful
         if ($charge->statusCode != 200) {
             return response()->json([
-                'message' => __('messages.r_failed'),
+                'message' => __('messages.error.payment_failed'),
                 'data' => null,
                 'error' => 'Failed to charge card',
             ], 400);
         }
 
-        return $charge;
+        // save payment response
+        $payment = Payment::create([
+            'type' => $charge->type,
+            'referenceNumber' => $charge->referenceNumber,
+            'merchantRefNumber' => $charge->merchantRefNumber,
+            'orderAmount' => $charge->orderAmount,
+            'paymentAmount' => $charge->paymentAmount,
+            'fawryFees' => $charge->fawryFees,
+            'paymentMethod' => $charge->paymentMethod,
+            'orderStatus' => $charge->orderStatus,
+            'paymentTime' => Carbon::parse($charge->paymentTime),
+            'customerMobile' => $charge->customerMobile,
+            'customerMail' => $charge->customerMail,
+            'customerProfileId' => $charge->customerProfileId,
+            'signature' => $charge->signature,
+            'statusCode' => $charge->statusCode,
+            'statusDescription' => $charge->statusDescription,
+        ]);
+
+        // save invoice
+        Invoice::create(
+            [
+                'order_id' => $order->id,
+                'payment_id' => $payment->id,
+                'sub_total' => $order->sub_total,
+                'vat' => $order->vat,
+                'discount' => $order->discount,
+                'total' => $order->total,
+                'currency' => $currency,
+            ]
+        );
+
+        // update order status
+        $order->order_status_id = Status::PAID;
+        $order->save();
+        $order->order_status_id = Status::CONFIRMED;
+        $order->save();
+
+        return response()->json([
+            'message' => __('messages.success.payment_success'),
+            'data' => null,
+            'error' => null,
+        ], 200);
     }
 
 

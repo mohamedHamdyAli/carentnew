@@ -27,6 +27,7 @@ return [
         'image_uploaded' => 'حدث خطأ أثناء رفع الصورة',
         'verified' => 'هذا المستخدم غير محقق',
         'vehicle_verified' => 'هذا السيارة محققة',
+        'payment_failed' => 'فشلت العملية',
     ],
     'success' => [
         'create_user' => 'تم إنشاء المستخدم بنجاح',
@@ -43,6 +44,7 @@ return [
         'image_uploaded' => 'تم رفع الصورة بنجاح',
         'vehicle_submitted' => 'تم إرسال طلب تحقيق السيارة بنجاح',
         'vehicle_updated' => 'تم تحديث بيانات السيارة بنجاح',
+        'payment_success' => 'تمت العملية بنجاح',
     ],
     'suggested_price_less_than_80_percent' => 'السعر المقترح لا يجب ان يقل عن 80% من السعر المطلوب',
 ];

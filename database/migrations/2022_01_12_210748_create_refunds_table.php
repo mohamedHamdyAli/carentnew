@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderDeliveriesTable extends Migration
+class CreateRefundsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateOrderDeliveriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_deliveries', function (Blueprint $table) {
+        Schema::create('refunds', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('order_id');
-            $table->timestamp('owner_delivered_at')->nullable();
-            $table->timestamp('renter_received_at')->nullable();
+            $table->uuid('payment_id');
+            $table->string('referenceNumber');
+            $table->decimal('refundAmount', 8, 2);
+            $table->text('reason');
+            $table->boolean('success')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreateOrderDeliveriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_deliveries');
+        Schema::dropIfExists('refunds');
     }
 }

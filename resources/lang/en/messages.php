@@ -27,6 +27,7 @@ return [
         'image_uploaded' => 'Error while uploading image',
         'verified' => 'User is not verified',
         'vehicle_verified' => 'Vehicle is already verified',
+        'payment_failed' => 'Payment failed',
     ],
     'success' => [
         'create_user' => 'User created successfully',
@@ -43,6 +44,7 @@ return [
         'image_uploaded' => 'Image uploaded successfully',
         'vehicle_submitted' => 'Vehicle verification submitted successfully',
         'vehicle_updated' => 'Vehicle updated successfully',
+        'payment_success' => 'Payment success',
     ],
     'suggested_price_less_than_80_percent' => 'Suggested price can\'t be less than 80% of the total price',
 ];
