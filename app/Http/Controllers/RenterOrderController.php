@@ -52,7 +52,7 @@ class RenterOrderController extends Controller
         $settings = [
             'can_cancel' => $data->renterCanCancel(),
             'can_pay' => $data->renterCanPay(),
-            'can_recieve' => $data->renterCanRecieve(),
+            'can_recieve' => $data->renterCanReceive(),
             'can_extend' => $data->renterCanExtend(),
             'can_return_early' => $data->renterCanReturnEarly(),
         ];
