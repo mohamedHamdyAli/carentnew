@@ -6,6 +6,7 @@ use App\Http\Functions\OrderManager;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Vehicle;
+use App\Models\VehiclePricing;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -25,6 +26,19 @@ class OrderController extends Controller
         ]);
 
         $queryString = request()->getQueryString();
+
+        // get vehicle pricing
+        $pricing = VehiclePricing::where('vehicle_id', request('vehicle_id'))->first();
+        
+        // validate vehicle pricing with driver
+        if (!$pricing->has_driver && (bool) request('with_driver')) {
+            return response()->json([
+                'message' => 'The vehicle does not have a driver.',
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+
         // check if vehicle has any booking overlaps with the requested dates
         $hasOverlap = Order::where('vehicle_id', request('vehicle_id'))->Overlaps(request('start_date'), request('end_date'))->first();
 
@@ -36,8 +50,8 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $data = Cache::tags(['totals'])->remember('totals-' . $queryString, 600, function () {
-            return OrderManager::getTotals(request('vehicle_id'), request('start_date'), request('end_date'), request('with_driver'), request('suggested_price'));
+        $data = Cache::tags(['totals'])->remember('totals-' . $queryString, 600, function () use ($pricing) {
+            return OrderManager::getTotals($pricing, request('start_date'), request('end_date'), request('with_driver'), request('suggested_price'));
         });
 
         return response()->json([
@@ -57,6 +71,18 @@ class OrderController extends Controller
             'with_driver' => 'required|boolean',
             'suggested_price' => 'sometimes|integer|min:0',
         ]);
+
+        // get vehicle pricing
+        $pricing = VehiclePricing::where('vehicle_id', request('vehicle_id'))->first();
+        
+        // validate vehicle pricing with driver
+        if (!$pricing->has_driver && (bool) request('with_driver')) {
+            return response()->json([
+                'message' => 'The vehicle does not have a driver.',
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
 
         if (!request('with_driver') && !Auth::user()->hasPrivilege('rent_without_driver')) {
             return response()->json([
@@ -87,7 +113,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $totals = OrderManager::getTotals(request('vehicle_id'), request('start_date'), request('end_date'), request('with_driver'), request('suggested_price'));
+        $totals = OrderManager::getTotals($pricing, request('start_date'), request('end_date'), request('with_driver'), request('suggested_price'));
 
         if (intval(request('suggested_price')) > 0 && (intval(request('suggested_price')) < $totals['original_total'] * 0.8) || (intval(request('suggested_price')) > $totals['original_total'])) {
             return response()->json([

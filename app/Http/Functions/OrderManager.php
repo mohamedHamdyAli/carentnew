@@ -6,14 +6,12 @@ use App\Models\AppSetting;
 use App\Models\Order;
 use App\Models\VehiclePricing;
 use Carbon\Carbon;
-use Route;
 
 class OrderManager
 {
-    public static function getTotals($vehicle_id, $start_date, $end_date, $hasDriver, $suggestedPrice = 0)
+    public static function getTotals(VehiclePricing $pricing, $start_date, $end_date, $hasDriver, $suggestedPrice = 0)
     {
         $appSettings = AppSetting::getLastVersion();
-        $pricing = VehiclePricing::where('vehicle_id', $vehicle_id)->first();
         $daysCount = Carbon::parse($start_date)->diffInDays(Carbon::parse($end_date));
         $suggestedPrice = intval($suggestedPrice);
 

@@ -17,8 +17,8 @@ class CreateAppSettingsTable extends Migration
             $table->uuid('id')->primary();
             $table->mediumInteger('version')->unique();
             $table->smallInteger('vat_percentage')->default(14);
-            $table->smallInteger('processing_percentage')->default(14);
-            $table->decimal('processing_fixed', 8, 2)->default(1);
+            $table->smallInteger('processing_percentage')->default(3);
+            $table->decimal('processing_fixed', 8, 2)->default(3.50);
             $table->smallInteger('early_return_percentage')->default(80);
             $table->decimal('owner_cancel_penality', 10, 2)->default(0);
             $table->boolean('point_to_money')->default(false);

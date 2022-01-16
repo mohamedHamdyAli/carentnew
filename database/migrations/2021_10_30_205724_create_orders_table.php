@@ -22,7 +22,6 @@ class CreateOrdersTable extends Migration
             $table->uuid('order_status_id');
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('type', ['rent', 'extend'])->default('rent');
             $table->boolean('with_driver')->default(false);
             $table->decimal('vehicle_total', 8, 2);
             $table->decimal('driver_total', 8, 2);

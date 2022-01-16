@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Consts\Status;
 use App\Models\Order;
+use App\Models\OrderExtend;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OwnerOrderController extends Controller
@@ -32,16 +35,27 @@ class OwnerOrderController extends Controller
 
     public function view($id)
     {
-        $data = Order::findOrFail($id);
+        $data = Order::with('OrderEarlyReturn')
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $orderExtend = OrderExtend::where('order_id', $id)
+            ->where('approved', true)
+            ->orWhere('approved', null)
+            ->where('paid', false)
+            ->first();
 
         $settings = [
             'can_reject' => $data->ownerCanReject(),
             'can_cancel' => $data->ownerCanCancel(),
             'can_accept' => $data->ownerCanAccept(),
+            'can_deliver' => $data->ownerCanDeliver(),
+            'can_complete' => $data->ownerCanCompleteOrder(),
         ];
 
         // add settings to data
         $data->settings = $settings;
+        $data->extend_requests = $orderExtend && $orderExtend->isActive() ? $orderExtend : null;
 
         return response()->json([
             'message' => __('messages.r_success'),
@@ -54,19 +68,21 @@ class OwnerOrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
-            if ($order->ownerCanAccept()) {
-                $order->order_status_id = 2;
-                $order->save();
-                $order = Order::findOrFail($id);
-                $order->order_status_id = 3;
-                $order->save();
-            } else {
+
+            if (!$order->ownerCanAccept()) {
                 return response()->json([
                     'message' => __('messages.r_failed'),
                     'data' => null,
                     'error' => 'Order can not be accepted'
                 ], 400);
             }
+            
+            $order->order_status_id = Status::ACCEPTED;
+            $order->save();
+            $order = Order::findOrFail($id);
+            $order->order_status_id = Status::PENDING_PAYMENT;
+            $order->save();
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
@@ -81,16 +97,18 @@ class OwnerOrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
-            if ($order->ownerCanReject()) {
-                $order->order_status_id = 10;
-                $order->save();
-            } else {
+
+            if (!$order->ownerCanReject()) {
                 return response()->json([
                     'message' => __('messages.r_failed'),
                     'data' => null,
                     'error' => 'Order can not be rejected'
                 ], 400);
             }
+            
+            $order->order_status_id = Status::REJECTED;
+            $order->save();
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
@@ -105,16 +123,72 @@ class OwnerOrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
-            if ($order->ownerCanCancel()) {
-                $order->order_status_id = 11;
-                $order->save();
-            } else {
+            if (!$order->ownerCanCancel()) {
                 return response()->json([
                     'message' => __('messages.r_failed'),
                     'data' => null,
                     'error' => 'Order can not be canceled'
                 ], 400);
             }
+            $order->order_status_id = Status::CANCELED;
+            $order->save();
+
+            return $this->view($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    public function deliver($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            if (!$order->ownerCanDeliver()) {
+                return response()->json([
+                    'message' => __('messages.r_failed'),
+                    'data' => null,
+                    'error' => 'Vehicle can not be delivered'
+                ], 400);
+            }
+            $order->order_status_id = Status::CAR_ARRIVED;
+            $order->save();
+
+            return $this->view($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function complete($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            if (!$order->ownerCanCompleteOrder()) {
+                return response()->json([
+                    'message' => __('messages.r_failed'),
+                    'data' => null,
+                    'error' => 'Order can not be completed'
+                ], 400);
+            }
+
+            // TODO: apply any refund logic here
+            
+            // TODO: apply reward logic here
+
+            $order->order_status_id = Status::CAR_RETURNED;
+            $order->save();
+            $order = Order::findOrFail($id);
+            $order->order_status_id = Status::COMPLETED;
+            $order->save();
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([

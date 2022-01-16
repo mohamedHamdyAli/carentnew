@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Functions\Fcm;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use Illuminate\Bus\Queueable;
@@ -64,7 +65,7 @@ class OrderStatusChanged extends Notification
     public function toDatabase($notifiable)
     {
         $data = [
-            'order_number' => $this->order->number,
+            'order_id' => $this->order->id,
             'data' => [
                 'title_en' => $this->status->{$this->for . '_title_en'},
                 'body_en' => $this->status->{$this->for . '_body_en'},
@@ -74,11 +75,18 @@ class OrderStatusChanged extends Notification
             ]
         ];
 
+        $this->toFcm($notifiable, $data);
+
         return $data;
     }
 
     private function toFcm($notifiable, $data)
     {
-        // TODO: send FCM notification
+        $data = [
+            'title' => $this->status->{$this->for . '_title_' . $notifiable->language},
+            'body' => $this->status->{$this->for . '_body_' . $notifiable->language},
+            'order_id' => $this->order->id,
+        ];
+        Fcm::send($data, $notifiable->fcm);
     }
 }

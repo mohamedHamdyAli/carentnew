@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('verified_at')->nullable();
             $table->boolean('is_active')->default(true);
             $table->text('fcm')->nullable();
+            $table->string('language')->default('en');
             // $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

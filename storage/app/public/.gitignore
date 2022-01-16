@@ -1,2 +1,4 @@
 *
+!app-settings
+!app-settings/*
 !.gitignore

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Consts\Status;
 use App\Traits\OrderedUuid;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -44,6 +45,8 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'with_driver' => 'boolean',
+        'order_status_id' => 'integer',
         'start_date' => 'date:Y-m-d',
         'end_date' => 'date:Y-m-d',
         'with_driver' => 'boolean',
@@ -63,7 +66,12 @@ class Order extends Model
 
     public function getVehicleAttribute()
     {
-        $data = $this->vehicle()->first()->makeVisible('thumbnail');
+        $data = $this->vehicle()->first();
+        if ($data) {
+            $data->makeVisible('thumbnail');
+        } else {
+            return null;
+        }
         $data->thumbnail = url(Storage::url($data->thumbnail));
         return $data;
     }
@@ -93,19 +101,24 @@ class Order extends Model
         return $this->hasOne(User::class, 'id', 'owner_id');
     }
 
-    public function invoice()
+    public function OrderInvocies()
     {
-        return $this->hasOne(Invoice::class, 'order_id', 'id');
+        return $this->hasMany(Invoice::class, 'order_id', 'id');
     }
 
-    public function refund()
+    public function getInvoicesAttribute()
     {
-        return $this->hasOne(OrderRefund::class, 'order_id', 'id');
+        return $this->OrderInvocies()->get();
+    }
+
+    public function refunds()
+    {
+        return $this->hasMany(OrderRefund::class, 'order_id', 'id');
     }
 
     public function isPaid()
     {
-        return $this->invoice()->exists();
+        return $this->OrderInvocies()->get()->count() > 0;
     }
 
     // scope overlaps dates
@@ -144,46 +157,92 @@ class Order extends Model
 
     public function ownerCanAccept()
     {
-        return $this->order_status_id == 1 /*&& $this->orderExpireAt() > Carbon::now()*/;
+        return $this->order_status_id == Status::CREATED
+            && Carbon::now()->diffInMinutes($this->paymentExpireAt(), false) > 0;
     }
 
     public function renterCanPay()
     {
-        return $this->order_status_id == 3 && $this->paymentExpireAt() > Carbon::now();
+        return $this->order_status_id == Status::PENDING_PAYMENT
+            && Carbon::now()->diffInMinutes($this->orderExpireAt(), false) > 0;
     }
 
     public function renterCanCancel()
     {
-        return $this->order_status_id <= 3;
+        return $this->order_status_id <= Status::PENDING_PAYMENT;
     }
 
     public function ownerCanCancel()
     {
-        return $this->order_status_id < 7 && $this->order_status_id > 3;
+        return $this->order_status_id < Status::CAR_DELIVERED
+            && $this->order_status_id > 3;
     }
 
     public function ownerCanReject()
     {
-        return $this->order_status_id <= 3;
+        return $this->order_status_id <= Status::PENDING_PAYMENT;
     }
 
     public function renterCanRequestRefund()
     {
-        return $this->order_status_id == 11 && $this->payment()->paid && $this->refund()->isEmpty();
+        return $this->order_status_id == Status::CANCELED
+            && $this->payment()->paid
+            && $this->refund()->isEmpty();
+    }
+
+    public function OrderExtends()
+    {
+        return $this->hasMany(OrderExtend::class, 'order_id', 'id');
+    }
+
+    public function activeExtendRequests()
+    {
+        return $this->OrderExtends()->pending()->get();
     }
 
     public function renterCanExtend()
     {
-        return $this->order_status_id == 7 && $this->payment()->paid;
+        $lastExtendRequest = $this->OrderExtends()->orderBy('created_at', 'desc')->first();
+        return $this->order_status_id == Status::CAR_DELIVERED
+            && $lastExtendRequest && !$lastExtendRequest->isActive();
     }
 
-    public function invocies()
+    public function onwerCanHandleExtendRequest()
     {
-        return $this->hasMany(Invoice::class, 'order_id', 'id');
+        $lastExtendRequest = $this->OrderExtends()->orderBy('created_at', 'desc')->first();
+        return $this->order_status_id == Status::CAR_DELIVERED
+            && $lastExtendRequest && $lastExtendRequest->isActive();
     }
 
-    public function getInvoicesAttribute()
+    public function OrderEarlyReturn()
     {
-        return $this->invocies()->get();
+        return $this->hasOne(OrderEarlyReturn::class);
+    }
+
+    public function renterCanReturnEarly()
+    {
+        return $this->order_status_id == Status::CAR_DELIVERED
+            && $this->OrderEarlyReturn()->count() == 0
+            && Carbon::now()->toDateString() == $this->end_date
+            && Carbon::now()->toDateString() >= $this->start_date;
+    }
+
+    public function ownerCanCompleteOrder()
+    {
+        return ($this->order_status_id == Status::CAR_DELIVERED && $this->OrderEarlyReturn()->count() > 0)
+            || ($this->order_status_id == Status::CAR_DELIVERED && $this->end_date <= Carbon::now()->toDateString());
+    }
+
+    public function ownerCanDeliver()
+    {
+        return $this->order_status_id == Status::CONFIRMED
+            && Carbon::now()->toDateString() <= $this->end_date
+            /*&& Carbon::now()->toDateString() >= $this->start_date*/;
+            // TODO: remove after testing
+    }
+
+    public function renterCanReceive()
+    {
+        return $this->order_status_id == Status::CAR_ARRIVED;
     }
 }

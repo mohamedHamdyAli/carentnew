@@ -16,4 +16,8 @@ class Status
     public const REJECTED           = 10;
     public const CANCELED           = 11;
     public const REFUNDED           = 12;
+    public const EXTEND_REQUEST     = 13;
+    public const EXTEND_ACCEPTED    = 14;
+    public const EXTEND_REJECTED    = 15;
+    public const EARLY_RETURN       = 16;
 }

@@ -19,6 +19,13 @@ class CreateOrderExtendsTable extends Migration
             $table->dateTime('original_end_date');
             $table->dateTime('request_end_date');
             $table->boolean('approved')->nullable();
+            $table->boolean('with_driver')->default(false);
+            $table->decimal('vehicle_total', 8, 2);
+            $table->decimal('driver_total', 8, 2);
+            $table->decimal('sub_total', 8, 2);
+            $table->decimal('vat', 8, 2);
+            $table->decimal('discount', 8, 2);
+            $table->decimal('total', 8, 2);
             $table->boolean('paid')->default(false);
             $table->timestamps();
         });

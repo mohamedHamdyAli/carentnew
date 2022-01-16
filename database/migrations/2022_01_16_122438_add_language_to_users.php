@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderEarlyReturnsTable extends Migration
+class AddLanguageToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateOrderEarlyReturnsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_early_returns', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('order_id');
-            $table->boolean('refunded')->default(false);
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('language')->default('en');
         });
     }
 
@@ -28,6 +25,8 @@ class CreateOrderEarlyReturnsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_early_returns');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('language');
+        });
     }
 }

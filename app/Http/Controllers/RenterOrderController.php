@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Consts\Status;
+use App\Http\Functions\OrderManager;
 use App\Models\Order;
+use App\Models\OrderEarlyReturn;
+use App\Models\OrderExtend;
+use App\Models\VehiclePricing;
 use Illuminate\Http\Request;
 
 class RenterOrderController extends Controller
@@ -34,16 +39,27 @@ class RenterOrderController extends Controller
 
     public function view($id)
     {
-        $data = Order::findOrFail($id);
+        $data = Order::with('OrderEarlyReturn')
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $orderExtend = OrderExtend::where('order_id', $id)
+            ->where('paid', false)
+            ->where('approved', true)
+            ->orWhere('approved', null)
+            ->first();
 
         $settings = [
             'can_cancel' => $data->renterCanCancel(),
             'can_pay' => $data->renterCanPay(),
+            'can_recieve' => $data->renterCanRecieve(),
             'can_extend' => $data->renterCanExtend(),
+            'can_return_early' => $data->renterCanReturnEarly(),
         ];
 
         // add settings to data
         $data->settings = $settings;
+        $data->extend_requests = $orderExtend && $orderExtend->isActive() ? $orderExtend : null;
 
         return response()->json([
             'message' => __('messages.r_success'),
@@ -66,6 +82,30 @@ class RenterOrderController extends Controller
                     'error' => 'Order can not be canceled'
                 ], 400);
             }
+            return $this->view($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => __('messages.r_failed'),
+                'data' => null,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function receive($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            if (!$order->renterCanReceive()) {
+                return response()->json([
+                    'message' => __('messages.r_failed'),
+                    'data' => null,
+                    'error' => 'Vehicle can not be received'
+                ], 400);
+            }
+            $order->order_status_id = Status::CAR_DELIVERED;
+            $order->save();
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([

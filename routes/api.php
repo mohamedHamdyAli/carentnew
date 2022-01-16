@@ -10,6 +10,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerApplicationController;
 use App\Http\Controllers\OwnerOrderController;
+use App\Http\Controllers\OwnerOrderExtendController;
 use App\Http\Controllers\OwnerVehicleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,8 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RenterApplicationController;
 use App\Http\Controllers\RenterOrderController;
+use App\Http\Controllers\RenterOrderEarlyReturnController;
+use App\Http\Controllers\RenterOrderExtendController;
 use App\Http\Controllers\RewardPointController;
 use App\Http\Controllers\SecureFileController;
 use App\Http\Controllers\SettingController;
@@ -81,6 +84,15 @@ Route::group(
         'namespace' => 'App\Http\Controllers',
     ],
     function ($router) {
+        // testing
+        Route::post('/test/{id}', function ($id) {
+            $order = Order::find($id);
+            return [
+                'expireAt' => $order->paymentExpireAt(),
+                'canPay' => $order->renterCanPay(),
+                'remainingMinutes' => Carbon\Carbon::now()->diffInMinutes($order->paymentExpireAt(), false),
+            ];
+        });
         // default
         Route::get('/', function () {
             return response()->json([
@@ -195,6 +207,19 @@ Route::group(
 
                 // cancel order by renter
                 Route::patch('/cancel/{id}', [RenterOrderController::class, 'cancel']);
+
+                // receive car by renter
+                Route::patch('/receive/{id}', [RenterOrderController::class, 'receive']);
+
+
+                // extend order by renter
+                Route::prefix('extend')->group(function () {
+                    Route::post('/', [RenterOrderExtendController::class, 'extend']);
+                });
+                // return early order by renter
+                Route::prefix('return-early')->group(function () {
+                    Route::post('/{id}', [RenterOrderEarlyReturnController::class, 'returnEarly']);
+                });
             });
         });
 
@@ -203,6 +228,7 @@ Route::group(
          */
         Route::prefix('payments')->middleware(['auth:sanctum', 'verified', 'role:renter'])->group(function () {
             Route::post('/pay', [PaymentController::class, 'pay'])->middleware(['country']);
+            Route::post('/extend/pay', [PaymentController::class, 'payExtend'])->middleware(['country']);
         });
 
         /**
@@ -212,6 +238,7 @@ Route::group(
             Route::get('/profile', [UserController::class, 'profile']);
             Route::post('/profile', [UserController::class, 'update']);
             Route::post('/fcm', [UserController::class, 'fcm']);
+            Route::post('/password', [UserController::class, 'password']);
 
             Route::prefix('notifications')->group(function () {
                 Route::get('/', [NotificationController::class, 'index']);
@@ -347,6 +374,16 @@ Route::group(
                 Route::patch('/reject/{id}', [OwnerOrderController::class, 'reject']);
                 // cancel order
                 Route::patch('/cancel/{id}', [OwnerOrderController::class, 'cancel']);
+                // deliver car by owner
+                Route::patch('/deliver/{id}', [OwnerOrderController::class, 'deliver']);
+                // complete order
+                Route::patch('/complete/{id}', [OwnerOrderController::class, 'complete']);
+
+                // handle order extend request
+                Route::prefix('extend')->group(function () {
+                    Route::patch('/accept/{id}', [OwnerOrderExtendController::class, 'accept']);
+                    Route::patch('/reject/{id}', [OwnerOrderExtendController::class, 'reject']);
+                });
             });
         });
 

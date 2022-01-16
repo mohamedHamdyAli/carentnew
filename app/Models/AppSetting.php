@@ -18,6 +18,13 @@ class AppSetting extends Model
         'point_to_money_rate',
         'money_to_point',
         'money_to_point_rate',
+        'processing_percentage',
+        'processing_fixed',
+        'early_return_percentage',
+        'owner_cancel_penality',
+        'min_redemption_amount',
+        'car_legal_download_1',
+        'car_legal_download_2',
     ];
 
     protected $casts = [
@@ -27,6 +34,11 @@ class AppSetting extends Model
         'point_to_money_rate' => 'float',
         'money_to_point' => 'boolean',
         'money_to_point_rate' => 'float',
+        'processing_percentage' => 'float',
+        'processing_fixed' => 'float',
+        'early_return_percentage' => 'float',
+        'owner_cancel_penality' => 'float',
+        'min_redemption_amount' => 'integer',
     ];
 
     protected $hidden = [
@@ -43,7 +55,17 @@ class AppSetting extends Model
 
     public function setVatPercentageAttribute($value)
     {
-        $this->attributes['vat_percentage'] = $value * 100;
+        return $value * 100;
+    }
+
+    public function getProcessingPercentageAttribute($value)
+    {
+        return $value / 100;
+    }
+
+    public function setProcessingPercentageAttribute($value)
+    {
+        return $value * 100;
     }
 
     static function getLastVersion()
