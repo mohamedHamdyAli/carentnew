@@ -85,7 +85,7 @@ class UserController extends Controller
         return response()->json([
             'message' => __('messages.r_success'),
             'data' => $user,
-            'error' => request()->header('country'),
+            'error' => null,
         ], 200);
     }
 }

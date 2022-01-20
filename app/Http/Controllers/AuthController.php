@@ -9,6 +9,7 @@ use App\Http\Common\Auth\Otp;
 use App\Http\Common\Auth\RoleManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Socialite;
 
 class AuthController extends Controller
 {
@@ -51,12 +52,17 @@ class AuthController extends Controller
          * TODO: 3. Create the user 🤵
          */
         try {
-            User::create([
+            $data = [
                 'name'      => request('name'),
                 'email'     => request('email'),
                 'password'  => $passwordHash,
                 'phone'     => request('phone'),
-            ]);
+            ];
+            if (request()->has('social') && request('social') == true) {
+                // * verify user email 
+                $data['email_verified_at'] = now();
+            }
+            User::create($data);
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.create_user'),
@@ -174,6 +180,70 @@ class AuthController extends Controller
                 'message'   => __('messages.error.credentials'),
                 'data' => null,
                 'error'     => null,
+            ], 400);
+        }
+
+        /**
+         * TODO: 3. Generate token 🕰️
+         */
+        $token = $this->createToken(Auth::user(), 'API_V1');
+
+        /**
+         * TODO: 4. Return auth object 🔑
+         */
+        return response()->json([
+            'message'   => __('messages.success.login'),
+            'data' => $this->authObject($token),
+            'error'     => null,
+        ], 200);
+    }
+
+    /**
+     * TODO: Login a user using social media access token 🔑
+     * ? Required Parameters:
+     * @param provider social media provider
+     * @param access_token social media access token
+     * < --------------------------------------- >
+     * ! Functionality !
+     * < --------------------------------------- >
+     * * 1. Validate request
+     * * 2. Attempt login
+     * * 3. Generate token
+     * * 4. Return auth object
+     */
+    public function loginWithSocial()
+    {
+        /**
+         * TODO: 1. Validate the request ℹ️
+         */
+        request()->validate([
+            'access_token'     => ['required', 'string'],
+            'provider'        => ['required', 'string', 'in:facebook,google,apple'],
+        ]);
+
+        try {
+            $social = Socialite::driver(request('provider'))->userFromToken(request('access_token'));
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.expired_token'),
+                'data' => null,
+                'error'     => app()->environment('production') ? null : $e->getMessage(),
+            ], 400);
+        }
+
+        /**
+         * TODO: 2. Attempt login 🔑
+         */
+        try {
+            $email = $social->getEmail();
+            $user = User::where('email', $email)->first();
+            Auth::login($user);
+            Auth::user()->id;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message'   => __('messages.error.credentials'),
+                'data' => null,
+                'error'     => app()->environment('production') ? null : $e->getMessage(),
             ], 400);
         }
 

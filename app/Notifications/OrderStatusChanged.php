@@ -66,6 +66,7 @@ class OrderStatusChanged extends Notification
     {
         $data = [
             'order_id' => $this->order->id,
+            'order_number' => $this->order->number,
             'data' => [
                 'title_en' => $this->status->{$this->for . '_title_en'},
                 'body_en' => $this->status->{$this->for . '_body_en'},

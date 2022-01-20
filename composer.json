@@ -16,7 +16,9 @@
         "laravel/framework": "^8.65",
         "laravel/octane": "^1.0",
         "laravel/sanctum": "^2.12",
-        "laravel/tinker": "^2.5"
+        "laravel/socialite": "^5.3",
+        "laravel/tinker": "^2.5",
+        "socialiteproviders/apple": "^5.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",

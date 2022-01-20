@@ -204,7 +204,7 @@ class Order extends Model
     {
         $lastExtendRequest = $this->OrderExtends()->orderBy('created_at', 'desc')->first();
         return $this->order_status_id == Status::CAR_DELIVERED
-            && $lastExtendRequest && !$lastExtendRequest->isActive();
+            && !($lastExtendRequest && $lastExtendRequest->isActive());
     }
 
     public function onwerCanHandleExtendRequest()
@@ -223,7 +223,7 @@ class Order extends Model
     {
         return $this->order_status_id == Status::CAR_DELIVERED
             && $this->OrderEarlyReturn()->count() == 0
-            && Carbon::now()->toDateString() == $this->end_date
+            && Carbon::tomorrow()->toDateString() < $this->end_date
             && Carbon::now()->toDateString() >= $this->start_date;
     }
 

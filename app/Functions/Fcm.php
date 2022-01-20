@@ -18,6 +18,7 @@ class Fcm
                     'click_action' => 'ORDER_ACTION',
                 ],
                 'data' => [
+                    'order_number' => $data['order_number'],
                     'order_id' => $data['order_id'],
                 ]
             ];

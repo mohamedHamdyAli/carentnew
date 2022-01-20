@@ -40,7 +40,8 @@ class NotificationController extends Controller
         $message = $item->data;
         $localizedMessage = [];
         $localizedMessage['id'] = $item->id;
-        $localizedMessage['order_id'] = $message['order_id'];
+        $localizedMessage['order_id'] = @$message['order_id'];
+        $localizedMessage['order_number'] = @$message['order_number'];
         $localizedMessage['title'] = $message['data']['title_' . app()->getLocale()];
         $localizedMessage['body'] = $message['data']['body_' . app()->getLocale()];
         $localizedMessage['alert_type'] = $message['data']['alert_type'];

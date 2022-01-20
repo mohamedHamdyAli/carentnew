@@ -84,6 +84,10 @@ Route::group(
         'namespace' => 'App\Http\Controllers',
     ],
     function ($router) {
+        // Route::post('/social', function () {
+        //     $user = Socialite::driver('google')->userFromToken(request('token'));
+        //     return $user->getEmail();
+        // });
         // testing
         Route::post('/test/{id}', function ($id) {
             $order = Order::find($id);
@@ -155,6 +159,7 @@ Route::group(
         Route::prefix('auth')->middleware('country')->group(function () {
             Route::post('/login/email', [AuthController::class, 'loginWithEmailAndPassword']);
             Route::post('/login/phone', [AuthController::class, 'loginWithPhoneAndPassword']);
+            Route::post('/login/social', [AuthController::class, 'loginWithSocial']);
             Route::post('/register', [AuthController::class, 'register']);
             Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
             Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:sanctum');
