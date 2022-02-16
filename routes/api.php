@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AgencyController;
+use App\Http\Controllers\Admin\OwnerController;
+use App\Http\Controllers\Admin\RenterController;
 use App\Http\Controllers\AgencyApplicationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceController;
@@ -35,6 +39,11 @@ use App\Http\Controllers\VehicleController;
 use App\Models\AppSetting;
 use App\Models\Order;
 use App\Models\Vehicle;
+use App\Models\Role;
+
+// Admin Controllers
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\VehicleApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,31 +60,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/test', function () {
-    // 
-    // try {
-    //     $orders = Order::all();
-    //     foreach ($orders as $order) {
-    //         OrderStatusHistory::create([
-    //             'order_id' => $order->id,
-    //             'order_status_id' => $order->order_status_id,
-    //             'created_at' => $order->created_at,
-    //             'updated_at' => $order->updated_at
-    //         ]);
-    //     }
-    //     return response()->json([
-    //         'message' => __('messages.r_success'),
-    //         'data' => null,
-    //         'error' => null
-    //     ], 200);
-    // } catch (\Exception $e) {
-    //     return response()->json([
-    //         'message' => __('messages.r_error'),
-    //         'data' => null,
-    //         'error' => $e->getMessage()
-    //     ], 500);
-    // }
-});
 
 Route::group(
     [
@@ -84,19 +68,6 @@ Route::group(
         'namespace' => 'App\Http\Controllers',
     ],
     function ($router) {
-        // Route::post('/social', function () {
-        //     $user = Socialite::driver('google')->userFromToken(request('token'));
-        //     return $user->getEmail();
-        // });
-        // testing
-        Route::post('/test/{id}', function ($id) {
-            $order = Order::find($id);
-            return [
-                'expireAt' => $order->paymentExpireAt(),
-                'canPay' => $order->renterCanPay(),
-                'remainingMinutes' => Carbon\Carbon::now()->diffInMinutes($order->paymentExpireAt(), false),
-            ];
-        });
         // default
         Route::get('/', function () {
             return response()->json([
@@ -112,9 +83,6 @@ Route::group(
             if (app()->environment('local')) {
                 return new \App\Mail\EmailOtp(123456);
             }
-        });
-
-        Route::get('/test', function () {
         });
 
         // Payment Notification
@@ -183,6 +151,7 @@ Route::group(
          */
         Route::prefix('vehicles')->middleware('country')->group(function () {
             Route::post('/', [VehicleController::class, 'index']);
+            Route::get('/', [VehicleController::class, 'index']);
             Route::get('/{id}', [VehicleController::class, 'view']);
             Route::get('/pricing', [OrderController::class, 'getTotals']);
         });
@@ -406,6 +375,83 @@ Route::group(
             Route::get('settings', function () {
                 return response()->json(AppSetting::orderBy('version', 'desc')->first());
             });
+        });
+    }
+);
+
+/**
+ *   @Admin routes
+ */
+Route::group(
+    [
+        'prefix' => 'v1/admin',
+        'middleware' => ['api'],
+        'namespace' => 'App\Http\Controllers\Admin',
+    ],
+    function ($router) {
+        /**
+         *   @Users routes
+         */
+        Route::prefix('users')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+            Route::get('/', [AdminUserController::class, 'index']);
+        });
+
+        /**
+         *   @Roles routes
+         */
+        Route::get('/roles', function () {
+            return Cache::remember('roles-' . app()->getLocale(), 600, function () {
+                return response()->json(Role::where('key', '!=', 'superadmin')->get()->makeHidden('key'));
+            });
+        });
+
+        /**
+         *   @Approvals routes
+         */
+        Route::prefix('approvals')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+            // Renter Application
+            Route::prefix('renters')->group(function () {
+                Route::get('/', [RenterController::class, 'index']);
+                Route::get('/{id}', [RenterController::class, 'show']);
+                Route::patch('/in-review/{id}', [RenterController::class, 'inReview']);
+                Route::put('/approve/{id}', [RenterController::class, 'approve']);
+                Route::put('/reject/{id}', [RenterController::class, 'reject']);
+            });
+
+            // Owner Application
+            Route::prefix('owners')->group(function () {
+                Route::get('/', [OwnerController::class, 'index']);
+                Route::get('/{id}', [OwnerController::class, 'show']);
+                Route::patch('/in-review/{id}', [OwnerController::class, 'inReview']);
+                Route::put('/approve/{id}', [OwnerController::class, 'approve']);
+                Route::put('/reject/{id}', [OwnerController::class, 'reject']);
+            });
+
+            // Agency Application
+            Route::prefix('agencies')->group(function () {
+                Route::get('/', [AgencyController::class, 'index']);
+                Route::get('/{id}', [AgencyController::class, 'show']);
+                Route::patch('/in-review/{id}', [AgencyController::class, 'inReview']);
+                Route::put('/approve/{id}', [AgencyController::class, 'approve']);
+                Route::put('/reject/{id}', [AgencyController::class, 'reject']);
+            });
+
+            // Vehicles Application
+            Route::prefix('vehicles')->group(function () {
+                Route::get('/', [VehicleApprovalController::class, 'index']);
+                Route::get('/{id}', [VehicleApprovalController::class, 'show']);
+                Route::patch('/in-review/{id}', [VehicleApprovalController::class, 'inReview']);
+                Route::put('/approve/{id}', [VehicleApprovalController::class, 'approve']);
+                Route::put('/reject/{id}', [VehicleApprovalController::class, 'reject']);
+            });
+        });
+
+        /**
+         *   @Approvals routes
+         */
+        Route::prefix('orders')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+            Route::get('/', [AdminOrderController::class, 'index']);
+            Route::get('/{id}', [AdminOrderController::class, 'view']);
         });
     }
 );

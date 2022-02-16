@@ -2,21 +2,49 @@
     {
         "name_en": "Book Car",
         "name_ar": "حجز سيارة",
-        "key": "book_car"
+        "key": "book_car",
+        "role_key": "renter"
     },
     {
         "name_en": "Rent Without Driver",
         "name_ar": "تأجير بدون سائق",
-        "key": "rent_without_driver"
+        "key": "rent_without_driver",
+        "role_key": "renter"
     },
     {
-        "name_en": "Create User Payment",
-        "name_ar": "إنشاء دفع مستخدم",
-        "key": "create_user_payment"
+        "name_en": "Manage User",
+        "name_ar": "إدارة المستخدمين",
+        "key": "manage_user",
+        "role_key": "admin"
     },
     {
-        "name_en": "Send User Payment",
-        "name_ar": "إرسال دفع مستخدم",
-        "key": "send_user_payment"
+        "name_en": "Approvals",
+        "name_ar": "الموافقات",
+        "key": "approvals",
+        "role_key": "admin"
+    },
+    {
+        "name_en": "Rentals",
+        "name_ar": "التأجير",
+        "key": "rentals",
+        "role_key": "admin"
+    },
+    {
+        "name_en": "Structure Data",
+        "name_ar": "بيانات البنية",
+        "key": "structure_data",
+        "role_key": "admin"
+    },
+    {
+        "name_en": "Accounting",
+        "name_ar": "المحاسبة",
+        "key": "accounting",
+        "role_key": "admin"
+    },
+    {
+        "name_en": "Configuration",
+        "name_ar": "الإعدادات",
+        "key": "configuration",
+        "role_key": "admin"
     }
 ]

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Consts\Status;
 use App\Models\Order;
 use App\Models\OrderExtend;
+use Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -76,12 +77,14 @@ class OwnerOrderController extends Controller
                     'error' => 'Order can not be accepted'
                 ], 400);
             }
-            
+
             $order->order_status_id = Status::ACCEPTED;
             $order->save();
             $order = Order::findOrFail($id);
             $order->order_status_id = Status::PENDING_PAYMENT;
             $order->save();
+
+            Cache::tags(['orders'])->flush();
 
             return $this->view($id);
         } catch (\Exception $e) {
@@ -105,9 +108,11 @@ class OwnerOrderController extends Controller
                     'error' => 'Order can not be rejected'
                 ], 400);
             }
-            
+
             $order->order_status_id = Status::REJECTED;
             $order->save();
+
+            Cache::tags(['orders'])->flush();
 
             return $this->view($id);
         } catch (\Exception $e) {
@@ -133,6 +138,8 @@ class OwnerOrderController extends Controller
             $order->order_status_id = Status::CANCELED;
             $order->save();
 
+            Cache::tags(['orders'])->flush();
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
@@ -142,7 +149,7 @@ class OwnerOrderController extends Controller
             ], 500);
         }
     }
-    
+
     public function deliver($id)
     {
         try {
@@ -156,6 +163,8 @@ class OwnerOrderController extends Controller
             }
             $order->order_status_id = Status::CAR_ARRIVED;
             $order->save();
+
+            Cache::tags(['orders'])->flush();
 
             return $this->view($id);
         } catch (\Exception $e) {
@@ -180,7 +189,7 @@ class OwnerOrderController extends Controller
             }
 
             // TODO: apply any refund logic here
-            
+
             // TODO: apply reward logic here
 
             $order->order_status_id = Status::CAR_RETURNED;
@@ -188,6 +197,8 @@ class OwnerOrderController extends Controller
             $order = Order::findOrFail($id);
             $order->order_status_id = Status::COMPLETED;
             $order->save();
+
+            Cache::tags(['orders'])->flush();
 
             return $this->view($id);
         } catch (\Exception $e) {

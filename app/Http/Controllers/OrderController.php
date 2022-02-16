@@ -29,7 +29,7 @@ class OrderController extends Controller
 
         // get vehicle pricing
         $pricing = VehiclePricing::where('vehicle_id', request('vehicle_id'))->first();
-        
+
         // validate vehicle pricing with driver
         if (!$pricing->has_driver && (bool) request('with_driver')) {
             return response()->json([
@@ -74,7 +74,7 @@ class OrderController extends Controller
 
         // get vehicle pricing
         $pricing = VehiclePricing::where('vehicle_id', request('vehicle_id'))->first();
-        
+
         // validate vehicle pricing with driver
         if (!$pricing->has_driver && (bool) request('with_driver')) {
             return response()->json([
@@ -147,7 +147,7 @@ class OrderController extends Controller
 
         $order = Order::create($data);
 
-
+        Cache::tags(['orders'])->flush();
 
         return response()->json([
             'message' => __('messages.r_success'),

@@ -30,65 +30,87 @@ class VehicleController extends Controller
         $country = request()->header('Country');
 
         $data = Cache::tags(['vehicles'])->remember("vehicles:" . json_encode(request()->all()), 3600, function () use ($country) {
-            $result = Vehicle::where('country_id', $country)
-                ->when(request('state_id'), function ($query) {
-                    $query->where('state_id', request('state_id'));
-                })
-                ->when(request('brand_id'), function ($query) {
-                    $query->where('brand_id', request('brand_id'));
-                })
-                ->when(request('model_id'), function ($query) {
-                    $query->where('model_id', request('model_id'));
-                })
-                ->when(request('category_id'), function ($query) {
-                    $query->where('category_id', request('category_id'));
-                })
-                ->when(request('fuel_type_id'), function ($query) {
-                    $query->where('fuel_type_id', request('fuel_type_id'));
-                })
-                ->when(request('seat_count'), function ($query) {
-                    $query->where('seat_count', request('seat_count'));
-                })
-                ->when(request('min_year'), function ($query) {
-                    $query->where('manufacture_year', '>=', request('min_year'));
-                })
-                ->when(request('min_rating'), function ($query) {
-                    $query->where('rating', '>=', request('min_rating'));
-                })
-                ->when(request('min_daily_price'), function ($query) {
-                    $query->whereHas('VehiclePricing', function ($query) {
-                        $query->where('daily_price', '>=', request('min_daily_price'));
-                    });
-                })
-                ->when(request('max_daily_price'), function ($query) {
-                    $query->whereHas('VehiclePricing', function ($query) {
-                        $query->where('daily_price', '<=', request('max_daily_price'));
-                    });
-                })
-                ->when(request('has_driver'), function ($query) {
-                    $query->whereHas('VehiclePricing', function ($query) {
-                        $query->where('has_driver', request('has_driver'));
-                    });
-                })
-                ->when(request('with_features'), function ($query) {
-                    $query->whereHas('VehicleFeatures', function ($query) {
-                        $query->whereIn('feature_id', request('with_features'));
-                    });
-                })
-                ->when(request('rented_before'), function ($query) {
-                    $query->where('rented', '>', 0);
-                })
-                // TODO: add filter for features
-                ->when(request('from_date'), function ($query) {
-                    $query->whereDoesntHave('orders', function ($query) {
-                        $query->Overlaps(request('from_date'), request('to_date'));
-                    });
-                })
-                ->where('active', true)
-                ->whereNotNull('verified_at')
-                ->paginate(15);
+            $result = Vehicle::where('country_id', $country);
+            if (request()->has('search')) {
+                $result = $result->whereHas('user', function ($query) {
+                    return $query->where('name', 'like', '%' . request('search') . '%')
+                        ->orWhere('email', 'like', '%' . request('search') . '%')
+                        ->orWhere('phone', 'like', '%' . request('search') . '%');
+                })->orWhere('plate_number', 'like', '%' . request()->get('search') . '%');
+            }
 
-            return $result->setCollection($result->getCollection()->makeVisible('thumbnail_url'));
+            if (request()->has('state_id')) {
+                $result = $result->where('state_id', request('state_id'));
+            }
+
+            if (request()->has('brand_id')) {
+                $result = $result->where('brand_id', request('brand_id'));
+            }
+
+            if (request()->has('model_id')) {
+                $result = $result->where('model_id', request('model_id'));
+            }
+
+            if (request()->has('category_id')) {
+                $result = $result->where('category_id', request('category_id'));
+            }
+
+            if (request()->has('fuel_type_id')) {
+                $result = $result->where('fuel_type_id', request('fuel_type_id'));
+            }
+
+            if (request()->has('seat_count')) {
+                $result = $result->where('seat_count', request('seat_count'));
+            }
+
+            if (request()->has('min_year')) {
+                $result = $result->where('manufacture_year', '>=', request('min_year'));
+            }
+
+            if (request()->has('min_rating')) {
+                $result = $result->where('rating', '>=', request('min_rating'));
+            }
+
+            if (request()->has('min_daily_price')) {
+                $result = $result->whereHas('VehiclePricing', function ($query) {
+                    $query->where('daily_price', '>=', request('min_daily_price'));
+                });
+            }
+
+            if (request()->has('max_daily_price')) {
+                $result = $result->whereHas('VehiclePricing', function ($query) {
+                    $query->where('daily_price', '<=', request('max_daily_price'));
+                });
+            }
+            if (request()->has('has_driver')) {
+                $result = $result->whereHas('VehiclePricing', function ($query) {
+                    $query->where('has_driver', request('has_driver'));
+                });
+            }
+            if (request()->has('with_features')) {
+                $result = $result->whereHas('VehicleFeatures', function ($query) {
+                    $query->whereIn('feature_id', request('with_features'));
+                });
+            }
+            if (request()->has('rented_before')) {
+                $result = $result->where('rented', '>', 0);
+            }
+            // TODO: add filter for features
+            if (request()->has('from_date')) {
+                $result = $result->whereDoesntHave('orders', function ($query) {
+                    $query->Overlaps(request('from_date'), request('to_date'));
+                });
+            }
+
+            if (!request()->has('with_inactive')) {
+                $result = $result->where('active', true);
+            }
+
+            $result =
+                $result->whereNotNull('verified_at')
+                ->paginate(request('per_page'));
+
+            return $result->setCollection($result->getCollection()->makeVisible(['thumbnail_url', 'created_at']));
         });
 
         return $data;

@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderEarlyReturn;
 use App\Models\OrderExtend;
 use App\Models\VehiclePricing;
+use Cache;
 use Illuminate\Http\Request;
 
 class RenterOrderController extends Controller
@@ -82,6 +83,9 @@ class RenterOrderController extends Controller
                     'error' => 'Order can not be canceled'
                 ], 400);
             }
+
+            Cache::tags(['orders'])->flush();
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([
@@ -105,6 +109,8 @@ class RenterOrderController extends Controller
             }
             $order->order_status_id = Status::CAR_DELIVERED;
             $order->save();
+
+            Cache::tags(['orders'])->flush();
 
             return $this->view($id);
         } catch (\Exception $e) {

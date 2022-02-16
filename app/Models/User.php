@@ -141,6 +141,11 @@ class User extends Authenticatable
         return $this->hasMany(Address::class);
     }
 
+    public function UserRoles()
+    {
+        return $this->hasMany(UserRole::class);
+    }
+
     /**
      * @comment get user default address.
      *

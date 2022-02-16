@@ -10,11 +10,6 @@
         "key": "admin"
     },
     {
-        "name_en": "Accountant",
-        "name_ar": "محاسب",
-        "key": "accountant"
-    },
-    {
         "name_en": "Agency",
         "name_ar": "وكالة",
         "key": "agency"

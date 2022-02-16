@@ -121,11 +121,11 @@ class RenterApplicationController extends Controller
 
     public function dev()
     {
-        $userId = auth()->user()->id;
+        $user = auth()->user();
 
         // delete applications
         $application =
-            RenterApplication::where('user_id', $userId)
+            RenterApplication::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -152,7 +152,7 @@ class RenterApplicationController extends Controller
                         'driver_license_verified' => request('verify_driver_license') ?? false,
                     ]);
 
-                    // update idiotity document verified at 
+                    // update identity document verified at 
                     if (request()->has('verify_identity_document') && request('verify_identity_document')) {
                         // update identity document verified at
                         $verifyIdentity = IdentityDocument::whereVerifiedAt(null)->where('id', $application->identity_document_id)->update([

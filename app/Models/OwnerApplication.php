@@ -64,20 +64,16 @@ class OwnerApplication extends Model
      */
     public function identityDocument()
     {
-        return $this->hasMany(IdentityDocument::class, 'user_id', 'user_id');
+        return $this->hasOne(IdentityDocument::class, 'id', 'identity_document_id');
+    }
+
+    public function getIdentityDocumentUploadedAttribute()
+    {
+        return $this->identityDocument() ? true : false;
     }
 
     public function getApprovedAttribute()
     {
         return $this->status === 'approved';
-    }
-
-    public function getIdentityDocumentUploadedAttribute()
-    {
-        return $this->identityDocument()
-            ->orderBy('created_at', 'desc')
-            ->first([
-                'id', 'user_id', 'verified_at', 'created_at'
-            ]) ? true : false;
     }
 }
