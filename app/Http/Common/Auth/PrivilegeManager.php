@@ -25,9 +25,9 @@ class PrivilegeManager
             return;
         }
 
-        $privilege_id = Privilege::where('key', $privilege)->first()->id;
+        $privilege_id = Privilege::where('key', $privilege)->first()?->id;
 
-        UserPrivilege::create([
+        UserPrivilege::updateOrcreate([
             'user_id' => $this->user->id,
             'privilege_id' => $privilege_id,
         ]);

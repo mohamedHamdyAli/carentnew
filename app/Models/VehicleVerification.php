@@ -68,16 +68,12 @@ class VehicleVerification extends Model
      */
     public function vehicleInsurance()
     {
-        return $this->hasMany(VehicleInsurance::class, 'vehicle_id', 'vehicle_id');
+        return $this->hasOne(VehicleInsurance::class, 'id', 'vehicle_insurance_id');
     }
 
     public function getVehicleInsuranceUploadedAttribute()
     {
-        return $this->vehicleInsurance()
-            ->orderBy('created_at', 'desc')
-            ->first([
-                'id', 'vehicle_id', 'verified_at', 'created_at'
-            ]) ? true : false;
+        return $this->vehicleInsurance() ? true : false;
     }
 
     /**
@@ -85,15 +81,11 @@ class VehicleVerification extends Model
      */
     public function vehicleLicense()
     {
-        return $this->hasMany(VehicleLicense::class, 'vehicle_id', 'vehicle_id');
+        return $this->hasOne(VehicleLicense::class, 'id', 'vehicle_license_id');
     }
 
     public function getVehicleLicenseUploadedAttribute()
     {
-        return $this->vehicleLicense()
-            ->orderBy('created_at', 'desc')
-            ->first([
-                'id', 'vehicle_id', 'verified_at', 'created_at'
-            ]) ? true : false;
+        return $this->vehicleLicense() ? true : false;
     }
 }

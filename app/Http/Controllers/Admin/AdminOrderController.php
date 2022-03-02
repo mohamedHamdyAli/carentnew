@@ -65,4 +65,25 @@ class AdminOrderController extends Controller
 
         return response()->json($results);
     }
+
+    public function show($id)
+    {
+        $payment = Order::with([
+            'user',
+            'owner',
+            'vehicle',
+            'vehicle.brand',
+            'orderStatusHistory',
+            'orderStatusHistory.orderStatus',
+        ])->findOrFail($id);
+
+        $payment->makeVisible([
+            'owner',
+            'user',
+            'vehicle.BrandModel.logo',
+            'created_at',
+        ]);
+
+        return response()->json($payment);
+    }
 }

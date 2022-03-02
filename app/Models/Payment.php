@@ -29,15 +29,20 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'orderAmount' => 'decimal:2,8',
-        'paymentAmount' => 'decimal:2,8',
-        'fawryFees' => 'decimal:2,8',
+        'orderAmount' => 'float',
+        'paymentAmount' => 'float',
+        'fawryFees' => 'float',
         'statusCode' => 'integer',
         'paymentTime' => 'datetime',
     ];
 
     public function invoice()
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(Invoice::class, 'id', 'payment_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customerProfileId');
     }
 }

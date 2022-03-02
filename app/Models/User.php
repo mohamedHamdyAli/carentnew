@@ -166,6 +166,11 @@ class User extends Authenticatable
         return $this->hasMany(UserRole::class);
     }
 
+    public function allRoles()
+    {
+        return $this->hasManyThrough(Role::class, UserRole::class, 'user_id', 'id', 'id', 'role_id');
+    }
+
     /**
      * @comment check if user has role
      *
@@ -204,7 +209,7 @@ class User extends Authenticatable
      */
     public function hasPrivilege($privilege)
     {
-        $privilege_id = Privilege::where('key', $privilege)->first()->id;
+        $privilege_id = Privilege::where('key', $privilege)->first()?->id;
         return $this->privileges()->where('privilege_id', $privilege_id)->first() ? true : false;
     }
 

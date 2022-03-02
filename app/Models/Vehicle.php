@@ -109,7 +109,6 @@ class Vehicle extends Model
         'owner',
         'country',
         'images',
-        'fuel_type',
         'features',
         'pricing',
         'rating',
@@ -241,7 +240,7 @@ class Vehicle extends Model
         $data = $this->VehicleImages()->orderBy('display_order')->get();
         $images = [];
         foreach ($data as $image) {
-            $images[] = url(Storage::url($image->image));
+            $images[] = url(Storage::url($image->image), [], true);
         }
         return $images;
     }
@@ -293,7 +292,7 @@ class Vehicle extends Model
 
     public function getThumbnailUrlAttribute()
     {
-        return url(Storage::url($this->thumbnail));
+        return url(Storage::url($this->thumbnail, [], true));
     }
 
     public function getFeaturesAttribute()

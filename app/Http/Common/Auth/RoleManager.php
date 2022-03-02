@@ -25,9 +25,9 @@ class RoleManager
             return;
         }
 
-        $role_id = Role::where('key', $role)->first()->id;
+        $role_id = Role::where('key', $role)->first()?->id;
 
-        UserRole::create([
+        UserRole::updateOrcreate([
             'user_id' => $this->user->id,
             'role_id' => $role_id,
         ]);
@@ -44,7 +44,7 @@ class RoleManager
             return;
         }
 
-        $role_id = Role::where('key', $role)->first()->id;
+        $role_id = Role::where('key', $role)->first()?->id;
 
         UserRole::where('user_id', $this->user->id)
             ->where('role_id', $role_id)

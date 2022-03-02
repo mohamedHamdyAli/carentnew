@@ -6,6 +6,7 @@ use App\Functions\Fcm;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -19,17 +20,28 @@ class UserController extends Controller
             'error' => null,
         ], 200);
     }
-    public function update()
+    public function update(Request $request)
     {
-        request()->validate([
+        $request->validate([
             'name'      => ['required', 'regex:/^(?!.*\d)[أ-يa-z\s]{2,66}$/iu'], // * Name without numbers
+            'email'     => ['sometimes', 'email', 'unique:users,email,' . Auth::id()],
+            'phone'     => ['sometimes', 'regex:/^(\+)[0-9]{10,15}$/', 'unique:users,phone,' . Auth::id()],
+            'password'  => ['sometimes'],
         ]);
 
         $user = Auth::user();
 
-        $user->update([
-            'name' => request('name'),
-        ]);
+        if ($request->has('password'))
+            // compare old password
+            if (!Hash::check(request()->password, $user->password))
+                return response()->json([
+                    'message' => __('messages.r_error'),
+                    'data' => null,
+                    'error' => __('messages.e_password_wrong'),
+                ], 401);
+
+
+        $user->update($request->except('password'));
 
         return response()->json([
             'message' => __('messages.r_success'),
@@ -52,7 +64,7 @@ class UserController extends Controller
                 'message' => __('messages.r_error'),
                 'data' => null,
                 'error' => __('messages.e_password_incorrect'),
-            ], 400);
+            ], 401);
         }
 
         // * Update the password

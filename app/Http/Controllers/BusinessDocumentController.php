@@ -111,6 +111,7 @@ class BusinessDocumentController extends Controller
             // add legal documents & create new business document
             $data['user_id'] = Auth::user()->id;
             $data['legal_documents'] = $legal_documents_paths;
+            return $data;
             $business_document = BusinessDocument::create($data);
         }
 

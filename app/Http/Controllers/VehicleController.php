@@ -31,7 +31,7 @@ class VehicleController extends Controller
 
         $data = Cache::tags(['vehicles'])->remember("vehicles:" . json_encode(request()->all()), 3600, function () use ($country) {
             $result = Vehicle::where('country_id', $country);
-            if (request()->has('search')) {
+            if (request()->has('search') && request()->get('search') != '' && request()->get('search') != null) {
                 $result = $result->whereHas('user', function ($query) {
                     return $query->where('name', 'like', '%' . request('search') . '%')
                         ->orWhere('email', 'like', '%' . request('search') . '%')
@@ -39,64 +39,64 @@ class VehicleController extends Controller
                 })->orWhere('plate_number', 'like', '%' . request()->get('search') . '%');
             }
 
-            if (request()->has('state_id')) {
+            if (request()->has('state_id') && request()->get('state_id') != null) {
                 $result = $result->where('state_id', request('state_id'));
             }
 
-            if (request()->has('brand_id')) {
+            if (request()->has('brand_id') && request()->get('brand_id') != null) {
                 $result = $result->where('brand_id', request('brand_id'));
             }
 
-            if (request()->has('model_id')) {
+            if (request()->has('model_id') && request()->get('model_id') != null) {
                 $result = $result->where('model_id', request('model_id'));
             }
 
-            if (request()->has('category_id')) {
+            if (request()->has('category_id') && request()->get('category_id') != null) {
                 $result = $result->where('category_id', request('category_id'));
             }
 
-            if (request()->has('fuel_type_id')) {
+            if (request()->has('fuel_type_id') && request()->get('fuel_type_id') != null) {
                 $result = $result->where('fuel_type_id', request('fuel_type_id'));
             }
 
-            if (request()->has('seat_count')) {
+            if (request()->has('seat_count') && request()->get('seat_count') != null) {
                 $result = $result->where('seat_count', request('seat_count'));
             }
 
-            if (request()->has('min_year')) {
+            if (request()->has('min_year') && request()->get('min_year') != null) {
                 $result = $result->where('manufacture_year', '>=', request('min_year'));
             }
 
-            if (request()->has('min_rating')) {
+            if (request()->has('min_rating') && request()->get('min_rating') != null) {
                 $result = $result->where('rating', '>=', request('min_rating'));
             }
 
-            if (request()->has('min_daily_price')) {
+            if (request()->has('min_daily_price') && request()->get('min_daily_price') != null) {
                 $result = $result->whereHas('VehiclePricing', function ($query) {
                     $query->where('daily_price', '>=', request('min_daily_price'));
                 });
             }
 
-            if (request()->has('max_daily_price')) {
+            if (request()->has('max_daily_price') && request()->get('max_daily_price') != null) {
                 $result = $result->whereHas('VehiclePricing', function ($query) {
                     $query->where('daily_price', '<=', request('max_daily_price'));
                 });
             }
-            if (request()->has('has_driver')) {
+            if (request()->has('has_driver') && request()->get('has_driver') != null) {
                 $result = $result->whereHas('VehiclePricing', function ($query) {
                     $query->where('has_driver', request('has_driver'));
                 });
             }
-            if (request()->has('with_features')) {
+            if (request()->has('with_features') && request()->get('with_features') != []) {
                 $result = $result->whereHas('VehicleFeatures', function ($query) {
                     $query->whereIn('feature_id', request('with_features'));
                 });
             }
-            if (request()->has('rented_before')) {
+            if (request()->has('rented_before') && request()->get('rented_before') != null) {
                 $result = $result->where('rented', '>', 0);
             }
             // TODO: add filter for features
-            if (request()->has('from_date')) {
+            if (request()->has('from_date') && request()->get('from_date') != null) {
                 $result = $result->whereDoesntHave('orders', function ($query) {
                     $query->Overlaps(request('from_date'), request('to_date'));
                 });

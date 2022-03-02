@@ -17,6 +17,7 @@ class CreateRolesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name_en');
             $table->string('name_ar');
+            $table->string('group')->default('app');
             $table->string('key')->unique();
         });
     }

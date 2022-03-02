@@ -91,6 +91,11 @@ class Order extends Model
         return $this->hasOne(OrderStatus::class, 'id', 'order_status_id');
     }
 
+    public function orderStatusHistory()
+    {
+        return $this->hasMany(OrderStatusHistory::class, 'order_id', 'id');
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
@@ -238,7 +243,7 @@ class Order extends Model
         return $this->order_status_id == Status::CONFIRMED
             && Carbon::now()->toDateString() <= $this->end_date
             /*&& Carbon::now()->toDateString() >= $this->start_date*/;
-            // TODO: remove after testing
+        // TODO: remove after testing
     }
 
     public function renterCanReceive()

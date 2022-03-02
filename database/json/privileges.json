@@ -3,48 +3,54 @@
         "name_en": "Book Car",
         "name_ar": "حجز سيارة",
         "key": "book_car",
-        "role_key": "renter"
+        "role_group": "renter"
     },
     {
         "name_en": "Rent Without Driver",
         "name_ar": "تأجير بدون سائق",
         "key": "rent_without_driver",
-        "role_key": "renter"
+        "role_group": "renter"
     },
     {
         "name_en": "Manage User",
         "name_ar": "إدارة المستخدمين",
         "key": "manage_user",
-        "role_key": "admin"
+        "role_group": "admin"
     },
     {
         "name_en": "Approvals",
         "name_ar": "الموافقات",
         "key": "approvals",
-        "role_key": "admin"
+        "role_group": "admin"
     },
     {
-        "name_en": "Rentals",
-        "name_ar": "التأجير",
-        "key": "rentals",
-        "role_key": "admin"
+        "name_en": "Bookings",
+        "name_ar": "الحجوزات",
+        "key": "bookings",
+        "role_group": "admin"
+    },
+    {
+        "name_en": "Vehicles",
+        "name_ar": "المركبات",
+        "key": "vehicles",
+        "role_group": "admin"
     },
     {
         "name_en": "Structure Data",
         "name_ar": "بيانات البنية",
         "key": "structure_data",
-        "role_key": "admin"
+        "role_group": "admin"
     },
     {
         "name_en": "Accounting",
         "name_ar": "المحاسبة",
         "key": "accounting",
-        "role_key": "admin"
+        "role_group": "admin"
     },
     {
         "name_en": "Configuration",
         "name_ar": "الإعدادات",
         "key": "configuration",
-        "role_key": "admin"
+        "role_group": "admin"
     }
 ]

@@ -31,12 +31,14 @@ class Privilege extends Model
     protected $fillable = [
         'name_en',
         'name_ar',
-        'key'
+        'key',
+        'role_group',
     ];
 
     protected $hidden = [
         'name_en',
         'name_ar',
+        'role_group',
     ];
 
     protected $appends = [
