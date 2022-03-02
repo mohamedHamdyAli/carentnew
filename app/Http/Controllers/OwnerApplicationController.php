@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\IdentityDocument;
 use App\Models\OwnerApplication;
+use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -97,6 +98,7 @@ class OwnerApplicationController extends Controller
         ]);
 
         // TODO: send email to admin
+        Cache::tags(['counters'])->flush();
 
         return response()->json([
             'message' => __('messages.success.application_submitted'),

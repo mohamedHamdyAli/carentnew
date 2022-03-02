@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AgencyController;
 use App\Http\Controllers\Admin\OwnerController;
 use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\AlertController;
 use App\Http\Controllers\Admin\RenterController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VehicleApprovalController;
 use App\Models\Privilege;
@@ -97,12 +99,27 @@ Route::group(
                 Route::get('/{id}', [AdminPaymentController::class, 'show']);
             });
         });
+
         /**
          * * @Approvals routes
          */
         Route::prefix('orders')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::get('/', [AdminOrderController::class, 'index']);
             Route::get('/{id}', [AdminOrderController::class, 'show']);
+        });
+
+        /**
+         * * @Counters routes
+         */
+        Route::prefix('alerts')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+            Route::get('/counters', [AlertController::class, 'counters']);
+        });
+
+        /**
+         * * @Reports routes
+         */
+        Route::prefix('reports')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+            Route::get('/', [ReportController::class, 'index']);
         });
     }
 );

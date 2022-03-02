@@ -306,6 +306,7 @@ class OwnerVehicleController extends Controller
 
         // send email to admin
         // TODO: send email to admin
+        Cache::tags(['counters'])->flush();
 
         return response()->json([
             'message' => __('messages.success.vehicle_submitted'),

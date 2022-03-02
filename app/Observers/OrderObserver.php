@@ -5,8 +5,10 @@ namespace App\Observers;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\OrderStatusHistory;
+use App\Models\Report;
 use App\Models\User;
 use App\Notifications\OrderStatusChanged;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class OrderObserver
@@ -24,6 +26,8 @@ class OrderObserver
         //
         OrderStatusHistory::create(['order_id' => $order->id, 'order_status_id' => 1]);
         $this->sendRequiredNotifications($order);
+        $todayReport = Report::firstOrCreate(['date' => Carbon::today()]);
+        $todayReport->increment('bookings');
     }
 
     /**

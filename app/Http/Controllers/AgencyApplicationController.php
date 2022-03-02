@@ -6,6 +6,7 @@ use App\Models\AgencyApplication;
 use App\Models\BusinessDocument;
 use App\Models\IdentityDocument;
 use Auth;
+use Cache;
 use Illuminate\Http\Request;
 
 class AgencyApplicationController extends Controller
@@ -110,6 +111,8 @@ class AgencyApplicationController extends Controller
         ]);
 
         // TODO: send email to admin
+        
+        Cache::tags(['counters'])->flush();
 
         return response()->json([
             'message' => __('messages.success.application_submitted'),

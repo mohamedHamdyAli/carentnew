@@ -144,6 +144,7 @@ class AgencyController extends Controller
                 }
 
                 Cache::tags(['agencies'])->flush();
+                Cache::tags(['counters'])->flush();
             });
             return response(['message' => 'Application is approved']);
         } catch (\Exception $e) {
@@ -160,6 +161,7 @@ class AgencyController extends Controller
                 $application->reason = request('reason');
                 $application->save();
                 Cache::tags(['agencies'])->flush();
+                Cache::tags(['counters'])->flush();
             });
 
             return response()->json(['message' => 'Application is rejected']);

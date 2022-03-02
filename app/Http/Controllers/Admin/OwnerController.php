@@ -93,6 +93,7 @@ class OwnerController extends Controller
                 $application->status = 'in-review';
                 $application->save();
                 Cache::tags(['owners'])->flush();
+                Cache::tags(['counters'])->flush();
             });
             return response()->json(['message' => 'Application is in review']);
         } catch (\Exception $e) {
@@ -135,6 +136,7 @@ class OwnerController extends Controller
                 }
 
                 Cache::tags(['owners'])->flush();
+                Cache::tags(['counters'])->flush();
             });
             return response(['message' => 'Application is approved']);
         } catch (\Exception $e) {
@@ -151,6 +153,7 @@ class OwnerController extends Controller
                 $application->reason = request('reason');
                 $application->save();
                 Cache::tags(['owners'])->flush();
+                Cache::tags(['counters'])->flush();
             });
 
             return response()->json(['message' => 'Application is rejected']);

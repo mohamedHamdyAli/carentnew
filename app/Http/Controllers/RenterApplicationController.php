@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DriverLicense;
 use App\Models\IdentityDocument;
 use App\Models\RenterApplication;
+use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -102,6 +103,7 @@ class RenterApplicationController extends Controller
         ]);
 
         // TODO: send email to admin
+        Cache::tags(['counters'])->flush();
 
         return response()->json([
             'message' => __('messages.success.application_submitted'),
