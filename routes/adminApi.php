@@ -86,6 +86,8 @@ Route::group(
                 Route::patch('/in-review/{id}', [VehicleApprovalController::class, 'inReview']);
                 Route::put('/approve/{id}', [VehicleApprovalController::class, 'approve']);
                 Route::put('/reject/{id}', [VehicleApprovalController::class, 'reject']);
+                Route::put('/block/{id}', [VehicleApprovalController::class, 'block']);
+                Route::put('/unblock/{id}', [VehicleApprovalController::class, 'unblock']);
             });
         });
 

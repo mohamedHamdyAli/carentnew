@@ -193,4 +193,24 @@ class VehicleApprovalController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
+    public function block($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->active = false;
+        $vehicle->save();
+
+        return true;
+    }
+
+    public function unblock($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->active = true;
+        $vehicle->save();
+
+        Cache::tags(['vehicles'])->flush();
+
+        return true;
+    }
 }

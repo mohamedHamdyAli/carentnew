@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Report;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class ReportSeeder extends Seeder

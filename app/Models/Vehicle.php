@@ -104,7 +104,6 @@ class Vehicle extends Model
         'color',
         'fuel_type_id',
         'rented',
-        'active',
         'views',
         'owner',
         'country',
