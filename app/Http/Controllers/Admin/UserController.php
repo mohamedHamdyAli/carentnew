@@ -114,7 +114,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::findOrFail($id)->makeVisible(['is_active']);
+        $user = User::with('BankAccount')->findOrFail($id)->makeVisible(['is_active']);
         $privilages = UserPrivilege::where('user_id', $id)->pluck('privilege_id');
         $user = $user->toArray();
         $user['privileges'] = $privilages;

@@ -37,7 +37,7 @@ class AuthController extends Controller
          * TODO: 1. Validate the request ℹ️
          */
         request()->validate([
-            'name'      => ['required', 'regex:/^(?!.*\d)[أ-يa-z\s]{2,66}$/iu'], // * Name without numbers
+            'name'      => ['required', 'regex:/^(?!.*\d)[أ-يa-zA-Z\s]{2,66}$/iu'], // * Name without numbers
             'phone'     => ['required', 'unique:users', 'regex:/^(\+)[0-9]{10,15}$/'], // * International phone number
             'email'     => ['required', 'email', 'unique:users'], // * Unique email address
             'password'  => ['required', Password::min(8)->letters()->numbers()], // * Strong password

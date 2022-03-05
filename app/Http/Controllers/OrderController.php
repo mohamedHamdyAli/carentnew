@@ -190,13 +190,15 @@ class OrderController extends Controller
     public function getStatuses()
     {
         $data = Cache::rememberForever('order-statuses-' . app()->getLocale(), function () {
-            return OrderStatus::get([
-                'id',
-                'name_en',
-                'name_ar',
-                'alert_type',
-                'terminate'
-            ]);
+            return OrderStatus::where('filterable', true)
+                ->get([
+                    'id',
+                    'name_en',
+                    'name_ar',
+                    'alert_type',
+                    'terminate',
+                    'filterable'
+                ]);
         });
 
         return response()->json([

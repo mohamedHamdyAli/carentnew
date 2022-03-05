@@ -86,6 +86,14 @@ class RenterOrderController extends Controller
 
             Cache::tags(['orders'])->flush();
 
+            // TODO: refund payment after applying refund policy
+            /**
+             * ? get cancel by renter policy
+             * ? check if there is a penalty for renter
+             * ? apply penalty
+             * ? refund payment
+             */
+
             return $this->view($id);
         } catch (\Exception $e) {
             return response()->json([

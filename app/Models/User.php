@@ -223,6 +223,11 @@ class User extends Authenticatable
         return $this->hasMany(Vehicle::class);
     }
 
+    public function BankAccount()
+    {
+        return $this->hasOne(BankAccount::class);
+    }
+
     /**
      * @comment check if user email is verified
      *

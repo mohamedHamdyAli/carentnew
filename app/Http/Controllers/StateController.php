@@ -45,12 +45,12 @@ class StateController extends Controller
      * @param  \App\Models\State  $state
      * @return \Illuminate\Http\Response
      */
-    public function show($state)
+    public function show($country)
     {
         //
 
-        $data = cache()->tags(['countries', 'states'])->rememberForever("country_states.{$state}", function () use ($state) {
-            return new StateResource(State::where('country_id', $state)->get());
+        $data = cache()->tags(['countries', 'states'])->rememberForever("country_states.{$country}", function () use ($country) {
+            return new StateResource(State::where('country_id', $country)->get());
         });
 
         return $data;

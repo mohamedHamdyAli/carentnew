@@ -75,6 +75,8 @@ class AdminOrderController extends Controller
             'vehicle.brand',
             'orderStatusHistory',
             'orderStatusHistory.orderStatus',
+            'OrderExtends',
+            'OrderEarlyReturn'
         ])->findOrFail($id);
 
         $payment->makeVisible([

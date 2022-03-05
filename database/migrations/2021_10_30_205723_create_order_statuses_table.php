@@ -29,6 +29,7 @@ class CreateOrderStatusesTable extends Migration
             $table->string('owner_body_en', 150)->nullable();
             $table->string('owner_body_ar', 150)->nullable();
             $table->enum('alert_type', ['success', 'info', 'warning', 'danger'])->default('info');
+            $table->boolean('filterable')->default(true);
         });
     }
 

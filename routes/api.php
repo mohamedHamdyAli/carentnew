@@ -1,7 +1,9 @@
 <?php
+
 use App\Http\Controllers\AgencyApplicationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceController;
+use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BusinessDocumentController;
 use App\Http\Controllers\DriverLicenseController;
 use App\Http\Controllers\IdentityDocumentController;
@@ -110,6 +112,11 @@ Route::group(
             @FuelType routes
         */
         Route::apiResource('fuel-types', 'FuelTypeController');
+
+        /* 
+            @Banks routes
+        */
+        Route::get('banks', 'BankController@index')->middleware(['auth:sanctum', 'country']);
 
         /* 
             @Authentication routes
@@ -222,6 +229,10 @@ Route::group(
                     ], 404);
                 });
                 Route::delete('/{token}', [UserCardController::class, 'delete']);
+            });
+            Route::prefix('banks')->group(function () {
+                Route::get('/', [BankAccountController::class, 'show']);
+                Route::post('/', [BankAccountController::class, 'store']);
             });
             Route::prefix('balance')->group(function () {
                 Route::get('/transactions', [BalanceController::class, 'transactions']);

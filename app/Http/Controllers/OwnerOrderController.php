@@ -138,6 +138,13 @@ class OwnerOrderController extends Controller
             $order->order_status_id = Status::CANCELED;
             $order->save();
 
+            // TODO: refund the total amount if the order is paid
+            /**
+             * ? check if the order is paid
+             * ? if yes, refund the total amount
+             * ? if no, do nothing
+             */
+
             Cache::tags(['orders'])->flush();
 
             return $this->view($id);
@@ -189,8 +196,21 @@ class OwnerOrderController extends Controller
             }
 
             // TODO: apply any refund logic here
+            /**
+             * ? if order is early return, and the order end date is more than 1 day,
+             * ? then calculate the refund amount for the remaining days (difference between order end date and today - 1 day)
+             * ? then substract the early return penalty from the refund amount
+             * ? then refund the amount to the customer
+             */
 
             // TODO: apply reward logic here
+            /**
+             * ? get money to point ratio
+             * ? get the order total amount
+             * ? calculate the reward amount (order total amount * money to point ratio)
+             * ? add the reward amount to the customer account
+             */
+
 
             $order->order_status_id = Status::CAR_RETURNED;
             $order->save();
