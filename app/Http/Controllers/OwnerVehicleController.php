@@ -336,7 +336,33 @@ class OwnerVehicleController extends Controller
         Cache::tags(['vehicles'])->flush();
 
         return response()->json([
-            'message' => __('messages.success.vehicle_updated'),
+            'message' => __('messages.success.vehicle_published'),
+            'data' => $vehicle->makeVisible(['verified', 'thumbnail_url', 'status', 'active']),
+            'error' => null,
+        ], 200);
+    }
+
+    public function deactivate($id)
+    {
+        $vehicle = Vehicle::findOrFail($id);
+
+        // check if the vehicle is already verified
+        if (request('active') == 'true' && $vehicle->verified_at === null) {
+            return response()->json([
+                'message' => __('messages.error.vehicle_verified'),
+                'data' => null,
+                'error' => true,
+            ], 400);
+        }
+        // string to boolean
+        $vehicle->active = false;
+        $vehicle->save();
+
+        // flush all vehicles cache
+        Cache::tags(['vehicles'])->flush();
+
+        return response()->json([
+            'message' => __('messages.success.vehicle_unpublished'),
             'data' => $vehicle->makeVisible(['verified', 'thumbnail_url', 'status', 'active']),
             'error' => null,
         ], 200);

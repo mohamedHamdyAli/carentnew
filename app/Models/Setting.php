@@ -27,6 +27,7 @@ class Setting extends Model
 
     protected $fillable = [
         'key',
+        'group',
         'name_en',
         'name_ar',
         'content_en',
@@ -36,6 +37,7 @@ class Setting extends Model
     protected $hidden = [
         'id',
         'key',
+        'group',
         'name_en',
         'name_ar',
         'content_en',

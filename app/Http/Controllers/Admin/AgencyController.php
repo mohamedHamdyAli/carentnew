@@ -138,10 +138,8 @@ class AgencyController extends Controller
                     'verified_at' => now()
                 ]);
 
-                if ($verifyBusiness && $verifyIdentity) {
-                    // assign role as a resullt of verification
-                    $user->assignRole('agency');
-                }
+                // assign role as a resullt of verification
+                $user->assignRole('agency');
 
                 Cache::tags(['agencies'])->flush();
                 Cache::tags(['counters'])->flush();

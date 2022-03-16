@@ -22,30 +22,33 @@ class SettingSeeder extends Seeder
 
         $renter_agreements = [
             'key' => 'renter-agreement',
-            'name_en' => 'Carent Egypt Terms of Use',
-            'name_ar' => 'شروط الإستخدام كارنت مصر',
+            'name_en' => 'Carent Egypt Renter Terms of Use',
+            'name_ar' => 'شروط الإستخدام للمستأجر كارنت مصر',
             'content_en' => $contentEn,
             'content_ar' => $contentAr,
+            'group' => 'policy',
         ];
 
         Setting::create($renter_agreements);
 
         $owner_agreements = [
             'key' => 'owner-agreement',
-            'name_en' => 'Carent Egypt Terms of Use',
-            'name_ar' => 'شروط الإستخدام كارنت مصر',
+            'name_en' => 'Carent Egypt Owner Terms of Use',
+            'name_ar' => 'شروط الإستخدام المالك كارنت مصر',
             'content_en' => $contentEn,
             'content_ar' => $contentAr,
+            'group' => 'policy',
         ];
 
         Setting::create($owner_agreements);
 
         $agency_agreements = [
             'key' => 'agency-agreement',
-            'name_en' => 'Carent Egypt Terms of Use',
-            'name_ar' => 'شروط الإستخدام كارنت مصر',
+            'name_en' => 'Carent Egypt Agency Terms of Use',
+            'name_ar' => 'شروط الإستخدام الوكالة كارنت مصر',
             'content_en' => $contentEn,
             'content_ar' => $contentAr,
+            'group' => 'policy',
         ];
 
         Setting::create($agency_agreements);

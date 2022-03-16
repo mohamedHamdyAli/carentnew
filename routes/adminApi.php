@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AlertController;
 use App\Http\Controllers\Admin\RenterController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VehicleApprovalController;
 use App\Models\Privilege;
@@ -123,5 +124,15 @@ Route::group(
         Route::prefix('reports')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::get('/', [ReportController::class, 'index']);
         });
+
+        /**
+         * * @Setting routes
+         */
+        Route::prefix('settings')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])
+            ->group(function () {
+                Route::get('/groups/{group}', [SettingController::class, 'group']);
+                Route::get('/single/{id}', [SettingController::class, 'single']);
+                Route::put('/single/{id}', [SettingController::class, 'update']);
+            });
     }
 );

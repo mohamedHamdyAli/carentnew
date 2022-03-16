@@ -336,6 +336,7 @@ Route::group(
                 Route::put('/status/{id}', [OwnerVehicleController::class, 'dev']);
                 // activation routes
                 Route::post('/activate/{id}', [OwnerVehicleController::class, 'activate']);
+                Route::post('/deactivate/{id}', [OwnerVehicleController::class, 'deactivate']);
             });
 
             // Owner Orders routes

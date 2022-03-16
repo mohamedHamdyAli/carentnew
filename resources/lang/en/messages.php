@@ -45,6 +45,8 @@ return [
         'vehicle_submitted' => 'Vehicle verification submitted successfully',
         'vehicle_updated' => 'Vehicle updated successfully',
         'payment_success' => 'Payment success',
+        'vehicle_published' => 'Vehicle published successfully',
+        'vehicle_unpublished' => 'Vehicle unpublished successfully',
     ],
     'suggested_price_less_than_80_percent' => 'Suggested price can\'t be less than 80% of the total price',
 ];

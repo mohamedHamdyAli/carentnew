@@ -129,11 +129,8 @@ class OwnerController extends Controller
                         'verified_at' => now()
                     ]);
 
-                if ($verifyIdentity) {
-
-                    // assign owner role
-                    $user->assignRole('owner');
-                }
+                // assign owner role
+                $user->assignRole('owner');
 
                 Cache::tags(['owners'])->flush();
                 Cache::tags(['counters'])->flush();

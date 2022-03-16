@@ -45,6 +45,8 @@ return [
         'vehicle_submitted' => 'تم إرسال طلب تحقيق السيارة بنجاح',
         'vehicle_updated' => 'تم تحديث بيانات السيارة بنجاح',
         'payment_success' => 'تمت العملية بنجاح',
+        'vehicle_published' => 'تم نشر السيارة بنجاح',
+        'vehicle_unpublished' => 'تم إلغاء نشر السيارة بنجاح',
     ],
     'suggested_price_less_than_80_percent' => 'السعر المقترح لا يجب ان يقل عن 80% من السعر المطلوب',
 ];

@@ -134,13 +134,11 @@ class RenterController extends Controller
                         'verified_at' => now()
                     ]);
 
-                if ($verifyIdentity) {
-                    // grant the corosponding privilege to user
-                    $user->grantPrivilege('book_car');
+                // assign renter role
+                $user->assignRole('renter');
 
-                    // assign renter role
-                    $user->assignRole('renter');
-                }
+                // grant the corosponding privilege to user
+                $user->grantPrivilege('book_car');
                 // update driver license verified at
                 $verifyLicense = DriverLicense::whereVerifiedAt(null)
                     ->where('id', $application->driver_license_id)
@@ -148,10 +146,9 @@ class RenterController extends Controller
                         'verified_at' => now()
                     ]);
 
-                if ($verifyLicense) {
-                    // grant the corosponding privilege to user
-                    $user->grantPrivilege('rent_without_driver');
-                }
+                // grant the corosponding privilege to user
+                $user->grantPrivilege('rent_without_driver');
+                
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
             });
