@@ -18,6 +18,7 @@ class CreatePrivilegesTable extends Migration
             $table->string('name_en');
             $table->string('name_ar');
             $table->string('key')->unique();
+            $table->string('role_group')->nullable();
         });
     }
 

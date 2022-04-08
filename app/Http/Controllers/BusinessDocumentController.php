@@ -21,10 +21,11 @@ class BusinessDocumentController extends Controller
     public function show()
     {
         //
-        $driver_license = BusinessDocument::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+        $business_document = BusinessDocument::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+
         return response()->json([
             'message' => __('messages.r_success'),
-            'data' => $driver_license,
+            'data' => $business_document,
             'error' => null,
         ]);
     }
@@ -111,7 +112,6 @@ class BusinessDocumentController extends Controller
             // add legal documents & create new business document
             $data['user_id'] = Auth::user()->id;
             $data['legal_documents'] = $legal_documents_paths;
-            return $data;
             $business_document = BusinessDocument::create($data);
         }
 

@@ -25,12 +25,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('telescope:prune --hours=24')->dailyAt('01:00');
+        $schedule->command('telescope:prune --hours=48')->dailyAt('01:00');
         $schedule->command('token:sanitize')->dailyAt('01:30');
         $schedule->command('otp:sanitize')->dailyAt('02:00');
         // $schedule->command('tempfiles:sanitize')->everyTenMinutes();
-        // run command every hourly
-        // $schedule->command('db:seed --class=AppTestSeeder')->everyMinute();
     }
 
     /**

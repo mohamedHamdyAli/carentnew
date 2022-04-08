@@ -13,10 +13,10 @@ class AlertController extends Controller
     public function counters()
     {
         $counters = Cache::tags(['counters'])->remember(CacheHelper::makeKey('counters'), 600, function () {
-            $renter = DB::table('renter_applications')->where('status', '=', 'created')->count();
-            $owner = DB::table('owner_applications')->where('status', '=', 'created')->count();
-            $agency = DB::table('agency_applications')->where('status', '=', 'created')->count();
-            $vehicle = DB::table('vehicle_verifications')->where('status', '=', 'created')->count();
+            $renter = DB::table('renter_applications')->where('status', '=', 'in-review')->count();
+            $owner = DB::table('owner_applications')->where('status', '=', 'in-review')->count();
+            $agency = DB::table('agency_applications')->where('status', '=', 'in-review')->count();
+            $vehicle = DB::table('vehicle_verifications')->where('status', '=', 'in-review')->count();
 
             $totals = [
                 'approvals/renter' => $renter,

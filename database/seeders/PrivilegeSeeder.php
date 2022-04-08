@@ -21,9 +21,10 @@ class PrivilegeSeeder extends Seeder
         $data = json_decode($json);
         foreach ($data as $d) {
             Privilege::create([
-                'name_en' => $d->name_en,
-                'name_ar' => $d->name_ar,
-                'key'     => $d->key
+                'name_en'       => $d->name_en,
+                'name_ar'       => $d->name_ar,
+                'key'           => $d->key,
+                'role_group'    => $d->role_group,
             ]);
         }
     }

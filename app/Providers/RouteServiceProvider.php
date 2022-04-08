@@ -67,15 +67,15 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('email-otp', function (Request $request) {
-            return Limit::perMinute(1)->by(optional($request->user())->id ?: $request->ip());
+            return Limit::perMinute(3)->by(optional($request->user())->id ?: $request->ip());
         });
 
         RateLimiter::for('phone-otp', function (Request $request) {
-            return Limit::perMinute(1)->by(optional($request->user())->id ?: $request->ip());
+            return Limit::perMinute(3)->by(optional($request->user())->id ?: $request->ip());
         });
 
         RateLimiter::for('reset-otp', function (Request $request) {
-            return Limit::perMinute(1)->by(optional(User::where('email', $request->email)->first())->id ?: $request->ip());
+            return Limit::perMinute(3)->by(optional(User::where('email', $request->email)->first())->id ?: $request->ip());
         });
     }
 }

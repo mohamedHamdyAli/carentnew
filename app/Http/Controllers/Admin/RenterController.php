@@ -30,6 +30,8 @@ class RenterController extends Controller
             // filter by status
             if (request()->has('statuses')) {
                 $applications = $applications->whereIn('status', request('statuses'));
+            } else {
+                $applications = $applications->where('status', '!=', 'created');
             }
 
             // search
@@ -148,7 +150,7 @@ class RenterController extends Controller
 
                 // grant the corosponding privilege to user
                 $user->grantPrivilege('rent_without_driver');
-                
+
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
             });

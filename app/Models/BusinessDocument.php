@@ -34,7 +34,7 @@ class BusinessDocument extends Model
 
     public function getLogoUrlAttribute()
     {
-        return $this->logo ? asset('storage/' . $this->logo) : null;
+        return $this->logo ? asset('storage/' . $this->logo, true) : null;
     }
 
     public function user()

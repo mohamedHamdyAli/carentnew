@@ -29,6 +29,8 @@ class OwnerController extends Controller
             // filter by status
             if (request()->has('statuses')) {
                 $applications = $applications->whereIn('status', request('statuses'));
+            } else {
+                $applications = $applications->where('status', '!=', 'created');
             }
 
             // search
