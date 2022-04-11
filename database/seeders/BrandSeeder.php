@@ -27,7 +27,7 @@ class BrandSeeder extends Seeder
                 'display_order' => $brandCount,
                 'name_en' => $brand->name_en,
                 'name_ar' => $brand->name_ar,
-                'logo' => url($brand->logo)
+                'logo' => $brand->logo
             ]);
             $models = $brand->models;
             $modelsCount = 1;

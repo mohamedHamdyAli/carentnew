@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\State
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class State extends Model
 {
-    use Uuid;
+    use Uuid, SoftDeletes;
 
     public $timestamps = false;
 
@@ -33,12 +34,18 @@ class State extends Model
         'name_en',
         'name_ar',
         'country_id',
+        'active'
     ];
 
     protected $hidden = [
         'country_id',
         'name_en',
-        'name_ar'
+        'name_ar',
+        'deleted_at',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     protected $appends = [

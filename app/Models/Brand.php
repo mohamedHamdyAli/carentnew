@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Brand
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Brand extends Model
 {
-    use Uuid;
+    use Uuid, SoftDeletes;
 
     public $timestamps = false;
 
@@ -35,12 +36,18 @@ class Brand extends Model
         'name_en',
         'name_ar',
         'logo',
+        'active'
     ];
 
     protected $hidden = [
         'name_en',
         'name_ar',
-        'display_order'
+        'display_order',
+        'deleted_at',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     protected $appends = [
@@ -50,5 +57,10 @@ class Brand extends Model
     public function getNameAttribute()
     {
         return $this->{'name_' . app()->getLocale()};
+    }
+
+    public function getLogoAttribute($value)
+    {
+        return url($value);
     }
 }

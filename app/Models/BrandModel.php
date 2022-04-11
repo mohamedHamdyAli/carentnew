@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\BrandModel
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BrandModel extends Model
 {
-    use Uuid;
+    use Uuid, SoftDeletes;
 
     public $timestamps = false;
 
@@ -34,14 +35,20 @@ class BrandModel extends Model
         'name_en',
         'name_ar',
         'brand_id',
-        'display_order'
+        'display_order',
+        'active'
     ];
 
     protected $hidden = [
         'name_en',
         'name_ar',
         'brand_id',
-        'display_order'
+        'display_order',
+        'deleted_at',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     protected $appends = [

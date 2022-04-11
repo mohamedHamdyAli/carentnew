@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Category
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Category extends Model
 {
-    use Uuid;
+    use Uuid, SoftDeletes;
 
     public $timestamps = false;
 
@@ -32,12 +33,18 @@ class Category extends Model
         'display_order',
         'name_en',
         'name_ar',
+        'active'
     ];
 
     protected $hidden = [
         'display_order',
         'name_en',
         'name_ar',
+        'deleted_at',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean'
     ];
 
     protected $appends = [
