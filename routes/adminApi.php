@@ -15,10 +15,12 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\FuelTypeController;
 use App\Http\Controllers\Admin\VehicleApprovalController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Models\AppSetting;
 
 /**
  * @Admin routes
@@ -189,6 +191,13 @@ Route::group(
                 Route::post('/{id}', [BrandController::class, 'updateBrand']);
             });
             /** end brands routes */
+
+             /** appsettings routes */
+             Route::prefix('app-settings')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+                Route::post('/', [AppSettingController::class, 'create']);
+                Route::get('/', [AppSettingController::class, 'getLatestVersion']);
+            });
+            /** end appsettings routes */
 
     }
 );

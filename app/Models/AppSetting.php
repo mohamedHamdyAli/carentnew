@@ -78,4 +78,25 @@ class AppSetting extends Model
         $last = $this->orderBy('version', 'desc')->first();
         return  $last ? $last->version + 1 : 1;
     }
+
+    public function getCarLegalDownload1Attribute($value)
+    {
+        return url($this->attributes['car_legal_download_1']);
+    }
+
+    public function getCarLegalDownload_1Attribute()
+    {
+        return url($this->attributes['car_legal_download_2']);
+    }
+
+    public function getCarLegalDownload2Attribute($value)
+    {
+        return url($this->attributes['car_legal_download_2']);
+    }
+
+    public function getCarLegalDownload_2Attribute()
+    {
+        return url($this->attributes['car_legal_download_2']);
+    }
+
 }
