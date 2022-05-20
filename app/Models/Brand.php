@@ -61,6 +61,6 @@ class Brand extends Model
 
     public function getLogoAttribute($value)
     {
-        return url($value);
+        return asset($value, true);
     }
 }

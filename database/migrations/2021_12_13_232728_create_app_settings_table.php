@@ -16,8 +16,8 @@ class CreateAppSettingsTable extends Migration
         Schema::create('app_settings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->mediumInteger('version')->unique();
-            $table->smallInteger('vat')->default(14);
-            $table->smallInteger('profit_margin')->default(10);
+            $table->smallInteger('vat')->default(14)->description('VAT rate in percentage');
+            $table->smallInteger('profit_margin')->default(10)->description('Profit margin in percentage');
             $table->smallInteger('renter_cancellation_fees')->default(20);
             $table->smallInteger('owner_cancellation_fees')->default(20);
             $table->smallInteger('late_retern_fees')->default(20);
@@ -27,8 +27,9 @@ class CreateAppSettingsTable extends Migration
             $table->decimal('money_to_point_rate', 10, 2)->default(1);
             $table->decimal('point_to_money_rate', 10, 2)->default(1);
             $table->mediumInteger('min_redemption_amount')->default(0);
-            $table->text('car_legal_download_1')->nullable();
-            $table->text('car_legal_download_2')->nullable();
+            $table->text('rental_contract_file')->nullable();
+            $table->text('vehicle_receive_file')->nullable();
+            $table->text('vehicle_return_file')->nullable();
             $table->timestamps();
         });
     }

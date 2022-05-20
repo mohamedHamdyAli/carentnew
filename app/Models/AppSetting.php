@@ -13,31 +13,34 @@ class AppSetting extends Model
 
     protected $fillable = [
         'version',
-        'vat_percentage',
-        'point_to_money',
-        'point_to_money_rate',
-        'money_to_point',
+        'vat',
+        'profit_margin',
+        'renter_cancellation_fees',
+        'owner_cancellation_fees',
+        'late_retern_fees',
+        'early_retern_fees',
+        'accident_fees',
+        'accident_max_fees',
         'money_to_point_rate',
-        'processing_percentage',
-        'processing_fixed',
-        'early_return_percentage',
-        'owner_cancel_penality',
+        'point_to_money_rate',
         'min_redemption_amount',
-        'car_legal_download_1',
-        'car_legal_download_2',
+        'rental_contract_file',
+        'vehicle_receive_file',
+        'vehicle_return_file',
     ];
 
     protected $casts = [
         'version' => 'integer',
-        'vat_percentage' => 'float',
-        'point_to_money' => 'boolean',
-        'point_to_money_rate' => 'float',
-        'money_to_point' => 'boolean',
+        'vat' => 'float',
+        'profit_margin' => 'float',
+        'renter_cancellation_fees' => 'float',
+        'owner_cancellation_fees' => 'float',
+        'late_retern_fees' => 'float',
+        'early_retern_fees' => 'float',
+        'accident_fees' => 'float',
+        'accident_max_fees' => 'float',
         'money_to_point_rate' => 'float',
-        'processing_percentage' => 'float',
-        'processing_fixed' => 'float',
-        'early_return_percentage' => 'float',
-        'owner_cancel_penality' => 'float',
+        'point_to_money_rate' => 'float',
         'min_redemption_amount' => 'integer',
     ];
 
@@ -47,26 +50,6 @@ class AppSetting extends Model
         'updated_at',
         'created_at',
     ];
-
-    public function getVatPercentageAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setVatPercentageAttribute($value)
-    {
-        return $value * 100;
-    }
-
-    public function getProcessingPercentageAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setProcessingPercentageAttribute($value)
-    {
-        return $value * 100;
-    }
 
     static function getLastVersion()
     {
@@ -79,24 +62,18 @@ class AppSetting extends Model
         return  $last ? $last->version + 1 : 1;
     }
 
-    public function getCarLegalDownload1Attribute($value)
+    public function getVehicleReceiveFileAttribute($value)
     {
-        return url($this->attributes['car_legal_download_1']);
+        return asset($this->attributes['vehicle_receive_file'], true);
     }
 
-    public function getCarLegalDownload_1Attribute()
+    public function getRentalContractFileAttribute()
     {
-        return url($this->attributes['car_legal_download_2']);
+        return asset($this->attributes['rental_contract_file'], true);
     }
 
-    public function getCarLegalDownload2Attribute($value)
+    public function getVehicleReturnFileAttribute($value)
     {
-        return url($this->attributes['car_legal_download_2']);
+        return asset($this->attributes['vehicle_return_file'], true);
     }
-
-    public function getCarLegalDownload_2Attribute()
-    {
-        return url($this->attributes['car_legal_download_2']);
-    }
-
 }

@@ -2,19 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\State;
 use App\Models\AppSetting;
-use Illuminate\Support\Str;
 use App\Helpers\CacheHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateModelRequest;
-use App\Http\Requests\CreateStateRequest;
-use App\Http\Requests\UpdateModelRequest;
-use App\Http\Requests\UpdateStateRequest;
 use Symfony\Component\HttpFoundation\Response;
-use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 
 class AppSettingController extends Controller
 {
@@ -28,23 +20,24 @@ class AppSettingController extends Controller
 
     public function create(Request $request)
     {
-        $setting = AppSetting::create($request->except('car_legal_download_1', 'car_legal_download_2','version'));
-        $path = public_path()."/"."pdfs/";
-        $setting->when($request->has('rent_download_1'), function($q) use ($setting, $request, $path){
-            $file  = $request->file('rent_download_1');
-            $name = 'rent_download_'.$setting->version.'.pdf';
-
-            //$setting->car_legal_download_1 ? $this->deleteFile($setting->getRawOriginal('car_legal_download_1')) : null;
+        $setting = AppSetting::create($request->except('rental_contract_file', 'vehicle_receive_file', 'vehicle_return_file', 'version'));
+        $path = public_path() . "/" . "pdfs/";
+        dd($request->all());
+        $setting->when($request->has('rental_contract_file'), function ($q) use ($setting, $request, $path) {
+            $file  = $request->file('rental_contract_file');
+            $name = 'rent_download_' . $setting->version . '.pdf';
             $file->move($path, $name);
-            $setting->update(['car_legal_download_1' =>  'pdfs/'.$name]);
-
-        })->when($request->has('rent_download_2'), function($q) use ($setting, $request, $path){
-            $file  = $request->file('rent_download_2');
-            $name = 'rent_download_'.($setting->version.'(2)').'.pdf';
-
-           // $setting->car_legal_download_2 ? $this->deleteFile($setting->getRawOriginal('car_legal_download_2')) : null;
-           $file->move($path, $name);
-           $setting->update(['car_legal_download_2' =>  'pdfs/'.$name]);
+            $setting->update(['rental_contract_file' =>  'pdfs/' . $name]);
+        })->when($request->has('vehicle_receive_file'), function ($q) use ($setting, $request, $path) {
+            $file  = $request->file('vehicle_receive_file');
+            $name = 'rent_download_' . ($setting->version . '(2)') . '.pdf';
+            $file->move($path, $name);
+            $setting->update(['vehicle_receive_file' =>  'pdfs/' . $name]);
+        })->when($request->has('vehicle_return_file'), function ($q) use ($setting, $request, $path) {
+            $file  = $request->file('vehicle_return_file');
+            $name = 'rent_download_' . ($setting->version . '(2)') . '.pdf';
+            $file->move($path, $name);
+            $setting->update(['vehicle_return_file' =>  'pdfs/' . $name]);
         });
         cache()->tags(['app-settings'])->flush();
 
@@ -58,5 +51,4 @@ class AppSettingController extends Controller
         });
         return $data;
     }
-
 }
