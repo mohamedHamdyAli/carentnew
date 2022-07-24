@@ -20,28 +20,19 @@ class AppSettingController extends Controller
 
     public function create(Request $request)
     {
-        $setting = AppSetting::create($request->except('rental_contract_file', 'vehicle_receive_file', 'vehicle_return_file', 'version'));
+        $oldSetting = $this->getLatestVersion();
+        $setting = AppSetting::create(
+            $request->except('rental_contract_file', 'vehicle_receive_file', 'vehicle_return_file', 'version')
+        );
         $path = public_path() . "/" . "pdfs/";
-        dd($request->all());
-        $setting->when($request->has('rental_contract_file'), function ($q) use ($setting, $request, $path) {
-            $file  = $request->file('rental_contract_file');
-            $name = 'rent_download_' . $setting->version . '.pdf';
-            $file->move($path, $name);
-            $setting->update(['rental_contract_file' =>  'pdfs/' . $name]);
-        })->when($request->has('vehicle_receive_file'), function ($q) use ($setting, $request, $path) {
-            $file  = $request->file('vehicle_receive_file');
-            $name = 'rent_download_' . ($setting->version . '(2)') . '.pdf';
-            $file->move($path, $name);
-            $setting->update(['vehicle_receive_file' =>  'pdfs/' . $name]);
-        })->when($request->has('vehicle_return_file'), function ($q) use ($setting, $request, $path) {
-            $file  = $request->file('vehicle_return_file');
-            $name = 'rent_download_' . ($setting->version . '(2)') . '.pdf';
-            $file->move($path, $name);
-            $setting->update(['vehicle_return_file' =>  'pdfs/' . $name]);
-        });
+
+        $this->uploadOrCopyOldFile('rental_contract_file', $setting, $oldSetting, $path, $request);
+        $this->uploadOrCopyOldFile('vehicle_receive_file', $setting, $oldSetting, $path, $request);
+        $this->uploadOrCopyOldFile('vehicle_return_file', $setting, $oldSetting, $path, $request);
+
         cache()->tags(['app-settings'])->flush();
 
-        return response($setting, Response::HTTP_CREATED);
+        return response($this->getLatestVersion(), Response::HTTP_CREATED);
     }
 
     public function getLatestVersion()
@@ -50,5 +41,29 @@ class AppSettingController extends Controller
             return AppSetting::latest("version")->first();
         });
         return $data;
+    }
+
+    private function uploadOrCopyOldFile(string $fileName, AppSetting $setting, AppSetting $oldSetting = null, string $path, Request $request)
+    {
+        try {
+            $name = $fileName . '_v' . str_pad($setting->version, 3, '0', STR_PAD_LEFT) . '.pdf';
+            if ($request->has($fileName) && $request->file($fileName) != null) {
+                $file  = $request->file($fileName);
+                $file->move($path, $name);
+                $setting->update([$fileName =>  'pdfs/' . $name]);
+            } else if ($oldSetting->{$fileName} != null) {
+                // copy old file with new version number
+                $oldFile = str_replace(env('APP_URL'), '', $oldSetting->{$fileName});
+                $oldFilePath = public_path($oldFile);
+                $newFilePath = public_path('pdfs/' . $name);
+                $newFilePath = public_path('pdfs/' . $name);
+                $copied = copy($oldFilePath, $newFilePath);
+                if ($copied) {
+                    $setting->update([$fileName =>  'pdfs/' . $name]);
+                }
+            }
+        } catch (\Exception $e) {
+            // do nothing
+        }
     }
 }

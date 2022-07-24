@@ -427,6 +427,7 @@ class AuthController extends Controller
             'privileges' => $this->privilegesToArray(Auth::user()->privileges),
             'owner_application' => Auth::user()->ownerApplication()->where('status', '!=', 'approved')->first(),
             'renter_application' => Auth::user()->renterApplication()->where('status', '!=', 'approved')->first(),
+            'fcm' => Auth::user()->fcm,
         ];
     }
 
@@ -445,6 +446,7 @@ class AuthController extends Controller
             ],
             'roles' => $this->rolesToArray(Auth::user()->roles),
             'privileges' => $this->privilegesToArray(Auth::user()->privileges),
+            'fcm' => Auth::user()->fcm,
         ];
     }
 

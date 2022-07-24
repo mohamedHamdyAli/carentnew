@@ -64,16 +64,17 @@ class AppSetting extends Model
 
     public function getVehicleReceiveFileAttribute($value)
     {
-        return asset($this->attributes['vehicle_receive_file'], true);
+        return $this->attributes['vehicle_receive_file'] ? asset($this->attributes['vehicle_receive_file'], true) : null;
     }
 
     public function getRentalContractFileAttribute()
     {
-        return asset($this->attributes['rental_contract_file'], true);
+        return $this->attributes['rental_contract_file'] ? asset($this->attributes['rental_contract_file'], true) : null;
     }
 
     public function getVehicleReturnFileAttribute($value)
     {
-        return asset($this->attributes['vehicle_return_file'], true);
+        
+        return $this->attributes['vehicle_return_file'] ? asset($this->attributes['vehicle_return_file'], true) : null;
     }
 }

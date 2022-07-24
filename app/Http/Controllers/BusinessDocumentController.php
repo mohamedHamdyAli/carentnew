@@ -43,8 +43,8 @@ class BusinessDocumentController extends Controller
          */
         request()->validate([
             'name' => 'required|string|max:100',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
-            'legal_documents' => 'nullable|array',
+            'logo' => 'sometimes|nullable|image|mimes:jpeg,png,jpg|max:20480',
+            'legal_documents' => 'sometimes|nullable|array',
             'legal_documents.*' => 'sometimes|string|exists:temp_files,id',
         ]);
 

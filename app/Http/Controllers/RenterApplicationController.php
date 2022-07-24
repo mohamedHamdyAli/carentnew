@@ -73,10 +73,14 @@ class RenterApplicationController extends Controller
                 'error' => true
             ], 400);
         } else {
-            if (in_array($application->status, ['approved', 'in-review'])) {
+            if (in_array($application->status, [
+            /** 'approved',*/
+            'in-review'])) {
                 // return 400 response user already has ongoing or approved request
                 return response()->json([
-                    'message' => $application->status === 'approved' ? __('messages.error.approved') : __('messages.error.request_ongoing'),
+                    'message' =>
+                    /** $application->status === 'approved' ? __('messages.error.approved') :*/
+                    __('messages.error.request_ongoing'),
                     'data' => null,
                     'error' => true
                 ], 400);

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\OrderStatusChanged;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderObserver
 {
@@ -50,6 +51,7 @@ class OrderObserver
 
     private function sendRequiredNotifications($order)
     {
+        Log::info('Sending Notifications');
         $status = OrderStatus::find($order->order_status_id);
         if ($status->notify_client) {
             $order->user->notify(new OrderStatusChanged($order, 'client'));

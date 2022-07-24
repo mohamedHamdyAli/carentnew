@@ -102,7 +102,7 @@ class Fcm
                 ),
             ));
 
-            curl_exec($curl);
+            $result = curl_exec($curl);
             curl_close($curl);
             // log the result
         } catch (Exception $err) {

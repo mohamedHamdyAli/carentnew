@@ -71,10 +71,19 @@ Route::group(
 
         // test email
         Route::get('/test-email', function () {
-            // return Mail::to('mahmoud.ali.kassem@gmail.com')->send(new \App\Mail\EmailOtp(123456));
-            if (app()->environment('local')) {
-                return new \App\Mail\EmailOtp(123456);
-            }
+            return Mail::to('mahmoud.ali.kassem@gmail.com')->send(new \App\Mail\EmailOtp(123456));
+            // if (app()->environment('local')) {
+            //     return new \App\Mail\EmailOtp(123456);
+            // }
+        });
+
+        // SMS Vonage hooks
+        Route::post('/sms-delivered', function (Request $r) {
+            Log::info('SMS Delivered: ' . $r->getContent());
+        });
+        
+        Route::post('/sms-inbound', function (Request $r) {
+            Log::info('SMS Inbound: ' . $r->getContent());
         });
 
         // Payment Notification

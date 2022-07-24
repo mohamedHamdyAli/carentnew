@@ -10,8 +10,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
-class OrderStatusChanged extends Notification
+class OrderStatusChanged extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -87,7 +88,8 @@ class OrderStatusChanged extends Notification
             'title' => $this->status->{$this->for . '_title_' . $notifiable->language},
             'body' => $this->status->{$this->for . '_body_' . $notifiable->language},
             'order_id' => $this->order->id,
+            'order_number' => $this->order->number,
         ];
-        Fcm::send($data, $notifiable->fcm);
+        $send = Fcm::send($data, $notifiable->fcm);
     }
 }
