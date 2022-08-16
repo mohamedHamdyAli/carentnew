@@ -81,7 +81,7 @@ Route::group(
         Route::post('/sms-delivered', function (Request $r) {
             Log::info('SMS Delivered: ' . $r->getContent());
         });
-        
+
         Route::post('/sms-inbound', function (Request $r) {
             Log::info('SMS Inbound: ' . $r->getContent());
         });
@@ -214,11 +214,13 @@ Route::group(
         /**
          *   @User routes
          */
+
         Route::prefix('users')->middleware(['auth:sanctum'])->group(function () {
             Route::get('/profile', [UserController::class, 'profile']);
             Route::post('/profile', [UserController::class, 'update']);
             Route::post('/fcm', [UserController::class, 'fcm']);
             Route::post('/password', [UserController::class, 'password']);
+            Route::delete('/delete', [UserController::class, 'delete']);
 
             Route::prefix('notifications')->group(function () {
                 Route::get('/', [NotificationController::class, 'index']);

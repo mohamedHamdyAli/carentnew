@@ -4,6 +4,8 @@ namespace App\Http\Common\Auth;
 
 use App\Mail\EmailOtp;
 use App\Models\UserOtp;
+use App\Notifications\SendSmsOtp;
+use Log;
 use Mail;
 
 class Otp
@@ -37,9 +39,9 @@ class Otp
         /**
          * TODO: Send OTP to user email
          */
-        if (!app()->environment('local')) {
-            return Mail::to($this->user->email)->send(new EmailOtp($this->otp));
-        }
+        // if (!app()->environment('local')) {
+        return Mail::to($this->user->email)->send(new EmailOtp($this->otp));
+        // }
 
         return response()->json([
             'message' => __('messages.success.otp'),
@@ -64,9 +66,11 @@ class Otp
         /**
          * TODO: Send OTP to user phone
          */
-        if (!app()->environment('local')) {
-            // TODO: Send OTP to user phone function
-        }
+        // if (!app()->environment('local')) {
+        // TODO: Send OTP to user phone function
+        Log::info("Send OTP to user: {$this->user->phone} phone function: " . $this->otp);
+        $this->user->notify(new SendSmsOtp($this->otp));
+        // }
 
         return response()->json([
             'message' => __('messages.success.otp'),
@@ -149,12 +153,12 @@ class Otp
     {
         // ? Generate static OTP for development
         // * @value = 123456
-        $otp = 123456;
+        // $otp = 123456;
 
         // ? if Environment is not local, generate random OTP
-        if (!app()->environment('local')) {
+        // if (!app()->environment('local')) {
             $otp = rand(100000, 999999);
-        }
+        // }
 
         return $otp;
     }

@@ -20,10 +20,11 @@ class UserController extends Controller
             'error' => null,
         ], 200);
     }
+
     public function update(Request $request)
     {
         $request->validate([
-            'name'      => ['required', 'regex:/^(?!.*\d)[أ-يa-z\s]{2,66}$/iu'], // * Name without numbers
+            'name'      => ['sometimes', 'regex:/^(?!.*\d)[أ-يa-z\s]{2,66}$/iu'], // * Name without numbers
             'email'     => ['sometimes', 'email', 'unique:users,email,' . Auth::id()],
             'phone'     => ['sometimes', 'regex:/^(\+)[0-9]{10,15}$/', 'unique:users,phone,' . Auth::id()],
             'password'  => ['sometimes'],
@@ -97,6 +98,25 @@ class UserController extends Controller
         return response()->json([
             'message' => __('messages.r_success'),
             'data' => $user,
+            'error' => null,
+        ], 200);
+    }
+
+    // delete user
+    public function delete()
+    {
+        $user = Auth::user();
+
+        $user->email = $user->email . '_deleted_' . time();
+        $user->phone = $user->phone . '_deleted_' . time();
+
+        $user->save();
+
+        $user->delete();
+
+        return response()->json([
+            'message' => __('messages.r_success'),
+            'data' => null,
             'error' => null,
         ], 200);
     }

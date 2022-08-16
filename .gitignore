@@ -17,3 +17,4 @@ key.txt
 octane-worker.log
 client_secret.rb
 queue.log
+private.key

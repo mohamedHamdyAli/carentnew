@@ -9,7 +9,9 @@ use App\Http\Common\Auth\Otp;
 use App\Http\Common\Auth\RoleManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Socialite;
+use Str;
 
 class AuthController extends Controller
 {
@@ -125,7 +127,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.credentials'),
-                'data' => null,
+                'data'      => null,
                 'error'     => null,
             ], 400);
         }
@@ -140,7 +142,7 @@ class AuthController extends Controller
          */
         return response()->json([
             'message'   => __('messages.success.login'),
-            'data' => $this->authObject($token),
+            'data'      => $this->authObject($token),
             'error'     => null,
         ], 200);
     }
@@ -178,7 +180,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.credentials'),
-                'data' => null,
+                'data'      => null,
                 'error'     => null,
             ], 400);
         }
@@ -193,7 +195,7 @@ class AuthController extends Controller
          */
         return response()->json([
             'message'   => __('messages.success.login'),
-            'data' => $this->authObject($token),
+            'data'      => $this->authObject($token),
             'error'     => null,
         ], 200);
     }
@@ -218,15 +220,18 @@ class AuthController extends Controller
          */
         request()->validate([
             'access_token'     => ['required', 'string'],
-            'provider'        => ['required', 'string', 'in:facebook,google,apple'],
+            'provider'         => ['required', 'string', 'in:facebook,google,apple'],
         ]);
+
+        Log::info('Login with social media');
+        Log::info(str_replace('h', '*', request('access_token')));
 
         try {
             $social = Socialite::driver(request('provider'))->userFromToken(request('access_token'));
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.expired_token'),
-                'data' => null,
+                'data'      => null,
                 'error'     => app()->environment('production') ? null : $e->getMessage(),
             ], 400);
         }
@@ -237,12 +242,30 @@ class AuthController extends Controller
         try {
             $email = $social->getEmail();
             $user = User::where('email', $email)->first();
+            Log::info(request('provider') . ': ' . json_encode($social));
+            /** Create user if not eixist */
+            if (!$user) {
+                $user = User::create([
+                    'name'      => $social->getName() ?? explode('@', $email)[0],
+                    'email'     => $email,
+                    'password'  => Hash::make(Str::random(16)),
+                    'phone'     => null,
+                ]);
+
+                $user = User::where('email', $email)->first();
+            }
+
+            if ($user->email_verified_at == null) {
+                $user->email_verified_at = now();
+                $user->save();
+            }
+
             Auth::login($user);
             Auth::user()->id;
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.credentials'),
-                'data' => null,
+                'data'      => null,
                 'error'     => app()->environment('production') ? null : $e->getMessage(),
             ], 400);
         }
@@ -257,7 +280,7 @@ class AuthController extends Controller
          */
         return response()->json([
             'message'   => __('messages.success.login'),
-            'data' => $this->authObject($token),
+            'data'      => $this->authObject($token),
             'error'     => null,
         ], 200);
     }
@@ -277,7 +300,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.token'),
-                'data' => null,
+                'data'      => null,
                 'error'     => null,
             ], 400);
         }
@@ -287,7 +310,7 @@ class AuthController extends Controller
          */
         return response()->json([
             'message'   => __('messages.r_success'),
-            'data' => $this->authObject($token),
+            'data'      => $this->authObject($token),
             'error'     => null,
         ], 200);
     }
@@ -302,13 +325,13 @@ class AuthController extends Controller
             request()->user()->currentAccessToken()->delete();
             return response()->json([
                 'message'   => __('messages.success.logout'),
-                'data' => null,
+                'data'      => null,
                 'error'     => null,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.token'),
-                'data' => null,
+                'data'      => null,
                 'error'     => null,
             ], 400);
         }
@@ -325,7 +348,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.otp'),
-                'data' => null,
+                'data'      => null,
                 'error'     => $e->getMessage(),
             ], 500);
         }
@@ -343,7 +366,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.otp'),
-                'data' => null,
+                'data'      => null,
                 'error'     => $e->getMessage(),
             ], 500);
         }
@@ -375,7 +398,7 @@ class AuthController extends Controller
         if (auth()->user()->{$type . '_verified_at'}) {
             return response()->json([
                 'message'   => __('messages.error.verified'),
-                'data' => null,
+                'data'      => null,
                 'error'     => null,
             ], 400);
         }
@@ -389,7 +412,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.verify'),
-                'data' => null,
+                'data'      => null,
                 'error'     => $e->getMessage(),
             ], 500);
         }
@@ -405,7 +428,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message'   => __('messages.error.generate_token'),
-                'data' => null,
+                'data'      => null,
                 'error'     => $e->getMessage(),
             ], 500);
         }
@@ -417,17 +440,17 @@ class AuthController extends Controller
     public function user()
     {
         return [
-            'user'      => Auth::user()->makeVisible('id'),
-            'verified' => Auth::user()->isVerified(),
-            'verification' => [
+            'user'          => Auth::user()->makeVisible('id'),
+            'verified'      => Auth::user()->isVerified(),
+            'verification'  => [
                 'email' => Auth::user()->isEmailVerified(),
                 'phone' => Auth::user()->isPhoneVerified(),
             ],
-            'roles' => $this->rolesToArray(Auth::user()->roles),
-            'privileges' => $this->privilegesToArray(Auth::user()->privileges),
-            'owner_application' => Auth::user()->ownerApplication()->where('status', '!=', 'approved')->first(),
-            'renter_application' => Auth::user()->renterApplication()->where('status', '!=', 'approved')->first(),
-            'fcm' => Auth::user()->fcm,
+            'roles'                 => $this->rolesToArray(Auth::user()->roles),
+            'privileges'            => $this->privilegesToArray(Auth::user()->privileges),
+            'owner_application'     => Auth::user()->ownerApplication()->where('status', '!=', 'approved')->first(),
+            'renter_application'    => Auth::user()->renterApplication()->where('status', '!=', 'approved')->first(),
+            'fcm'                   => Auth::user()->fcm,
         ];
     }
 
@@ -437,16 +460,16 @@ class AuthController extends Controller
     private function authObject($token)
     {
         return [
-            'user'      => Auth::user()->makeVisible('id'),
-            'access_token'     => $token,
-            'verified' => Auth::user()->isVerified(),
-            'verification' => [
+            'user'              => Auth::user()->makeVisible('id'),
+            'access_token'      => $token,
+            'verified'          => Auth::user()->isVerified(),
+            'verification'      => [
                 'email' => Auth::user()->isEmailVerified(),
                 'phone' => Auth::user()->isPhoneVerified(),
             ],
-            'roles' => $this->rolesToArray(Auth::user()->roles),
-            'privileges' => $this->privilegesToArray(Auth::user()->privileges),
-            'fcm' => Auth::user()->fcm,
+            'roles'             => $this->rolesToArray(Auth::user()->roles),
+            'privileges'        => $this->privilegesToArray(Auth::user()->privileges),
+            'fcm'               => Auth::user()->fcm,
         ];
     }
 

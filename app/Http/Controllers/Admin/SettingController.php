@@ -13,7 +13,7 @@ class SettingController extends Controller
 {
     public function group($group)
     {
-        $data = Cache::tags(['setting'])->rememberForever(CacheHelper::makeKey($group), function () use ($group) {
+        $data = Cache::tags(['settings'])->rememberForever(CacheHelper::makeKey($group), function () use ($group) {
             $result = Setting::select(['id', 'group', 'name_en', 'name_ar'])->where('group', $group)->get();
             $result = $result->map(function ($item) {
                 $item->makeHidden('content');
@@ -30,7 +30,7 @@ class SettingController extends Controller
 
     public function single($id)
     {
-        $data = Cache::tags(['setting'])->rememberForever(CacheHelper::makeKey($id), function () use ($id) {
+        $data = Cache::tags(['settings'])->rememberForever(CacheHelper::makeKey($id), function () use ($id) {
             $result = DB::table('settings')->where('id', $id)->first();
             $result->content_en = json_decode($result->content_en);
             $result->content_ar = json_decode($result->content_ar);
@@ -46,7 +46,7 @@ class SettingController extends Controller
         $data['content_en'] = $data['content_en'];
         $data['content_ar'] = $data['content_ar'];
         $result = Setting::findOrFail($id)->update($data);
-        Cache::tags(['setting'])->flush();
+        Cache::tags(['settings'])->flush();
         return response()->json($result);
     }
 }
