@@ -29,7 +29,15 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        //
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+            $user->save();
+        }
+
+        if ($user->isDirty('phone')) {
+            $user->phone_verified_at = null;
+            $user->save();
+        }
     }
 
     /**
