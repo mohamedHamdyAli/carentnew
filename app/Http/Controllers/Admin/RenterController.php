@@ -25,7 +25,7 @@ class RenterController extends Controller
         ]);
 
         $data = Cache::tags(['renters'])->remember(CacheHelper::makeKey('renters'), 600, function () {
-            $applications = RenterApplication::with('user');
+            $applications = RenterApplication::whereHas('user')->with('user');
 
             // filter by status
             if (request()->has('statuses')) {

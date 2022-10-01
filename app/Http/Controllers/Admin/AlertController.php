@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\CacheHelper;
 use App\Http\Controllers\Controller;
+use App\Models\AgencyApplication;
+use App\Models\OwnerApplication;
+use App\Models\RenterApplication;
+use App\Models\VehicleVerification;
 use Cache;
 use DB;
 use Illuminate\Http\Request;
@@ -13,10 +17,10 @@ class AlertController extends Controller
     public function counters()
     {
         $counters = Cache::tags(['counters'])->remember(CacheHelper::makeKey('counters'), 600, function () {
-            $renter = DB::table('renter_applications')->where('status', '=', 'in-review')->count();
-            $owner = DB::table('owner_applications')->where('status', '=', 'in-review')->count();
-            $agency = DB::table('agency_applications')->where('status', '=', 'in-review')->count();
-            $vehicle = DB::table('vehicle_verifications')->where('status', '=', 'in-review')->count();
+            $renter = RenterApplication::where('status', '=', 'in-review')->whereHas('user')->count();
+            $owner = OwnerApplication::where('status', '=', 'in-review')->whereHas('user')->count();
+            $agency = AgencyApplication::where('status', '=', 'in-review')->whereHas('user')->count();
+            $vehicle = VehicleVerification::where('status', '=', 'in-review')->whereHas('vehicle.user')->count();
 
             $totals = [
                 'approvals/renter' => $renter,

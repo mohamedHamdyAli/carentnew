@@ -24,7 +24,7 @@ class OwnerController extends Controller
         ]);
 
         $data = Cache::tags(['owners'])->remember(CacheHelper::makeKey('owners'), 600, function () {
-            $applications = OwnerApplication::with('user');
+            $applications = OwnerApplication::whereHas('user')->with('user');
 
             // filter by status
             if (request()->has('statuses')) {

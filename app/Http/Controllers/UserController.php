@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Functions\Fcm;
+use App\Models\Order;
+use App\Models\User;
 use Auth;
+use Cache;
+use DB;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
@@ -32,15 +36,16 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        if ($request->has('password'))
+        if ($request->has('password')) {
             // compare old password
-            if (!Hash::check(request()->password, $user->password))
+            if (!Hash::check(request()->password, $user->password)) {
                 return response()->json([
                     'message' => __('messages.r_error'),
                     'data' => null,
                     'error' => __('messages.e_password_wrong'),
                 ], 401);
-
+            }
+        }
 
         $user->update($request->except('password'));
 
@@ -105,14 +110,36 @@ class UserController extends Controller
     // delete user
     public function delete()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
 
-        $user->email = $user->email . '_deleted_' . time();
-        $user->phone = $user->phone . '_deleted_' . time();
+        // check if user has on going orders
+        $onGoingOrders = Order::where('user_id', $user->id)->WhereHas('orderStatus', function ($q) {
+            return $q->where('terminate', 0);
+        })->first();
 
-        $user->save();
+        if ($onGoingOrders) {
+            return response()->json([
+                'message' => __('messages.o_error'),
+                'data' => null,
+                'error' => __('messages.error.user_has_ongoing_orders'),
+            ], 400);
+        }
 
-        $user->delete();
+        DB::transaction(function () use ($user) {
+            // remove all user sanctum tokens
+            auth()->user()->tokens()->delete();
+
+            $user->update(
+                [
+                    'email' => $user->email . '_deleted_' . time(),
+                    'phone' => $user->phone . '_deleted_' . time()
+                ]
+            );
+
+            $user->delete();
+        });
+
+        Cache::tags(['users', 'renters', 'owners', 'agencies', 'vehicles'])->flush();
 
         return response()->json([
             'message' => __('messages.r_success'),

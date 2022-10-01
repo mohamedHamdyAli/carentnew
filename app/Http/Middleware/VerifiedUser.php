@@ -18,7 +18,7 @@ class VerifiedUser
     {
         if (!$request->user()->isVerified()) {
             return response()->json([
-                'message' => __('messages.error.verified'),
+                'message' => __('messages.error.unverified'),
                 'data' => null,
                 'error' => true,
             ], 403);

@@ -40,7 +40,7 @@ class Otp
          * TODO: Send OTP to user email
          */
         // if (!app()->environment('local')) {
-        return Mail::to($this->user->email)->send(new EmailOtp($this->otp));
+        Mail::to($this->user->email)->send(new EmailOtp($this->otp));
         // }
 
         return response()->json([

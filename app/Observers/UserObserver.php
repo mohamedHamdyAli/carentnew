@@ -27,16 +27,15 @@ class UserObserver
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function updated(User $user)
+    public function updating(User $user)
     {
+
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
-            $user->save();
         }
 
         if ($user->isDirty('phone')) {
             $user->phone_verified_at = null;
-            $user->save();
         }
     }
 

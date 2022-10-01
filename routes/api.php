@@ -34,6 +34,7 @@ use App\Http\Controllers\UserCardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Models\AppSetting;
+use App\Models\Brand;
 use App\Models\Order;
 use App\Models\Vehicle;
 

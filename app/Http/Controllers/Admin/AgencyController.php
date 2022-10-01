@@ -25,7 +25,7 @@ class AgencyController extends Controller
         ]);
 
         $data = Cache::tags(['agencies'])->remember(CacheHelper::makeKey('agencies'), 600, function () {
-            $applications = AgencyApplication::with('user');
+            $applications = AgencyApplication::whereHas('user')->with('user');
 
             // filter by status
             if (request()->has('statuses')) {
