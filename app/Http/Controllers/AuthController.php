@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CountryHelper;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
@@ -60,7 +61,9 @@ class AuthController extends Controller
                 'email'     => request('email'),
                 'password'  => $passwordHash,
                 'phone'     => request('phone'),
+                'country'   => CountryHelper::get()->code,
             ];
+            
             if (request()->has('social') && request('social') == true) {
                 // * verify user email 
                 $data['email_verified_at'] = now();

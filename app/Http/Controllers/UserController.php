@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Functions\Fcm;
+use App\Helpers\CountryHelper;
+use App\Jobs\UpdateFcm;
 use App\Models\Order;
 use App\Models\User;
 use Auth;
@@ -10,6 +12,7 @@ use Cache;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -86,6 +89,48 @@ class UserController extends Controller
     }
 
     public function fcm()
+    {
+        request()->validate([
+            'fcm'      => ['required', 'string']
+        ]);
+
+        $user = Auth::user();
+
+        $countryCode = CountryHelper::get()->code;
+        $headerLanguage = request()->header('Language');
+        $lang = $headerLanguage ?? 'ar';
+
+        $userLang = auth()->user()->language;
+        $userCountry = auth()->user()->country;
+
+        Log::info("user country: " . $userCountry);
+
+        if ($countryCode) {
+            $data = [
+                'fcm' => request('fcm'),
+                'userCountry' => $userCountry,
+                'userLang' => $userLang,
+                'countryCode' => $countryCode,
+                'lang' => $lang
+            ];
+
+            UpdateFcm::dispatch($data);
+        }
+
+        $user->update([
+            'fcm' => request('fcm'),
+            'country' => $countryCode,
+            'language' => $lang
+        ]);
+
+        return response()->json([
+            'message' => __('messages.r_success'),
+            'data' => $user,
+            'error' => null,
+        ], 200);
+    }
+
+    public function fcmOld()
     {
         request()->validate([
             'fcm'      => ['required', 'string'],

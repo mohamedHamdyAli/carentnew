@@ -35,6 +35,8 @@ class Country
                 'message' => 'Country is incorrect or unsupported'
             ], 400);
         }
+        // set Country header with country_code
+        $request->headers->set('CountryCode', $iCountry->country_code);
         // update Country header with country_id
         $request->headers->set('Country', $iCountry->id);
         return $next($request);

@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\FuelTypeController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\StatisticController;
 use App\Http\Controllers\Admin\VehicleApprovalController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -102,7 +103,7 @@ Route::group(
         });
 
         /**
-         * @Accounting routes
+         * * @Accounting routes
          */
         Route::prefix('accounting')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             // Payments
@@ -113,11 +114,21 @@ Route::group(
         });
 
         /**
-         * * @Approvals routes
+         * * @Orders routes
          */
         Route::prefix('orders')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::get('/', [AdminOrderController::class, 'index']);
             Route::get('/{id}', [AdminOrderController::class, 'show']);
+        });
+
+        /**
+         * * @Tools routes
+         */
+        Route::prefix('tools')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
+            // Payments
+            Route::prefix('notifications')->group(function () {
+                Route::post('/', [NotificationController::class, 'send']);
+            });
         });
 
         /**
@@ -157,59 +168,66 @@ Route::group(
                 Route::put('/single/{id}', [SettingController::class, 'update']);
             });
 
-        /** state routes */
+        /**
+         * * @State routes
+         **/
         Route::prefix('states')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::post('/', [StateController::class, 'createState']);
             Route::get('/{id}', [StateController::class, 'getSingleState']);
             Route::put('/{id}', [StateController::class, 'updateState']);
         });
-        /** end state routes */
 
-        /** brands routes */
+        /**
+         * * @Brands routes
+         **/
         Route::prefix('brands')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::post('/', [BrandController::class, 'createBrand']);
             Route::get('/{id}', [BrandController::class, 'getSingleBrand']);
             Route::put('/{id}', [BrandController::class, 'updateBrand']);
         });
-        /** end brands routes */
 
-        /** models routes */
+        /**
+         * * @Models routes
+         **/
         Route::prefix('models')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::post('/', [ModelController::class, 'createModel']);
             Route::get('/{id}', [ModelController::class, 'getSingleModel']);
             Route::put('/{id}', [ModelController::class, 'updateModel']);
         });
-        /** end models routes */
 
-        /** categories routes */
+        /**
+         * * @Categories routes
+         **/
         Route::prefix('categories')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::post('/', [CategoryController::class, 'createCategory']);
             Route::get('/{id}', [CategoryController::class, 'getSingleCategory']);
             Route::put('/{id}', [CategoryController::class, 'updateCategory']);
         });
-        /** end categories routes */
-
-        /** features routes */
+        
+        /**
+         * * @Features routes
+         **/
         Route::prefix('features')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::post('/', [FeatureController::class, 'createFeature']);
             Route::get('/{id}', [FeatureController::class, 'getSingleFeature']);
             Route::put('/{id}', [FeatureController::class, 'updateFeature']);
         });
-        /** end features routes */
 
-        /** fuel types routes */
+        /**
+         * * @Fuel-Types routes
+         **/
         Route::prefix('fuel-types')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::post('/', [FuelTypeController::class, 'createFuelType']);
             Route::get('/{id}', [FuelTypeController::class, 'getSingleFuelType']);
             Route::put('/{id}', [FuelTypeController::class, 'updateFuelType']);
         });
-        /** end fuel types routes */
-
-        /** appsettings routes */
+        
+        /**
+         * * @App-Settings routes
+         **/
         Route::prefix('app-settings')->middleware(['auth:sanctum', 'anyrole:admin|superadmin'])->group(function () {
             Route::put('/', [AppSettingController::class, 'create']);
             Route::get('/', [AppSettingController::class, 'getLatestVersion']);
         });
-        /** end appsettings routes */
     }
 );
