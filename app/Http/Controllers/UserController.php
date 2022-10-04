@@ -111,8 +111,17 @@ class UserController extends Controller
                 'userCountry' => $userCountry,
                 'userLang' => $userLang,
                 'countryCode' => $countryCode,
-                'lang' => $lang
+                'lang' => $lang,
+                'role' => null,
             ];
+
+            if ($user->hasRole('renter')) {
+                $data['role'] = 'renter';
+            } else if ($user->hasRole('owner')) {
+                $data['role'] = 'owner';
+            } else if ($user->hasRole('agency')) {
+                $data['role'] = 'agency';
+            }
 
             UpdateFcm::dispatch($data);
         }

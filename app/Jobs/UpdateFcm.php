@@ -41,18 +41,9 @@ class UpdateFcm implements ShouldQueue
         Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}");
 
         // handle role topics
-        $user = auth()->user();
-        if ($user->hasRole('renter')) {
-            Fcm::subscribe($this->data['fcm'], "admin-{$this->data['countryCode']}-renter-{$this->data['lang']}");
-            Fcm::subscribe($this->data['fcm'], "admin-{$this->data['countryCode']}-renter");
-        }
-        if ($user->hasRole('owner')) {
-            Fcm::subscribe($this->data['fcm'], "admin-{$this->data['countryCode']}-owner-{$this->data['lang']}");
-            Fcm::subscribe($this->data['fcm'], "admin-{$this->data['countryCode']}-owner");
-        }
-        if ($user->hasRole('agency')) {
-            Fcm::subscribe($this->data['fcm'], "admin-{$this->data['countryCode']}-agency-{$this->data['lang']}");
-            Fcm::subscribe($this->data['fcm'], "admin-{$this->data['countryCode']}-agency");
+        if ($this->data['role'] != null) {
+            Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}-{$this->data['lang']}");
+            Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}");
         }
     }
 }

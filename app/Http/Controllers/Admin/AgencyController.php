@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\CountryHelper;
 use App\Http\Controllers\Controller;
+use App\Jobs\AddRoleFcmSub;
 use App\Models\AgencyApplication;
 use App\Models\BusinessDocument;
 use App\Models\IdentityDocument;
@@ -11,6 +13,7 @@ use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class AgencyController extends Controller
 {
@@ -123,6 +126,7 @@ class AgencyController extends Controller
                         'error' => true
                     ], 400);
                 }
+
                 $application->update([
                     'status' => 'approved',
                     'identity_document_verified' => true,
@@ -142,6 +146,21 @@ class AgencyController extends Controller
 
                 // assign role as a resullt of verification
                 $user->assignRole('agency');
+
+                Log::info("user country: " . $user->country);
+
+                if ($user->country && $user->fcm && $user->language) {
+                    $data = [
+                        'fcm' => $user->fcm,
+                        'userCountry' => $user->country,
+                        'userLang' => $user->language,
+                        'countryCode' => $user->country,
+                        'lang' => $user->language,
+                        'role' => 'agency',
+                    ];
+
+                    AddRoleFcmSub::dispatch($data);
+                }
 
                 Cache::tags(['agencies'])->flush();
                 Cache::tags(['counters'])->flush();

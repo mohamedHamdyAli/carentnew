@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\CountryHelper;
 use App\Http\Controllers\Controller;
+use App\Jobs\AddRoleFcmSub;
 use App\Models\IdentityDocument;
 use App\Models\OwnerApplication;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class OwnerController extends Controller
 {
@@ -133,6 +136,21 @@ class OwnerController extends Controller
 
                 // assign owner role
                 $user->assignRole('owner');
+
+                Log::info("user country: " . $user->country);
+
+                if ($user->country && $user->fcm && $user->language) {
+                    $data = [
+                        'fcm' => $user->fcm,
+                        'userCountry' => $user->country,
+                        'userLang' => $user->language,
+                        'countryCode' => $user->country,
+                        'lang' => $user->language,
+                        'role' => 'owner',
+                    ];
+
+                    AddRoleFcmSub::dispatch($data);
+                }
 
                 Cache::tags(['owners'])->flush();
                 Cache::tags(['counters'])->flush();

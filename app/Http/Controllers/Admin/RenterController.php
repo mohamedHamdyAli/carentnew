@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Helpers\CacheHelper;
+use App\Helpers\CountryHelper;
 use App\Http\Controllers\Controller;
+use App\Jobs\AddRoleFcmSub;
 use App\Models\DriverLicense;
 use App\Models\IdentityDocument;
 use App\Models\RenterApplication;
@@ -11,6 +13,7 @@ use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class RenterController extends Controller
 {
@@ -150,6 +153,21 @@ class RenterController extends Controller
 
                 // grant the corosponding privilege to user
                 $user->grantPrivilege('rent_without_driver');
+
+                Log::info("user country: " . $user->country);
+
+                if ($user->country && $user->fcm && $user->language) {
+                    $data = [
+                        'fcm' => $user->fcm,
+                        'userCountry' => $user->country,
+                        'userLang' => $user->language,
+                        'countryCode' => $user->country,
+                        'lang' => $user->language,
+                        'role' => 'renter',
+                    ];
+
+                    AddRoleFcmSub::dispatch($data);
+                }
 
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
