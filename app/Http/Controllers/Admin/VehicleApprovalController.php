@@ -166,7 +166,8 @@ class VehicleApprovalController extends Controller
                     ]);
 
                 $vehicle->update([
-                    'verified_at' => now()
+                    'verified_at' => now(),
+                    'active' => true,
                 ]);
 
                 Cache::tags(['vehicles'])->flush();

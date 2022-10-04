@@ -69,7 +69,7 @@ class OwnerApplication extends Model
 
     public function getIdentityDocumentUploadedAttribute()
     {
-        return $this->identityDocument() ? true : false;
+        return $this->identityDocument()->exists() ? true : false;
     }
 
     public function getApprovedAttribute()

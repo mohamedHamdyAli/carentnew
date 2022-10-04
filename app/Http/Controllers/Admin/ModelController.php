@@ -22,16 +22,18 @@ class ModelController extends Controller
     {
         $model = BrandModel::create($request->validated());
 
+        cache()->tags(['vehicles', 'models'])->flush();
+
         return response($model, Response::HTTP_CREATED);
     }
 
     public function getSingleModel($id)
     {
-        $data = cache()->tags(['models'])->remember(CacheHelper::makeKey('models_'.$id), 600, function () use ($id) {
+        $data = cache()->tags(['models'])->remember(CacheHelper::makeKey('models_' . $id), 600, function () use ($id) {
             return DB::table('brand_models as b')->where('b.id', $id)
-            ->select('b.id', 'b.name_en', 'b.name_ar', 'b.brand_id', 'b.display_order','b.active','brands.name_en as brand_name_en','brands.name_ar as brand_name_ar')
-            ->join('brands', 'brands.id', 'b.brand_id')
-            ->first();
+                ->select('b.id', 'b.name_en', 'b.name_ar', 'b.brand_id', 'b.display_order', 'b.active', 'brands.name_en as brand_name_en', 'brands.name_ar as brand_name_ar')
+                ->join('brands', 'brands.id', 'b.brand_id')
+                ->first();
         });
 
         return $data;
@@ -42,9 +44,8 @@ class ModelController extends Controller
         $model = BrandModel::whereId($id)->firstOrFail();
         $model->update($request->validated());
 
-        cache()->tags(['models'])->flush();
+        cache()->tags(['vehicles', 'models'])->flush();
 
         return response($model, Response::HTTP_OK);
     }
-
 }

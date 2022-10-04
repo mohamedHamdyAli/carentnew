@@ -78,7 +78,7 @@ class AgencyApplication extends Model
 
     public function getIdentityDocumentUploadedAttribute()
     {
-        return $this->identityDocument() ? true : false;
+        return $this->identityDocument()->exists() ? true : false;
     }
 
     /**
@@ -91,6 +91,6 @@ class AgencyApplication extends Model
 
     public function getBusinessDocumentUploadedAttribute()
     {
-        return $this->businessDocument() ? true : false;
+        return $this->businessDocument()->exists() ? true : false;
     }
 }

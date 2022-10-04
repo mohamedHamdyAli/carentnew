@@ -8,6 +8,7 @@ use Illuminate\Validation\Rules\Password;
 use App\Http\Common\Auth\Otp;
 use App\Http\Common\Auth\RoleManager;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Socialite;
@@ -85,6 +86,9 @@ class AuthController extends Controller
         $roleManager = new RoleManager(Auth::user());
         $roleManager->assign('user');
 
+        // ? Clear cache
+        Cache::tags(['users'])->flush();
+        
         /**
          * TODO: 6. Return auth object 🔑
          */

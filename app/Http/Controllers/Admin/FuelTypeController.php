@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\State;
-use App\Models\Feature;
 use App\Models\FuelType;
 use App\Helpers\CacheHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateFeatureRequest;
-use App\Http\Requests\UpdateFeatureRequest;
 use App\Http\Requests\CreateFuelTypeRequest;
 use App\Http\Requests\UpdateFuelTypeRequest;
 use Symfony\Component\HttpFoundation\Response;
-use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 
 class FuelTypeController extends Controller
 {
@@ -22,6 +17,8 @@ class FuelTypeController extends Controller
     public function createFuelType(CreateFuelTypeRequest $request)
     {
         $type = FuelType::create($request->validated());
+
+        cache()->tags(['vehicles', 'fuel-types'])->flush();
 
         return response($type, Response::HTTP_CREATED);
     }
@@ -41,7 +38,7 @@ class FuelTypeController extends Controller
         $type = FuelType::whereId($id)->firstOrFail();
         $type->update($request->validated());
 
-        cache()->tags(['fuel-types'])->flush();
+        cache()->tags(['vehicles', 'fuel-types'])->flush();
 
         return response($type, Response::HTTP_OK);
     }

@@ -79,7 +79,7 @@ class RenterApplication extends Model
 
     public function getIdentityDocumentUploadedAttribute()
     {
-        return $this->identityDocument() ? true : false;
+        return $this->identityDocument()->exists() ? true : false;
     }
 
     /**
@@ -92,6 +92,6 @@ class RenterApplication extends Model
 
     public function getDriverLicenseUploadedAttribute()
     {
-        return $this->driverLicense() ? true : false;
+        return $this->driverLicense()->exists() ? true : false;
     }
 }

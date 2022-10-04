@@ -21,6 +21,8 @@ class CategoryController extends Controller
     {
         $category = Category::create($request->validated());
 
+        cache()->tags(['vehicles', 'categories'])->flush();
+
         return response($category, Response::HTTP_CREATED);
     }
 
@@ -40,7 +42,7 @@ class CategoryController extends Controller
         $category = Category::whereId($id)->firstOrFail();
         $category->update($request->validated());
 
-        cache()->tags(['categories'])->flush();
+        cache()->tags(['vehicles', 'categories'])->flush();
 
         return response($category, Response::HTTP_OK);
     }

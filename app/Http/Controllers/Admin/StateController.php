@@ -19,6 +19,8 @@ class StateController extends Controller
     {
         $state = State::create($request->validated());
 
+        cache()->tags(['vehicles', 'states'])->flush();
+
         return response($state, Response::HTTP_CREATED);
     }
 
@@ -39,7 +41,7 @@ class StateController extends Controller
         $state = State::whereId($id)->firstOrFail();
         $state->update($request->validated());
 
-        cache()->tags(['states'])->flush();
+        cache()->tags(['vehicles', 'states'])->flush();
 
         return response($state, Response::HTTP_OK);
     }

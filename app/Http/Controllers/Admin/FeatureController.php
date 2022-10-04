@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\State;
 use App\Models\Feature;
 use App\Helpers\CacheHelper;
 use Illuminate\Http\Request;
@@ -11,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFeatureRequest;
 use App\Http\Requests\UpdateFeatureRequest;
 use Symfony\Component\HttpFoundation\Response;
-use PHPUnit\TextUI\XmlConfiguration\Logging\TeamCity;
 
 class FeatureController extends Controller
 {
@@ -19,6 +17,8 @@ class FeatureController extends Controller
     public function createFeature(CreateFeatureRequest $request)
     {
         $feature = Feature::create($request->validated());
+
+        cache()->tags(['vehicles', 'features'])->flush();
 
         return response($feature, Response::HTTP_CREATED);
     }
@@ -38,7 +38,7 @@ class FeatureController extends Controller
         $feature = Feature::whereId($id)->firstOrFail();
         $feature->update($request->validated());
 
-        cache()->tags(['features'])->flush();
+        cache()->tags(['vehicles', 'features'])->flush();
 
         return response($feature, Response::HTTP_OK);
     }

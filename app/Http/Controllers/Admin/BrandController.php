@@ -47,6 +47,8 @@ class BrandController extends Controller
             $brand->update(['logo' =>  $newFile]);
         });
 
+        cache()->tags(['brands'])->flush();
+
         return response($brand, Response::HTTP_CREATED);
     }
 
@@ -72,7 +74,7 @@ class BrandController extends Controller
             $brand->update(['logo' =>  $newFile]);
         });
 
-        cache()->tags(['brands'])->flush();
+        cache()->tags(['vehicles', 'brands', 'models'])->flush();
 
         return response($brand, Response::HTTP_OK);
     }

@@ -106,7 +106,7 @@ class UserController extends Controller
                 }
             }
 
-            Cache::tags(['users'])->flush();
+            Cache::tags(['vehicles', 'users'])->flush();
 
             return $user;
         });
