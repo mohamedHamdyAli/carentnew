@@ -48,9 +48,9 @@ class StateController extends Controller
     public function show($country)
     {
         //
-
-        $data = cache()->tags(['countries', 'states'])->rememberForever("country_states.{$country}", function () use ($country) {
-            return new StateResource(State::where('country_id', $country)->get());
+        $lang = app()->getLocale() ?? 'en';
+        $data = cache()->tags(['countries', 'states'])->rememberForever("country_states.{$country}-{$lang}", function () use ($country, $lang) {
+            return new StateResource(State::where('country_id', $country)->orderBy("name_{$lang}")->get());
         });
 
         return $data;

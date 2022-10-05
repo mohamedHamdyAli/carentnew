@@ -42,6 +42,9 @@ class UpdateFcm implements ShouldQueue
 
         // handle role topics
         if ($this->data['role'] != null) {
+            Fcm::subscribe($this->data['fcm'], "all-{$this->data['userCountry']}-{$this->data['role']}-{$this->data['lang']}");
+            Fcm::subscribe($this->data['fcm'], "all-{$this->data['userCountry']}-{$this->data['role']}");
+
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}-{$this->data['lang']}");
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}");
         }

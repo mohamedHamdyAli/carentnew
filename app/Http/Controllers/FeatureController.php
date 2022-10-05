@@ -15,8 +15,9 @@ class FeatureController extends Controller
      */
     public function index()
     {
-        $data = cache()->tags(['features'])->rememberForever("features" . '-' . app()->getLocale(), function () {
-            return new FeatureResoure(Feature::all());
+        $lang = app()->getLocale() ?? 'en';
+        $data = cache()->tags(['features'])->rememberForever("features" . '-' . $lang, function () use ($lang) {
+            return new FeatureResoure(Feature::orderBy("name_{$lang}")->get());
         });
 
         return $data;

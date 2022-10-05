@@ -66,7 +66,7 @@ class OwnerVehicleController extends Controller
             'license.front_image' => [$isUpdate ? 'nullable' : 'required_with:license', 'exists:temp_files,id'],
             'license.back_image' => [$isUpdate ? 'nullable' : 'required_with:license', 'exists:temp_files,id'],
             'license.expire_at' => ['required_with:license', 'date:Y-m-d', 'after:' . Carbon::now()->addMonths(3)->format('Y-m-d')],
-            'insurance' => ['nullable', 'sometimes', 'required_if:pricing.is_driver_required,true', 'array'],
+            'insurance' => ['nullable', 'sometimes', 'required_if:pricing.is_driver_required,false', 'array'],
             'insurance.image' => [$isUpdate ? 'nullable' : 'required_with:insurance', 'exists:temp_files,id'],
             'insurance.expire_at' => ['required_with:insurance', 'date:Y-m-d', 'after:' . Carbon::now()->addMonths(3)->format('Y-m-d')],
             'pricing.daily_price' => ['required', 'integer', 'min:1'],
