@@ -10,6 +10,7 @@ use App\Models\DriverLicense;
 use App\Models\IdentityDocument;
 use App\Models\RenterApplication;
 use App\Models\User;
+use App\Notifications\ApplicationAlert;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -101,6 +102,16 @@ class RenterController extends Controller
                 $application = RenterApplication::findOrFail($id);
                 $application->status = 'in-review';
                 $application->save();
+
+                // send notification
+                $user = User::findOrFail($application->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Application in review',
+                    'title_ar' => 'مراجعة الطلب',
+                    'body_en' => 'Your renter application is in review',
+                    'body_ar' => 'طلب الإنضمام كمستأجر قيد المراجعة',
+                    'alert_type' => 'info', // info, success, warning, danger
+                ]));
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
             });
@@ -169,6 +180,15 @@ class RenterController extends Controller
                     AddRoleFcmSub::dispatch($data);
                 }
 
+                // send notification
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Application approved',
+                    'title_ar' => 'تم الموافقة على الطلب',
+                    'body_en' => 'Your renter application is approved',
+                    'body_ar' => 'تم الموافقة على طلب الإنضمام كمستأجر',
+                    'alert_type' => 'success', // info, success, warning, danger
+                ]));
+
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
             });
@@ -186,6 +206,17 @@ class RenterController extends Controller
                 $application->status = 'rejected';
                 $application->reason = request('reason');
                 $application->save();
+
+                // send notification
+                $user = User::findOrFail($application->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Application rejected',
+                    'title_ar' => 'تم رفض الطلب',
+                    'body_en' => 'Your renter application is rejected',
+                    'body_ar' => 'تم رفض طلب الإنضمام كمستأجر',
+                    'alert_type' => 'danger', // info, success, warning, danger
+                ]));
+                
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
             });

@@ -9,6 +9,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleInsurance;
 use App\Models\VehicleLicense;
 use App\Models\VehicleVerification;
+use App\Notifications\ApplicationAlert;
 use Cache;
 use DB;
 use Illuminate\Http\Request;
@@ -26,7 +27,9 @@ class VehicleApprovalController extends Controller
         ]);
 
         $data = Cache::tags(['vehicles'])->remember(CacheHelper::makeKey('vehicle-verification'), 600, function () {
-            $applications = VehicleVerification::with('vehicle');
+            $applications = VehicleVerification::with(['vehicle.user'])->whereHas('vehicle.user', function ($query) {
+                return $query->where('deleted_at', null);
+            });
 
             // filter by status
             if (request()->has('statuses')) {
@@ -118,9 +121,20 @@ class VehicleApprovalController extends Controller
     {
         try {
             DB::transaction(function () use ($id) {
-                $application = VehicleVerification::findOrFail($id);
+                $application = VehicleVerification::with('vehicle')->findOrFail($id);
                 $application->status = 'in-review';
                 $application->save();
+
+                // send notification
+                $user = User::findOrFail($application->vehicle->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Vehicle review',
+                    'title_ar' => 'مراجعة المركبة',
+                    'body_en' => 'Your vehicle is under review',
+                    'body_ar' => 'مركبتك تحت المراجعة',
+                    'alert_type' => 'info', // info, success, warning, danger
+                ]));
+
                 Cache::tags(['vehicles'])->flush();
                 Cache::tags(['counters'])->flush();
             });
@@ -135,7 +149,7 @@ class VehicleApprovalController extends Controller
         // approve application
         try {
             DB::transaction(function () use ($id) {
-                $application = VehicleVerification::findOrFail($id);
+                $application = VehicleVerification::with('vehicle')->findOrFail($id);
 
                 if (!$application) {
                     // return 400 response user already has ongoing request
@@ -170,6 +184,16 @@ class VehicleApprovalController extends Controller
                     'active' => true,
                 ]);
 
+                // send notification
+                $user = User::findOrFail($application->vehicle->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Vehicle approved',
+                    'title_ar' => 'تم الموافقة على المركبة',
+                    'body_en' => 'Your vehicle is approved',
+                    'body_ar' => 'تم الموافقة على مركبتك',
+                    'alert_type' => 'success', // info, success, warning, danger
+                ]));
+
                 Cache::tags(['vehicles'])->flush();
                 Cache::tags(['counters'])->flush();
             });
@@ -183,10 +207,21 @@ class VehicleApprovalController extends Controller
     {
         try {
             DB::transaction(function () use ($id) {
-                $application = VehicleVerification::findOrFail($id);
+                $application = VehicleVerification::with('vehicle')->findOrFail($id);
                 $application->status = 'rejected';
                 $application->reason = request('reason');
                 $application->save();
+
+                // send notification
+                $user = User::findOrFail($application->vehicle->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Vehicle rejected',
+                    'title_ar' => 'رفض المركبة',
+                    'body_en' => 'Your vehicle is rejected',
+                    'body_ar' => 'تم رفض مركبتك',
+                    'alert_type' => 'danger', // info, success, warning, danger
+                ]));
+
                 Cache::tags(['vehicles'])->flush();
                 Cache::tags(['counters'])->flush();
             });

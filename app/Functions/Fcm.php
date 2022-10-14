@@ -46,14 +46,14 @@ class Fcm
         }
     }
 
-    static function sendAction($data)
+    static function sendAction($data, $action = "ADS_MESSAGE")
     {
         $payload = [
             'to' => $data['token'],
             'notification' => [
                 'title' => $data['title'],
                 'body' => $data['body'],
-                'click_action' => 'ADS_MESSAGE',
+                'click_action' => $action,
             ]
         ];
 

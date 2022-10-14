@@ -9,6 +9,7 @@ use App\Jobs\AddRoleFcmSub;
 use App\Models\IdentityDocument;
 use App\Models\OwnerApplication;
 use App\Models\User;
+use App\Notifications\ApplicationAlert;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -97,6 +98,17 @@ class OwnerController extends Controller
                 $application = OwnerApplication::findOrFail($id);
                 $application->status = 'in-review';
                 $application->save();
+
+                // send notification
+                $user = User::findOrFail($application->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Application in review',
+                    'title_ar' => 'مراجعة الطلب',
+                    'body_en' => 'Your owner application is in review',
+                    'body_ar' => 'طلب الإنضمام كمالك قيد المراجعة',
+                    'alert_type' => 'info', // info, success, warning, danger
+                ]));
+
                 Cache::tags(['owners'])->flush();
                 Cache::tags(['counters'])->flush();
             });
@@ -152,6 +164,15 @@ class OwnerController extends Controller
                     AddRoleFcmSub::dispatch($data);
                 }
 
+                // send notification
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Application approved',
+                    'title_ar' => 'تم الموافقة على الطلب',
+                    'body_en' => 'Your owner application is approved',
+                    'body_ar' => 'تم الموافقة على طلب الإنضمام كمالك',
+                    'alert_type' => 'success', // info, success, warning, danger
+                ]));
+
                 Cache::tags(['owners'])->flush();
                 Cache::tags(['counters'])->flush();
             });
@@ -169,6 +190,17 @@ class OwnerController extends Controller
                 $application->status = 'rejected';
                 $application->reason = request('reason');
                 $application->save();
+
+                // send notification
+                $user = User::findOrFail($application->user_id);
+                $user->notify(new ApplicationAlert([
+                    'title_en' => 'Application rejected',
+                    'title_ar' => 'تم رفض الطلب',
+                    'body_en' => 'Your owner application is rejected',
+                    'body_ar' => 'تم رفض طلب الإنضمام كمالك',
+                    'alert_type' => 'danger', // info, success, warning, danger
+                ]));
+                
                 Cache::tags(['owners'])->flush();
                 Cache::tags(['counters'])->flush();
             });
