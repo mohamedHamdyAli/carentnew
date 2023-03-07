@@ -57,8 +57,6 @@ class Fcm
             ]
         ];
 
-        Log::info("Fcm", [$payload]);
-
         $headers = array(
             'Authorization: key=' . env('FCM_SERVER_KEY'),
             'Content-Type: application/json'
@@ -72,7 +70,7 @@ class Fcm
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         $result = curl_exec($ch);
-        Log::info("Fcm", [json_decode($result), $payload]);
+        Log::info("Fcm", [json_decode($result)]);
         curl_close($ch);
     }
 
@@ -181,7 +179,6 @@ class Fcm
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             $result = curl_exec($ch);
             Log::info('Send FCM [' . $topic . '] ' . $result);
-            Log::info([$data]);
             curl_close($ch);
             return $result;
         } catch (Exception $err) {
