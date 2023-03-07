@@ -3,10 +3,12 @@
 namespace App\Notifications;
 
 use App\Functions\Fcm;
+use App\Mail\ApplicationAlert as MailApplicationAlert;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationAlert extends Notification implements ShouldQueue
 {
@@ -44,9 +46,9 @@ class ApplicationAlert extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -83,5 +85,14 @@ class ApplicationAlert extends Notification implements ShouldQueue
             'order_number' => null,
         ];
         Fcm::send($data, $notifiable->fcm);
+
+        Mail::to(
+            [
+                [
+                    'email' => $notifiable->email,
+                    'name' => $notifiable->name
+                ]
+            ]
+        )->send(new MailApplicationAlert($data['title'], $data['body']));
     }
 }

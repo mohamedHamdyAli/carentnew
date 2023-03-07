@@ -31,6 +31,7 @@ return [
         'vehicle_verified' => 'هذا السيارة محققة',
         'payment_failed' => 'فشلت العملية',
         'user_has_ongoing_orders' => 'لا يمكن حذف هذا المستخدم لأنه لديه طلبات جارية',
+        'user_balance_not_zero' => 'لا يمكن حذف الحساب لوجود رصيد متبقي, يجب سحب الرصيد أولاً',
     ],
     'success' => [
         'create_user' => 'تم إنشاء المستخدم بنجاح',

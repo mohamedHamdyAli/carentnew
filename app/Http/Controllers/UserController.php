@@ -166,6 +166,15 @@ class UserController extends Controller
     {
         $user = User::find(Auth::id());
 
+        // check if user balance is more than 0
+        if ($user->balance > 0) {
+            return response()->json([
+                'message' => __('messages.o_error'),
+                'data' => null,
+                'error' => __('messages.user_balance_not_zero'),
+            ], 400);
+        }
+
         // check if user has on going orders
         $onGoingOrders = Order::where('user_id', $user->id)->WhereHas('orderStatus', function ($q) {
             return $q->where('terminate', 0);

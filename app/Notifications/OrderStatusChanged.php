@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Functions\Fcm;
+use App\Mail\OrderStatusChanged as MailOrderStatusChanged;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use Illuminate\Bus\Queueable;
@@ -11,6 +12,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Mail;
 
 class OrderStatusChanged extends Notification implements ShouldQueue
 {
@@ -91,5 +93,14 @@ class OrderStatusChanged extends Notification implements ShouldQueue
             'order_number' => $this->order->number,
         ];
         $send = Fcm::send($data, $notifiable->fcm);
+
+        Mail::to(
+            [
+                [
+                    'email' => $notifiable->email,
+                    'name' => $notifiable->name
+                ]
+            ]
+        )->send(new MailOrderStatusChanged($data['title'] . ' #' . $data['order_number'], $data['body']));
     }
 }

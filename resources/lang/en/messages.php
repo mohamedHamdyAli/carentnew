@@ -31,6 +31,7 @@ return [
         'vehicle_verified' => 'Vehicle is already verified',
         'payment_failed' => 'Payment failed',
         'user_has_ongoing_orders' => 'Can\'t delete user, user has on going orders',
+        'user_has_ongoing_requests' => 'Can\'t delete user, user balance is not zero, you should withdraw it first',
     ],
     'success' => [
         'create_user' => 'User created successfully',

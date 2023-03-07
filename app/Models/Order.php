@@ -242,7 +242,7 @@ class Order extends Model
     {
         return $this->order_status_id == Status::CONFIRMED
             && Carbon::now()->toDateString() <= $this->end_date
-            /*&& Carbon::now()->toDateString() >= $this->start_date*/;
+            && Carbon::now()->toDateString() >= $this->start_date;
         // TODO: remove after testing
     }
 

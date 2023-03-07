@@ -33,10 +33,12 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserCardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
+use App\Mail\ApplicationAlert;
 use App\Models\AppSetting;
 use App\Models\Brand;
 use App\Models\Order;
 use App\Models\Vehicle;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,22 @@ use App\Models\Vehicle;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/test', function () {
+    Mail::to(
+        [
+            [
+                'email' => 'mahmoud.ali.kassem@gmail.com',
+                'name' => 'Mahmoud Kassem'
+            ]
+        ]
+    )->send(new ApplicationAlert('Test', 'Test'));
+    return response()->json([
+        'message' => 'CARENET API v1.0',
+        'data' => null,
+        'error' => null
+    ], 200);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
