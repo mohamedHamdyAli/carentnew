@@ -6,6 +6,7 @@ use App\Helpers\CacheHelper;
 use App\Helpers\CountryHelper;
 use App\Http\Controllers\Controller;
 use App\Jobs\AddRoleFcmSub;
+use App\Jobs\UpdateFcm;
 use App\Models\DriverLicense;
 use App\Models\IdentityDocument;
 use App\Models\RenterApplication;
@@ -216,7 +217,7 @@ class RenterController extends Controller
                     'body_ar' => 'تم رفض طلب الإنضمام كمستأجر',
                     'alert_type' => 'danger', // info, success, warning, danger
                 ]));
-                
+
                 Cache::tags(['renters'])->flush();
                 Cache::tags(['counters'])->flush();
             });

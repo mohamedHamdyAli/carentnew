@@ -34,6 +34,8 @@ class User extends Authenticatable
         'approved_at',
         'is_active',
         'fcm',
+        'country',
+        'language',
     ];
 
     /**
@@ -60,6 +62,8 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'fcm',
+        'country',
+        'language',
     ];
 
     /**

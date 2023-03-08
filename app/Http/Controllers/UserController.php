@@ -104,8 +104,10 @@ class UserController extends Controller
         $userCountry = auth()->user()->country;
 
         Log::info("user country: " . $userCountry);
+        Log::info("country code: " . $countryCode);
 
         if ($countryCode) {
+            Log::info("country code: " . $countryCode);
             $data = [
                 'fcm' => request('fcm'),
                 'userCountry' => $userCountry,
@@ -125,6 +127,12 @@ class UserController extends Controller
 
             UpdateFcm::dispatch($data);
         }
+
+        Log::info(["update fcm: ", [
+            'fcm' => request('fcm'),
+            'country' => $countryCode,
+            'language' => $lang
+        ]]);
 
         $user->update([
             'fcm' => request('fcm'),

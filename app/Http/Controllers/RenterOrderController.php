@@ -40,7 +40,7 @@ class RenterOrderController extends Controller
 
     public function view($id)
     {
-        $data = Order::with('OrderEarlyReturn')
+        $data = Order::with(['OrderEarlyReturn', 'owner'])
             ->where('id', $id)
             ->firstOrFail();
 

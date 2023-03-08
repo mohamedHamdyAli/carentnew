@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class UpdateFcm implements ShouldQueue
 {
@@ -35,11 +36,16 @@ class UpdateFcm implements ShouldQueue
         // unsubscribe from previous topic
         Fcm::unsubscribe($this->data['fcm'], "all-{$this->data['userCountry']}-{$this->data['userLang']}");
         Fcm::unsubscribe($this->data['fcm'], "all-{$this->data['userCountry']}");
+        Fcm::unsubscribe($this->data['fcm'], "all-{$this->data['userLang']}");
 
         // subscribe to all-countrycode topic
         Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['lang']}");
         Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}");
+        Fcm::subscribe($this->data['fcm'], "all-{$this->data['lang']}");
         Fcm::subscribe($this->data['fcm'], "all");
+        Log::info("subscribed to all-{$this->data['countryCode']}-{$this->data['lang']}");
+        Log::info("subscribed to all-{$this->data['countryCode']}");
+        Log::info("subscribed to all");
 
         // handle role topics
         if ($this->data['role'] != null) {
@@ -49,6 +55,9 @@ class UpdateFcm implements ShouldQueue
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}-{$this->data['lang']}");
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}");
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['role']}");
+            Log::info("subscribed to all-{$this->data['userCountry']}-{$this->data['role']}-{$this->data['lang']}");
+            Log::info("subscribed to all-{$this->data['userCountry']}-{$this->data['role']}");
+            Log::info("subscribed to all-{$this->data['role']}");
         }
     }
 }

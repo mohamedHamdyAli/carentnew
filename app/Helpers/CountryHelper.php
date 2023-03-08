@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Log;
+
 class CountryHelper
 {
     public readonly string|null $code;

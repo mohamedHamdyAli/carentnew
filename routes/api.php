@@ -237,7 +237,7 @@ Route::group(
         Route::prefix('users')->middleware(['auth:sanctum'])->group(function () {
             Route::get('/profile', [UserController::class, 'profile']);
             Route::post('/profile', [UserController::class, 'update']);
-            Route::post('/fcm', [UserController::class, 'fcm']);
+            Route::post('/fcm', [UserController::class, 'fcm'])->middleware(['country']);
             Route::post('/password', [UserController::class, 'password']);
             Route::delete('/delete', [UserController::class, 'delete']);
 

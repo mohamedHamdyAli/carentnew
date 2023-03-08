@@ -36,8 +36,8 @@ class Order extends Model
         'user_id',
         'vehicle_id',
         'owner_id',
-        'user',
-        'owner',
+        // 'user',
+        // 'owner',
         'vehicle_total',
         'driver_total',
         'created_at',
@@ -97,6 +97,11 @@ class Order extends Model
     }
 
     public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function renter()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
