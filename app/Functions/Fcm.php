@@ -230,7 +230,8 @@ class Fcm
 
             $headers = array(
                 'Authorization: key=' . env('FCM_SERVER_KEY'),
-                'Content-Type: application/json'
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen(json_encode($data)),
             );
 
             $ch = curl_init();
@@ -241,7 +242,7 @@ class Fcm
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             $result = curl_exec($ch);
-            Log::info("Unsubscribe FCM from topic: {$topic}" . $result);
+            Log::info("Unsubscribe FCM from topic: {$topic} " . $result . " " . $headers[2]);
             curl_close($ch);
             return $result;
         } catch (Exception $err) {

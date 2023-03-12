@@ -43,9 +43,6 @@ class UpdateFcm implements ShouldQueue
         Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}");
         Fcm::subscribe($this->data['fcm'], "all-{$this->data['lang']}");
         Fcm::subscribe($this->data['fcm'], "all");
-        Log::info("subscribed to all-{$this->data['countryCode']}-{$this->data['lang']}");
-        Log::info("subscribed to all-{$this->data['countryCode']}");
-        Log::info("subscribed to all");
 
         // handle role topics
         if ($this->data['role'] != null) {
@@ -55,9 +52,6 @@ class UpdateFcm implements ShouldQueue
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}-{$this->data['lang']}");
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['countryCode']}-{$this->data['role']}");
             Fcm::subscribe($this->data['fcm'], "all-{$this->data['role']}");
-            Log::info("subscribed to all-{$this->data['userCountry']}-{$this->data['role']}-{$this->data['lang']}");
-            Log::info("subscribed to all-{$this->data['userCountry']}-{$this->data['role']}");
-            Log::info("subscribed to all-{$this->data['role']}");
         }
     }
 }
