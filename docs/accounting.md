@@ -43,6 +43,8 @@
 | account_id | string | Account id |
 | amount | number | Transaction amount |
 | currency | string | Transaction currency |
+| transactable_id | string | Transactionable id |
+| transactable_type | string | Transactionable type |
 | created_at | date | Transaction creation date |
 | updated_at | date | Transaction last update date |
 | deleted_at | date | Transaction deletion date |
@@ -56,4 +58,5 @@
 | Relationship | Type | Description |
 | --- | --- | --- |
 | account | belongsTo | Transaction account |
+| transactable | morphTo | Transactionable |
 <!-- /table -->
