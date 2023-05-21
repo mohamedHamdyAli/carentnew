@@ -173,6 +173,7 @@ class Order extends Model
 
     public function renterCanPay()
     {
+        // return true;
         return $this->order_status_id == Status::PENDING_PAYMENT
             && Carbon::now()->diffInMinutes($this->orderExpireAt(), false) > 0;
     }

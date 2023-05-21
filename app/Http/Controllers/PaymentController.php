@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderExtend;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Maherelgamil\LaravelFawry\Fawry;
 
 class PaymentController extends Controller
@@ -75,6 +76,7 @@ class PaymentController extends Controller
         }
 
         // save payment
+        Log::info('charge', [$charge]);
         $payment = Payment::create([
             'type' => $charge->type,
             'referenceNumber' => $charge->referenceNumber,
@@ -85,8 +87,8 @@ class PaymentController extends Controller
             'paymentMethod' => $charge->paymentMethod,
             'orderStatus' => $charge->orderStatus,
             'paymentTime' => Carbon::parse($charge->paymentTime),
-            'customerMobile' => $charge->customerMobile,
-            'customerMail' => $charge->customerMail,
+            'customerMobile' => @$charge->customerMobile,
+            'customerMail' => @$charge->customerMail,
             'customerProfileId' => $charge->customerProfileId,
             'signature' => $charge->signature,
             'statusCode' => $charge->statusCode,
@@ -171,8 +173,8 @@ class PaymentController extends Controller
             'paymentMethod' => $charge->paymentMethod,
             'orderStatus' => $charge->orderStatus,
             'paymentTime' => Carbon::parse($charge->paymentTime),
-            'customerMobile' => $charge->customerMobile,
-            'customerMail' => $charge->customerMail,
+            'customerMobile' => @$charge->customerMobile,
+            'customerMail' => @$charge->customerMail,
             'customerProfileId' => $charge->customerProfileId,
             'signature' => $charge->signature,
             'statusCode' => $charge->statusCode,
