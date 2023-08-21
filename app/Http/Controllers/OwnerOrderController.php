@@ -161,6 +161,7 @@ class OwnerOrderController extends Controller
     {
         try {
             $order = Order::findOrFail($id);
+            dd($order);
             if (!$order->ownerCanDeliver()) {
                 return response()->json([
                     'message' => __('messages.r_failed'),
